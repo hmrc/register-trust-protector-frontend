@@ -14,19 +14,18 @@
  * limitations under the License.
  *@
 
-@(errors: Seq[FormError])(implicit messages: Messages)
-@if(errors.nonEmpty) {
-<div id="errors" class="error-summary error-summary--show" role="alert" tabindex="-1">
+@import viewmodels.Link
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        @messages("error.summary.title")
-    </h2>
+@(
+    hint: Option[String] = None,
+    readerHint: Option[String] = None,
+    link: Option[Link] = None
+)(implicit messages: Messages)
 
-    <ul role="list" class="error-summary-list">
-        @for(error <- errors) {
-        <li><a href="#@{error.key}@if(error.args.contains("day") || error.args.contains("month") || error.args.contains("year")){_@error.args.head}">@messages(error.message, error.args:_*)</a></li>
-        }
-    </ul>
-
-</div>
+@if(hint.nonEmpty) {
+  <span id="form-hint" class="form-hint form-field" @if(readerHint.nonEmpty){aria-label="@readerHint"}>@hint
+  @link.map { l =>
+    <a id="link" href="@l.url" target="_blank">@l.text</a>
+  }
+  </span>
 }

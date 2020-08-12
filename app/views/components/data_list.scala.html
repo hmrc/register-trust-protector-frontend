@@ -14,19 +14,19 @@
  * limitations under the License.
  *@
 
-@(errors: Seq[FormError])(implicit messages: Messages)
-@if(errors.nonEmpty) {
-<div id="errors" class="error-summary error-summary--show" role="alert" tabindex="-1">
+@import viewmodels.AddRow
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        @messages("error.summary.title")
-    </h2>
+@(data: Seq[AddRow], id: String, entity : String)(implicit messages: Messages)
 
-    <ul role="list" class="error-summary-list">
-        @for(error <- errors) {
-        <li><a href="#@{error.key}@if(error.args.contains("day") || error.args.contains("month") || error.args.contains("year")){_@error.args.head}">@messages(error.message, error.args:_*)</a></li>
-        }
-    </ul>
+@if(data.nonEmpty){
 
+<div class="form-group">
+ <h2 id="data-list-heading--@id--hidden" class="visually-hidden">@messages(s"entity.$entity") @messages(s"site.$id")</h2>
+ <h3 id="data-list-heading--@id" aria-hidden="true">@messages(s"site.$id")</h3>
+ <dl id="data-list--@id" class="hmrc-add-to-a-list hmrc-add-to-a-list--short" aria-describedby="data-list-heading--@id--hidden">
+   @for(item <- data) {
+    @components.data_list_row(item)
+  }
+ </dl>
 </div>
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(headingKey: String, optionalParam: Option[String] = None, headingSize: String = "heading-large")(implicit messages: Messages)
+package controllers.register
 
-<h1 class="@headingSize">@messages(headingKey, if(optionalParam.isDefined) {optionalParam.get} else "")</h1>
+import com.google.inject.{Inject, Singleton}
+import config.FrontendAppConfig
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+
+@Singleton
+class LogoutController @Inject()(appConfig: FrontendAppConfig, val controllerComponents: MessagesControllerComponents) extends FrontendBaseController {
+
+  def logout: Action[AnyContent] = Action {
+    implicit request =>
+      Redirect(appConfig.logoutUrl).withNewSession
+  }
+}

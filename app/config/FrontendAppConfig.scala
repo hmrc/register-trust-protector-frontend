@@ -26,7 +26,9 @@ import play.api.mvc.Call
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "play26frontend"
+  private val contactFormServiceIdentifier = "trusts"
+
+  val repositoryKey: String = "protectors"
 
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
   val analyticsHost: String = configuration.get[String](s"google-analytics.host")
@@ -39,8 +41,15 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
+  lazy val registrationStartUrl: String = configuration.get[String]("urls.registrationStart")
+
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
+
+  lazy val maintainATrustFrontendUrl : String = configuration.get[String]("urls.maintainATrust")
+  lazy val createAgentServicesAccountUrl : String = configuration.get[String]("urls.createAgentServicesAccount")
+
+  lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

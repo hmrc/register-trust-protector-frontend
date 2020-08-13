@@ -16,24 +16,20 @@
 
 package navigation
 
-import base.SpecBase
-import controllers.routes
-import pages._
-import models._
+import config.FrontendAppConfig
+import javax.inject.Inject
+import models.ReadableUserAnswers
+import pages.Page
+import play.api.mvc.Call
 
-class TrusteeNavigatorSpec extends SpecBase {
+class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
-  val navigator = new TrusteeNavigator(frontendAppConfig)
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
+    route(draftId, config)(page)(userAnswers)
 
-  "Navigator" when {
-
-    "in Normal mode" must {
-
-      "go to Index from a page that doesn't exist in the route map" in {
-
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, draftId, emptyUserAnswers) mustBe routes.IndexController.onPageLoad(draftId)
-      }
-    }
+  private def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case _ => _ =>
+      controllers.routes.IndexController.onPageLoad(draftId)
   }
 }
+

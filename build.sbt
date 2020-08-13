@@ -8,6 +8,7 @@ lazy val appName: String = "register-trust-protector-frontend"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtArtifactory)
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
   .settings(SbtDistributablesPlugin.publishingSettings: _*)
@@ -43,8 +44,12 @@ lazy val root = (project in file("."))
     ),
     // concatenate js
     Concat.groups := Seq(
-      "javascripts/registertrustprotectorfrontend-app.js" ->
-        group(Seq("javascripts/show-hide-content.js", "javascripts/registertrustprotectorfrontend.js"))
+      "javascripts/registertrusttrusteefrontend-app.js" ->
+        group(Seq(
+          "javascripts/show-hide-content.js",
+          "javascripts/registertrustprotectorfrontend.js",
+          "javascripts/autocomplete/location-autocomplete.min.js"
+        ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),

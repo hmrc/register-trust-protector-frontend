@@ -1,2 +1,5 @@
 GET         /:draftId/:index/name                       controllers.register.business.NameController.onPageLoad(index: Int, draftId: String)
 POST        /:draftId/:index/name                       controllers.register.business.NameController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index//has-utr                    controllers.register.business.UtrYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index//has-utr                    controllers.register.business.UtrYesNoController.onSubmit(index: Int, draftId: String)

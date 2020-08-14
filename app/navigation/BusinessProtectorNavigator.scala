@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.business.NamePage
+import pages.register.business.{NamePage, UtrYesNoPage}
 import play.api.mvc.Call
 import controllers.register.business.{routes => brts}
 
@@ -29,11 +29,21 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = routes(draftId)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
-    case NamePage(index) => brts.NameController.onPageLoad(index, draftId)
+    case NamePage(index) => brts.UtrYesNoController.onPageLoad(index, draftId)
+  }
+
+  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case UtrYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        UtrYesNoPage(index),
+        brts.UtrYesNoController.onPageLoad(index, draftId),  // TODO
+        brts.UtrYesNoController.onPageLoad(index, draftId))  // TODO
   }
 
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    simpleNavigation(draftId) andThen (c => (_:ReadableUserAnswers) => c)
+    simpleNavigation(draftId) andThen (c => (_:ReadableUserAnswers) => c) orElse
+      yesNoNavigation(draftId)
   }
 
 }

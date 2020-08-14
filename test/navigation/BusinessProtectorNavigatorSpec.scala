@@ -21,7 +21,7 @@ import models._
 import controllers.register.business.{routes => brts}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business.NamePage
+import pages.register.business.{NamePage, UtrYesNoPage}
 import org.scalacheck.Arbitrary.arbitrary
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -29,14 +29,33 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
   val navigator = new BusinessProtectorNavigator(frontendAppConfig)
   val index = 0
 
-  "Company beneficiary navigator" must {
+  "Business protector navigator" must {
 
     "go to DiscretionYesNo from NamePage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NamePage(index), fakeDraftId, userAnswers)
-            .mustBe(brts.NameController.onPageLoad(index, fakeDraftId))
+            .mustBe(brts.UtrYesNoController.onPageLoad(index, fakeDraftId))
       }
     }
+
+    "go to UtrPage from UtrYesNoPage if Yes" in {
+      forAll(arbitrary[UserAnswers]) {
+        baseAnswers =>
+          val answers = baseAnswers.set(UtrYesNoPage(index), true).success.value
+          navigator.nextPage(UtrYesNoPage(index), fakeDraftId, answers)
+            .mustBe(brts.UtrYesNoController.onPageLoad(index, fakeDraftId))  // TODO
+      }
+    }
+
+    "go to ??? from UtrYesNoPage if No" in {
+      forAll(arbitrary[UserAnswers]) {
+        baseAnswers =>
+          val answers = baseAnswers.set(UtrYesNoPage(index), false).success.value
+          navigator.nextPage(UtrYesNoPage(index), fakeDraftId, answers)
+            .mustBe(brts.UtrYesNoController.onPageLoad(index, fakeDraftId))  // TODO
+      }
+    }
+
   }
 }

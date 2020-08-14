@@ -51,3 +51,8 @@ businessProtector.name.checkYourAnswersLabel = What is the business’s name?
 businessProtector.name.error.required = Enter the business’s name
 businessProtector.name.error.invalidFormat = Business’s name must only include letters a to z, numbers, ampersands (&), apostrophes, forward slashes, full stops, hyphens, round brackets and spaces
 businessProtector.name.error.length = Business’s name cannot be more than 105 characters
+
+businessProtector.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+businessProtector.utrYesNo.title = Do you know the protector’s Unique Taxpayer Reference (UTR)?
+businessProtector.utrYesNo.heading = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+businessProtector.utrYesNo.error.required = Select yes if you know the protector’s Unique Taxpayer Reference (UTR)

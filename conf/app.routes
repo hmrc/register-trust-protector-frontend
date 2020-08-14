@@ -16,3 +16,5 @@ GET        /keep-alive                                  controllers.SessionTimeo
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
+
+->         /business                                    businessProtector.Routes

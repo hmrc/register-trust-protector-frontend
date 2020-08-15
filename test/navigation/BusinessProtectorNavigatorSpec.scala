@@ -21,7 +21,7 @@ import models._
 import controllers.register.business.{routes => brts}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business.{NamePage, UtrYesNoPage}
+import pages.register.business.{AddressYesNoPage, NamePage, UtrYesNoPage}
 import org.scalacheck.Arbitrary.arbitrary
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -31,7 +31,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
   "Business protector navigator" must {
 
-    "go to DiscretionYesNo from NamePage" in {
+    "go to UtrYesNoPage from NamePage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NamePage(index), fakeDraftId, userAnswers)
@@ -48,13 +48,29 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-    "go to ??? from UtrYesNoPage if No" in {
+    "go to AddressYesNoPage from UtrYesNoPage if No" in {
       forAll(arbitrary[UserAnswers]) {
         baseAnswers =>
           val answers = baseAnswers.set(UtrYesNoPage(index), false).success.value
           navigator.nextPage(UtrYesNoPage(index), fakeDraftId, answers)
-            .mustBe(brts.UtrYesNoController.onPageLoad(index, fakeDraftId))  // TODO
+            .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId))
       }
+    }
+
+    "Do you know address page -> Yes -> Is address in UK page" in {
+      val answers = emptyUserAnswers
+        .set(AddressYesNoPage(index), true).success.value
+
+      navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
+        .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+    }
+
+    "Do you know address page -> No -> Start date page" in {
+      val answers = emptyUserAnswers
+        .set(AddressYesNoPage(index), false).success.value
+
+      navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
+        .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId)) // TODO
     }
 
   }

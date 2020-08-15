@@ -21,25 +21,25 @@ import config.annotations.BusinessProtector
 import forms.YesNoFormProvider
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.register.business.{NamePage, UtrYesNoPage}
+import pages.register.business.{AddressYesNoPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.register.business.UtrYesNoView
+import views.html.register.business.AddressYesNoView
 
-class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
+class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val index = 0
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("businessProtector.utrYesNo")
-  private val utrYesNoRoute: String = routes.UtrYesNoController.onPageLoad(index, draftId).url
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("businessProtector.addressYesNo")
+  private val utrYesNoRoute: String = routes.AddressYesNoController.onPageLoad(index, draftId).url
   private val name: String = "Business"
   private val onwardRoute = Call("GET", "/foo")
 
   private val baseAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
-  "UtrYesNo Controller" must {
+  "AddressYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -47,7 +47,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val request = FakeRequest(GET, utrYesNoRoute)
 
-      val view = application.injector.instanceOf[UtrYesNoView]
+      val view = application.injector.instanceOf[AddressYesNoView]
 
       val result = route(application, request).value
 
@@ -61,13 +61,13 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val answers = baseAnswers.set(UtrYesNoPage(index), true).success.value
+      val answers = baseAnswers.set(AddressYesNoPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(GET, utrYesNoRoute)
 
-      val view = application.injector.instanceOf[UtrYesNoView]
+      val view = application.injector.instanceOf[AddressYesNoView]
 
       val result = route(application, request).value
 
@@ -108,7 +108,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[UtrYesNoView]
+      val view = application.injector.instanceOf[AddressYesNoView]
 
       val result = route(application, request).value
 
@@ -117,7 +117,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       contentAsString(result) mustEqual
         view(boundForm, name, index, draftId)(fakeRequest, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

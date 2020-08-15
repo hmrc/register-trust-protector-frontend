@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.behaviours.business
+package pages.business
 
 import pages.behaviours.PageBehaviours
 import pages.register.business.UtrPage

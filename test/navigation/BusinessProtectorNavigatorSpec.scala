@@ -44,7 +44,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         baseAnswers =>
           val answers = baseAnswers.set(UtrYesNoPage(index), true).success.value
           navigator.nextPage(UtrYesNoPage(index), fakeDraftId, answers)
-            .mustBe(brts.UtrYesNoController.onPageLoad(index, fakeDraftId))  // TODO
+            .mustBe(brts.UtrController.onPageLoad(index, fakeDraftId))
       }
     }
 

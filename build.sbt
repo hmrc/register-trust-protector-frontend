@@ -44,7 +44,7 @@ lazy val root = (project in file("."))
     ),
     // concatenate js
     Concat.groups := Seq(
-      "javascripts/registertrusttrusteefrontend-app.js" ->
+      "javascripts/registertrustprotectorfrontend-app.js" ->
         group(Seq(
           "javascripts/show-hide-content.js",
           "javascripts/registertrustprotectorfrontend.js",

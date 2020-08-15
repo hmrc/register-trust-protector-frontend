@@ -14,28 +14,43 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package forms
 
-import forms.YesNoFormProvider
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class YesNoFormProviderSpec extends BooleanFieldBehaviours {
+class UtrFormProviderSpec extends StringFieldBehaviours {
 
-  val messagePrefix = "yesNo"
-  val requiredKey = s"$messagePrefix.error.required"
-  val invalidKey = "error.boolean"
+  val prefix = "businessProtector.utr"
 
-  val form = new YesNoFormProvider().withPrefix(messagePrefix)
+  val requiredKey = s"$prefix.error.required"
+  val lengthKey = s"$prefix.error.length"
+  val maxLength = 10
+
+  val form = new UtrFormProvider().withPrefix(prefix)
 
   ".value" must {
 
     val fieldName = "value"
 
-    behave like booleanField(
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMinLength(
+      form,
+      fieldName,
+      minLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -44,6 +59,4 @@ class YesNoFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }
-

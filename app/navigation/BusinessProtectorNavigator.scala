@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.business.{AddressYesNoPage, NamePage, UtrPage, UtrYesNoPage}
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, UtrPage, UtrYesNoPage}
 import play.api.mvc.Call
 import controllers.register.business.{routes => brts}
 
@@ -44,8 +44,14 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
       yesNoNav(
         ua,
         AddressYesNoPage(index),
-        brts.AddressYesNoController.onPageLoad(index, draftId), // TODO
+        brts.AddressUkYesNoController.onPageLoad(index, draftId),
         brts.AddressYesNoController.onPageLoad(index, draftId))  // TODO
+    case AddressUkYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        AddressUkYesNoPage(index),
+        brts.AddressUkYesNoController.onPageLoad(index, draftId), // TODO
+        brts.AddressUkYesNoController.onPageLoad(index, draftId))  // TODO
   }
 
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {

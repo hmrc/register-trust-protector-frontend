@@ -21,33 +21,33 @@ import config.annotations.BusinessProtector
 import forms.YesNoFormProvider
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.register.business.{AddressYesNoPage, NamePage}
+import pages.register.business.{AddressUkYesNoPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.register.business.AddressYesNoView
+import views.html.register.business.AddressUkYesNoView
 
-class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
+class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val index = 0
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("businessProtector.addressYesNo")
-  private val AddressYesNoRoute: String = routes.AddressYesNoController.onPageLoad(index, draftId).url
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("businessProtector.addressUkYesNo")
+  private val addressUkYesNoRoute: String = routes.AddressUkYesNoController.onPageLoad(index, draftId).url
   private val name: String = "Business"
   private val onwardRoute = Call("GET", "/foo")
 
   private val baseAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
-  "AddressYesNo Controller" must {
+  "AddressUkYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val request = FakeRequest(GET, AddressYesNoRoute)
+      val request = FakeRequest(GET, addressUkYesNoRoute)
 
-      val view = application.injector.instanceOf[AddressYesNoView]
+      val view = application.injector.instanceOf[AddressUkYesNoView]
 
       val result = route(application, request).value
 
@@ -61,13 +61,13 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val answers = baseAnswers.set(AddressYesNoPage(index), true).success.value
+      val answers = baseAnswers.set(AddressUkYesNoPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val request = FakeRequest(GET, AddressYesNoRoute)
+      val request = FakeRequest(GET, addressUkYesNoRoute)
 
-      val view = application.injector.instanceOf[AddressYesNoView]
+      val view = application.injector.instanceOf[AddressUkYesNoView]
 
       val result = route(application, request).value
 
@@ -88,7 +88,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
           ).build()
 
       val request =
-        FakeRequest(POST, AddressYesNoRoute)
+        FakeRequest(POST, addressUkYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -104,11 +104,11 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val request = FakeRequest(POST, AddressYesNoRoute)
+      val request = FakeRequest(POST, addressUkYesNoRoute)
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[AddressYesNoView]
+      val view = application.injector.instanceOf[AddressUkYesNoView]
 
       val result = route(application, request).value
 
@@ -124,7 +124,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, AddressYesNoRoute)
+      val request = FakeRequest(GET, addressUkYesNoRoute)
 
       val result = route(application, request).value
 
@@ -139,7 +139,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, AddressYesNoRoute)
+        FakeRequest(POST, addressUkYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

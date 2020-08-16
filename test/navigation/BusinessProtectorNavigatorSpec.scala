@@ -21,7 +21,7 @@ import models._
 import controllers.register.business.{routes => brts}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business.{AddressYesNoPage, NamePage, UtrYesNoPage}
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, UtrYesNoPage}
 import org.scalacheck.Arbitrary.arbitrary
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -31,7 +31,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
   "Business protector navigator" must {
 
-    "go to UtrYesNoPage from NamePage" in {
+    "NamePage -> UtrYesNoPage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NamePage(index), fakeDraftId, userAnswers)
@@ -39,7 +39,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-    "go to UtrPage from UtrYesNoPage if Yes" in {
+    "UtrYesNoPage -> Yes -> UtrPage" in {
       forAll(arbitrary[UserAnswers]) {
         baseAnswers =>
           val answers = baseAnswers.set(UtrYesNoPage(index), true).success.value
@@ -48,7 +48,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-    "go to AddressYesNoPage from UtrYesNoPage if No" in {
+    "UtrYesNoPage -> No -> AddressYesNoPage" in {
       forAll(arbitrary[UserAnswers]) {
         baseAnswers =>
           val answers = baseAnswers.set(UtrYesNoPage(index), false).success.value
@@ -57,20 +57,36 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-    "Do you know address page -> Yes -> Is address in UK page" in {
+    "AddressYesNoPage -> Yes -> AddressUkYesNoPage" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), true).success.value
 
       navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
-        .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+        .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId))
     }
 
-    "Do you know address page -> No -> Start date page" in {
+    "AddressYesNoPage -> No -> ???" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
         .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+    }
+
+    "AddressUkYesNoPage -> Yes -> UKAddressPage" in {
+      val answers = emptyUserAnswers
+        .set(AddressUkYesNoPage(index), true).success.value
+
+      navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
+        .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+    }
+
+    "AddressUkYesNoPage -> No -> NonUKAddressPage" in {
+      val answers = emptyUserAnswers
+        .set(AddressUkYesNoPage(index), false).success.value
+
+      navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
+        .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId)) // TODO
     }
 
   }

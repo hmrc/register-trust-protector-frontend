@@ -19,35 +19,35 @@ package controllers.register.business
 import config.annotations.BusinessProtector
 import controllers.actions.StandardActionSets
 import controllers.actions.register.business.NameRequiredAction
-import forms.UtrFormProvider
+import forms.UkAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.register.business.UtrPage
-import play.api.data.Form
-import play.api.i18n.I18nSupport
+import pages.register.business.UkAddressPage
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.register.business.UtrView
+import views.html.register.business.UkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UtrController @Inject()(
-                               val controllerComponents: MessagesControllerComponents,
-                               standardActionSets: StandardActionSets,
-                               nameAction: NameRequiredAction,
-                               formProvider: UtrFormProvider,
-                               repository: RegistrationsRepository,
-                               view: UtrView,
-                               @BusinessProtector navigator: Navigator
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UkAddressController @Inject()(
+                                     override val messagesApi: MessagesApi,
+                                     repository: RegistrationsRepository,
+                                     @BusinessProtector navigator: Navigator,
+                                     standardActionSets: StandardActionSets,
+                                     nameAction: NameRequiredAction,
+                                     formProvider: UkAddressFormProvider,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: UkAddressView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withPrefix("businessProtector.utr")
+  val form = formProvider()
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(UtrPage(index)) match {
+      val preparedForm = request.userAnswers.get(UkAddressPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -57,15 +57,16 @@ class UtrController @Inject()(
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
     implicit request =>
+
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
-        value => {
+
+        value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage(index), value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrPage(index), draftId, updatedAnswers))
-        }
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(UkAddressPage(index), draftId, updatedAnswers))
       )
   }
 }

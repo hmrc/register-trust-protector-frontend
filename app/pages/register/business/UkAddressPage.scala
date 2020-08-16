@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package generators
+package pages.register.business
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Arbitrary
+import models.UkAddress
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.{BusinessProtectors, Protectors}
 
-trait ModelGenerators {
+final case class UkAddressPage(index : Int) extends QuestionPage[UkAddress] {
 
-  implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
-    Arbitrary {
-      for {
-        line1 <- arbitrary[String]
-        line2 <- arbitrary[String]
-        line3 <- arbitrary[String]
-        line4 <- arbitrary[String]
-        postcode <- arbitrary[String]
-      } yield UkAddress(line1, line2, Some(line3), Some(line4), postcode)
-    }
+  override def path: JsPath = JsPath \ Protectors \ BusinessProtectors \ index \ toString
 
+  override def toString: String = "ukAddress"
 }

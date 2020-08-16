@@ -7,8 +7,11 @@ POST       /:draftId/:index/has-utr                    controllers.register.busi
 GET        /:draftId/:index/utr                        controllers.register.business.UtrController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/utr                        controllers.register.business.UtrController.onSubmit(index: Int, draftId: String)
 
-GET        /:draftId/:index//has-address               controllers.register.business.AddressYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index//has-address               controllers.register.business.AddressYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:draftId/:index/has-address                controllers.register.business.AddressYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/has-address                controllers.register.business.AddressYesNoController.onSubmit(index: Int, draftId: String)
 
-GET        /:draftId/:index//has-uk-address            controllers.register.business.AddressUkYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index//has-uk-address            controllers.register.business.AddressUkYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:draftId/:index/has-uk-address             controllers.register.business.AddressUkYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/has-uk-address             controllers.register.business.AddressUkYesNoController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/uk-address                 controllers.register.business.UkAddressController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/uk-address                 controllers.register.business.UkAddressController.onSubmit(index: Int, draftId: String)

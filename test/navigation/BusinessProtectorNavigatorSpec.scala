@@ -21,7 +21,7 @@ import models._
 import controllers.register.business.{routes => brts}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, UtrYesNoPage}
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, UkAddressPage, UtrYesNoPage}
 import org.scalacheck.Arbitrary.arbitrary
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -78,7 +78,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .set(AddressUkYesNoPage(index), true).success.value
 
       navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
-        .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+        .mustBe(brts.UkAddressController.onPageLoad(index, fakeDraftId))
     }
 
     "AddressUkYesNoPage -> No -> NonUKAddressPage" in {
@@ -88,6 +88,15 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
         .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId)) // TODO
     }
+
+    "UKAddressPage -> ???" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          navigator.nextPage(UkAddressPage(index), fakeDraftId, userAnswers)
+            .mustBe(brts.UkAddressController.onPageLoad(index, fakeDraftId))
+      }
+    }
+
 
   }
 }

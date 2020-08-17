@@ -16,9 +16,10 @@
 
 package pages.business
 
+import models.{InternationalAddress, UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
-import pages.register.business.UtrYesNoPage
-
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
+import org.scalacheck.Arbitrary.arbitrary
 
 class UtrYesNoPageSpec extends PageBehaviours {
 
@@ -30,26 +31,36 @@ class UtrYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](UtrYesNoPage(0))
 
-    // TODO Clean up
-//    "implement cleanup logic when NO selected" in {
-//      val userAnswers = UserAnswers("id", "utr", LocalDate.now)
-//        .set(UtrPage, "1234567890")
-//        .flatMap(_.set(UtrYesNoPage, false))
-//
-//      userAnswers.get.get(UtrPage) mustNot be(defined)
-//    }
+    "remove relevant Data when UtrYesNoPage is set to true" in {
+      val index = 0
+      forAll(arbitrary[UserAnswers], arbitrary[String]) {
+        (initial, str) =>
+          val answers: UserAnswers = initial.set(AddressYesNoPage(index), true).success.value
+            .set(AddressUkYesNoPage(index), true).success.value
+            .set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str)).success.value
+            .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str)).success.value
 
-//    "implement cleanup logic when YES selected" in {
-//      val userAnswers = UserAnswers("id", "utr", LocalDate.now)
-//        .set(AddressYesNoPage, true)
-//        .flatMap(_.set(AddressUkYesNoPage, false))
-//        .flatMap(_.set(NonUkAddressPage, NonUkAddress("line1", "line2", None,"country")))
-//        .flatMap(_.set(UtrYesNoPage, true))
-//
-//      userAnswers.get.get(AddressYesNoPage) mustNot be(defined)
-//      userAnswers.get.get(AddressUkYesNoPage) mustNot be(defined)
-//      userAnswers.get.get(NonUkAddressPage) mustNot be(defined)
-//    }
+          val result = answers.set(UtrYesNoPage(index), true).success.value
+
+          result.get(AddressYesNoPage(index)) mustNot be(defined)
+          result.get(AddressUkYesNoPage(index)) mustNot be(defined)
+          result.get(UkAddressPage(index)) mustNot be(defined)
+          result.get(NonUkAddressPage(index)) mustNot be(defined)
+      }
+    }
+
+    "remove relevant Data when UtrYesNoPage is set to false" in {
+      val index = 0
+      forAll(arbitrary[UserAnswers], arbitrary[String]) {
+        (initial, str) =>
+          val answers: UserAnswers = initial.set(UtrYesNoPage(index), true).success.value
+            .set(UtrPage(index), "1234567890").success.value
+
+          val result = answers.set(UtrYesNoPage(index), false).success.value
+
+          result.get(UtrPage(index)) mustNot be(defined)
+      }
+    }
 
   }
 }

@@ -16,8 +16,12 @@
 
 package pages.business
 
+import java.time.LocalDate
+
+import models.{InternationalAddress, UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
-import pages.register.business.AddressUkYesNoPage
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NonUkAddressPage, UkAddressPage}
+import org.scalacheck.Arbitrary.arbitrary
 
 
 class AddressUkYesNoPageSpec extends PageBehaviours {
@@ -30,15 +34,34 @@ class AddressUkYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddressUkYesNoPage(0))
 
-    // TODO
-//    "implement cleanup logic when NO selected" in {
-//      val userAnswers = UserAnswers("id", "utr", LocalDate.now)
-//        .set(AddressUkYesNoPage, true)
-//        .flatMap(_.set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")))
-//        .flatMap(_.set(AddressYesNoPage, false))
-//
-//      userAnswers.get.get(AddressUkYesNoPage) mustNot be(defined)
-//      userAnswers.get.get(UkAddressPage) mustNot be(defined)
-//    }
+    "remove UkAddressPage when AddressUkYesNoPage is set to false" in {
+      val index = 0
+      forAll(arbitrary[UserAnswers], arbitrary[String]) {
+        (initial, str) =>
+          val answers: UserAnswers =
+            initial.set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str)).success.value
+              .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str)).success.value
+
+          val result = answers.set(AddressUkYesNoPage(index), false).success.value
+
+          result.get(NonUkAddressPage(index)) must be(defined)
+          result.get(UkAddressPage(index)) mustNot be(defined)
+      }
+    }
+
+    "remove NonUkAddressPage when AddressUkYesNoPage is set to true" in {
+      val index = 0
+      forAll(arbitrary[UserAnswers], arbitrary[String]) {
+        (initial, str) =>
+          val answers: UserAnswers =
+            initial.set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str)).success.value
+              .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str)).success.value
+
+          val result = answers.set(AddressUkYesNoPage(index), true).success.value
+
+          result.get(NonUkAddressPage(index)) mustNot be(defined)
+          result.get(UkAddressPage(index)) must be(defined)
+      }
+    }
   }
 }

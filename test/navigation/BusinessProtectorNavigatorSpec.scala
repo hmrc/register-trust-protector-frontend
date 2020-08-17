@@ -94,7 +94,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .set(AddressUkYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
-        .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))  // TODO
+        .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))
     }
 
     "UKAddressPage -> ???" in {
@@ -109,7 +109,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NonUkAddressPage(index), fakeDraftId, userAnswers)
-            .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))
+            .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId)) // TODO
       }
     }
 

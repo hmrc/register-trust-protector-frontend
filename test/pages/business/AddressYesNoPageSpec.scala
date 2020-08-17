@@ -16,8 +16,10 @@
 
 package pages.business
 
+import models.{InternationalAddress, UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
-import pages.register.business.AddressYesNoPage
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NonUkAddressPage, UkAddressPage}
+import org.scalacheck.Arbitrary.arbitrary
 
 
 class AddressYesNoPageSpec extends PageBehaviours {
@@ -30,15 +32,20 @@ class AddressYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddressYesNoPage(0))
 
-    // TODO
-//    "implement cleanup logic when NO selected" in {
-//      val userAnswers = UserAnswers("id", "utr", LocalDate.now)
-//        .set(AddressUkYesNoPage, true)
-//        .flatMap(_.set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")))
-//        .flatMap(_.set(AddressYesNoPage, false))
-//
-//      userAnswers.get.get(AddressUkYesNoPage) mustNot be(defined)
-//      userAnswers.get.get(UkAddressPage) mustNot be(defined)
-//    }
+    "remove relevant Data when AddressYesNoPage is set to false" in {
+      val index = 0
+      forAll(arbitrary[UserAnswers], arbitrary[String]) {
+        (initial, str) =>
+          val answers: UserAnswers = initial.set(AddressUkYesNoPage(index), true).success.value
+            .set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str)).success.value
+            .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str)).success.value
+
+          val result = answers.set(AddressYesNoPage(index), false).success.value
+
+          result.get(AddressUkYesNoPage(index)) mustNot be(defined)
+          result.get(UkAddressPage(index)) mustNot be(defined)
+          result.get(NonUkAddressPage(index)) mustNot be(defined)
+      }
+    }
   }
 }

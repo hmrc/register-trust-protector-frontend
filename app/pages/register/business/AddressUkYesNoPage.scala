@@ -16,9 +16,12 @@
 
 package pages.register.business
 
+import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.{BusinessProtectors, Protectors}
+
+import scala.util.Try
 
 final case class AddressUkYesNoPage(index : Int) extends QuestionPage[Boolean] {
 
@@ -26,15 +29,14 @@ final case class AddressUkYesNoPage(index : Int) extends QuestionPage[Boolean] {
 
   override def toString: String = "addressUkYesNo"
 
-  // TODO
-//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-//    value match {
-//      case Some(true) =>
-//        userAnswers.remove(NonUkAddressPage)
-//      case Some(false) =>
-//        userAnswers.remove(UkAddressPage)
-//      case _ =>
-//        super.cleanup(value, userAnswers)
-//    }
-//  }
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        userAnswers.remove(NonUkAddressPage(index))
+      case Some(false) =>
+        userAnswers.remove(UkAddressPage(index))
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

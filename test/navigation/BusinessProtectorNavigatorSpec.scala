@@ -21,7 +21,7 @@ import models._
 import controllers.register.business.{routes => brts}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, UkAddressPage, UtrYesNoPage}
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
 import org.scalacheck.Arbitrary.arbitrary
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -57,6 +57,14 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
+    "UtrPage -> ???" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          navigator.nextPage(UtrPage(index), fakeDraftId, userAnswers)
+            .mustBe(brts.UtrController.onPageLoad(index, fakeDraftId)) //TODO
+      }
+    }
+
     "AddressYesNoPage -> Yes -> AddressUkYesNoPage" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), true).success.value
@@ -86,14 +94,22 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .set(AddressUkYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
-        .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+        .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))  // TODO
     }
 
     "UKAddressPage -> ???" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(UkAddressPage(index), fakeDraftId, userAnswers)
-            .mustBe(brts.UkAddressController.onPageLoad(index, fakeDraftId))
+            .mustBe(brts.UkAddressController.onPageLoad(index, fakeDraftId))  // TODO
+      }
+    }
+
+    "NonUKAddressPage -> ???" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          navigator.nextPage(NonUkAddressPage(index), fakeDraftId, userAnswers)
+            .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))
       }
     }
 

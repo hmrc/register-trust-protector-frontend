@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, UkAddressPage, UtrPage, UtrYesNoPage}
+import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
 import play.api.mvc.Call
 import controllers.register.business.{routes => brts}
 
@@ -30,8 +30,9 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
     case NamePage(index) => brts.UtrYesNoController.onPageLoad(index, draftId)
-    case UtrPage(index) => brts.UtrController.onPageLoad(index, draftId)
-    case UkAddressPage(index) => brts.UkAddressController.onPageLoad(index, draftId)
+    case UtrPage(index) => brts.UtrController.onPageLoad(index, draftId)  // TODO
+    case UkAddressPage(index) => brts.UkAddressController.onPageLoad(index, draftId) // TODO
+    case NonUkAddressPage(index) => brts.NonUkAddressController.onPageLoad(index, draftId) // TODO
   }
 
   private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -52,7 +53,7 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
         ua,
         AddressUkYesNoPage(index),
         brts.UkAddressController.onPageLoad(index, draftId),
-        brts.AddressUkYesNoController.onPageLoad(index, draftId))  // TODO
+        brts.NonUkAddressController.onPageLoad(index, draftId))
   }
 
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {

@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.register.business
 
-import config.FrontendAppConfig
-import javax.inject.Inject
-import models.ReadableUserAnswers
-import pages.Page
-import play.api.mvc.Call
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.{BusinessProtectors, Protectors}
 
-class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
+final case class NamePage(index : Int) extends QuestionPage[String] {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
-    route(draftId, config)(page)(userAnswers)
+  override def path: JsPath = JsPath \ Protectors \ BusinessProtectors \ index \ toString
 
-  private def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case _ => _ =>
-      controllers.routes.IndexController.onPageLoad(draftId)
-  }
+  override def toString: String = "name"
 }
-

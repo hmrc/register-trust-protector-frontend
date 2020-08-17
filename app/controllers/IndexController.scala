@@ -55,6 +55,6 @@ class IndexController @Inject()(
     //    } else {
     //      Redirect(controllers.register.beneficiaries.individualBeneficiary.routes.InfoController.onPageLoad(draftId))
     //    }
-    Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+    Redirect(controllers.register.business.routes.NameController.onPageLoad(0, draftId)) //TODO Currently set for testing journey
   }
 }

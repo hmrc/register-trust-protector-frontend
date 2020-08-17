@@ -26,7 +26,7 @@ lazy val root = (project in file("."))
       "models.Mode",
       "controllers.routes._"
     ),
-    PlayKeys.playDefaultPort := 9000,
+    PlayKeys.playDefaultPort := 8840,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LanguageSwitchController",
@@ -44,7 +44,7 @@ lazy val root = (project in file("."))
     ),
     // concatenate js
     Concat.groups := Seq(
-      "javascripts/registertrusttrusteefrontend-app.js" ->
+      "javascripts/registertrustprotectorfrontend-app.js" ->
         group(Seq(
           "javascripts/show-hide-content.js",
           "javascripts/registertrustprotectorfrontend.js",

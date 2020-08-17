@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package navigation
+package viewmodels.addAnother
 
-import base.SpecBase
-import controllers.routes
-import pages._
-import models._
+import models.Status
+import play.api.libs.json.{Reads, _}
 
-class ProtectorNavigatorSpec extends SpecBase {
+case class BusinessProtectorViewModel(name: Option[String], override val status: Status) extends ViewModel {
 
-  val navigator = new ProtectorNavigator(frontendAppConfig)
+  def isComplete: Boolean = name.nonEmpty && (status == Status.Completed)
 
-  "Navigator" when {
-
-    "in Normal mode" must {
-
-      "go to Index from a page that doesn't exist in the route map" in {
-
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, draftId, emptyUserAnswers) mustBe routes.IndexController.onPageLoad(draftId)
-      }
-    }
-  }
 }
+
+object CompanyBeneficiaryViewModel {
+
+  import play.api.libs.functional.syntax._
+
+  implicit val reads : Reads[BusinessProtectorViewModel] = (
+    (__ \ "name").readNullable[String] and
+      (__ \ "status").readWithDefault[Status](Status.InProgress)
+    )(BusinessProtectorViewModel.apply _)
+}
+
+

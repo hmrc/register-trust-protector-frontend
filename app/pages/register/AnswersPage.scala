@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.register
 
-import play.twirl.api.Html
+import pages.Page
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+case object AnswersPage extends Page

@@ -24,7 +24,7 @@ import views.html.register.business.UkAddressView
 
 class UkAddressViewSpec extends UkAddressViewBehaviours {
 
-  val messageKeyPrefix = "businessProtector.ukAddress"
+  val messageKeyPrefix = "site.address.uk"
   val index = 0
   val name: String = "Business"
 

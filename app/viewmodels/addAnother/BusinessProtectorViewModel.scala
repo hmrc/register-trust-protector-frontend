@@ -25,7 +25,7 @@ case class BusinessProtectorViewModel(name: Option[String], override val status:
 
 }
 
-object CompanyBeneficiaryViewModel {
+object BusinessProtectorViewModel {
 
   import play.api.libs.functional.syntax._
 

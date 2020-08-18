@@ -57,11 +57,11 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-    "UtrPage -> ???" in {
+    "UtrPage -> CheckDetailsPage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(UtrPage(index), fakeDraftId, userAnswers)
-            .mustBe(brts.UtrController.onPageLoad(index, fakeDraftId)) //TODO
+            .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -73,12 +73,12 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId))
     }
 
-    "AddressYesNoPage -> No -> ???" in {
+    "AddressYesNoPage -> No -> CheckDetailsPage" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
-        .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId)) // TODO
+        .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
     }
 
     "AddressUkYesNoPage -> Yes -> UKAddressPage" in {
@@ -97,19 +97,19 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))
     }
 
-    "UKAddressPage -> ???" in {
+    "UKAddressPage -> CheckDetailsPage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(UkAddressPage(index), fakeDraftId, userAnswers)
-            .mustBe(brts.UkAddressController.onPageLoad(index, fakeDraftId))  // TODO
+            .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
     }
 
-    "NonUKAddressPage -> ???" in {
+    "NonUKAddressPage -> CheckDetailsPage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NonUkAddressPage(index), fakeDraftId, userAnswers)
-            .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId)) // TODO
+            .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
     }
 

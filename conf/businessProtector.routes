@@ -18,3 +18,6 @@ POST       /:draftId/:index/uk-address                 controllers.register.busi
 
 GET        /:draftId/:index/non-uk-address             controllers.register.business.NonUkAddressController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/non-uk-address             controllers.register.business.NonUkAddressController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/check-details              controllers.register.business.CheckDetailsController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/check-details              controllers.register.business.CheckDetailsController.onSubmit(index: Int, draftId: String)

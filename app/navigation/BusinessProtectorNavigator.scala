@@ -30,9 +30,9 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
     case NamePage(index) => brts.UtrYesNoController.onPageLoad(index, draftId)
-    case UtrPage(index) => brts.UtrController.onPageLoad(index, draftId)  // TODO
-    case UkAddressPage(index) => brts.UkAddressController.onPageLoad(index, draftId) // TODO
-    case NonUkAddressPage(index) => brts.NonUkAddressController.onPageLoad(index, draftId) // TODO
+    case UtrPage(index) => brts.CheckDetailsController.onPageLoad(index, draftId)
+    case UkAddressPage(index) => brts.CheckDetailsController.onPageLoad(index, draftId)
+    case NonUkAddressPage(index) => brts.CheckDetailsController.onPageLoad(index, draftId)
   }
 
   private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -47,7 +47,7 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
         ua,
         AddressYesNoPage(index),
         brts.AddressUkYesNoController.onPageLoad(index, draftId),
-        brts.AddressYesNoController.onPageLoad(index, draftId))  // TODO
+        brts.CheckDetailsController.onPageLoad(index, draftId))
     case AddressUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.actions.register.business
+package controllers.actions.register.individual
 
 import controllers.actions.ProtectorNameRequest
 import javax.inject.Inject
 import models.requests.RegistrationDataRequest
-import pages.register.business.NamePage
+import pages.register.individual.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
@@ -36,7 +36,7 @@ class NameRequiredActionAction(index: Int)(implicit val executionContext: Execut
 
   private def getName[A](request: RegistrationDataRequest[A]): String = {
     request.userAnswers.get(NamePage(index)) match {
-      case Some(name) => name
+      case Some(name) => name.toString
       case _ => request.messages(messagesApi)("protector.name.default")
     }
   }

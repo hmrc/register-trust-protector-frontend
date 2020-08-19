@@ -41,6 +41,7 @@ site.continue = Continue
 site.service_name = register-trust-protector-frontend
 site.textarea.char_limit = (Limit is {0} characters)
 site.save.continue = Save and continue
+site.error = Error:
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -85,6 +86,8 @@ site.address.international.line1 = Address line 1
 site.address.international.line2 = Address line 2
 site.address.international.line3 = Address line 3 (optional)
 site.address.international.country = Country
+
+protector.name.default = the protector
 
 businessProtector.name.title = What is the business’s name?
 businessProtector.name.heading = What is the business’s name?

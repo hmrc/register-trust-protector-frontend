@@ -16,6 +16,8 @@
 
 package config
 
+import java.time.LocalDate
+
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
@@ -23,7 +25,7 @@ import play.api.i18n.Lang
 import play.api.mvc.Call
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class   FrontendAppConfig @Inject() (configuration: Configuration) {
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
@@ -53,6 +55,17 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val createAgentServicesAccountUrl : String = configuration.get[String]("urls.createAgentServicesAccount")
 
   lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
+
+  private def getInt(path: String): Int = configuration.get[Int](path)
+  private def getDate(entry: String): LocalDate =
+    LocalDate.of(
+      getInt(s"dates.$entry.year"),
+      getInt(s"dates.$entry.month"),
+      getInt(s"dates.$entry.day")
+    )
+
+  lazy val minDate: LocalDate = getDate("minimum")
+  lazy val maxPassportDate: LocalDate = getDate("maximumPassport")
 
   lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListNonUK: String = configuration.get[String]("location.canonical.list.nonUK")

@@ -18,3 +18,4 @@ GET        /timeout                                     controllers.SessionTimeo
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 ->         /business                                    businessProtector.Routes
+->         /individual                                  individualProtector.Routes

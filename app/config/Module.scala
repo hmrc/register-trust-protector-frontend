@@ -17,9 +17,9 @@
 package config
 
 import com.google.inject.AbstractModule
-import config.annotations.BusinessProtector
+import config.annotations.{BusinessProtector, IndividualProtector}
 import controllers.actions.register._
-import navigation.{Navigator, BusinessProtectorNavigator}
+import navigation.{BusinessProtectorNavigator, IndividualProtectorNavigator, Navigator}
 import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
 
 class Module extends AbstractModule {
@@ -30,5 +30,6 @@ class Module extends AbstractModule {
     bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
     bind(classOf[Navigator]).annotatedWith(classOf[BusinessProtector]).to(classOf[BusinessProtectorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[IndividualProtector]).to(classOf[IndividualProtectorNavigator]).asEagerSingleton()
   }
 }

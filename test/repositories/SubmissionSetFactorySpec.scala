@@ -17,7 +17,10 @@
 package repositories
 
 import base.SpecBase
-import models.Status.InProgress
+import models.RegistrationSubmission.AnswerSection
+import models.Status.{Completed, InProgress}
+import models.UserAnswers
+import pages.entitystatus.BusinessProtectorStatus
 
 import scala.collection.immutable.Nil
 
@@ -33,155 +36,51 @@ class SubmissionSetFactorySpec extends SpecBase {
         .mustBe(Nil)
     }
 
-//    "return completed answer sections" when {
-//
-//      "only one beneficiary" must {
-//        "have 'Beneficiaries' as section key" when {
-//          "individual beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(IndividualBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Individual beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//
-//          "class of beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(ClassBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Class of beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//
-//          "charity beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(CharityBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Charity beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//
-//          "trust beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(TrustBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Trust beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//
-//          "company beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(CompanyBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Company beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//
-//          "large beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(LargeBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Employment related beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//
-//          "other beneficiary only" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(OtherBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Other beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                )
-//              )
-//          }
-//        }
-//      }
-//
-//      "more than one beneficiary" must {
-//        "have 'Beneficiaries' as section key of the topmost section" when {
-//          "individual beneficiary and class of beneficiary" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(IndividualBeneficiaryStatus(0), Completed).success.value
-//              .set(ClassBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Individual beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                ),
-//                AnswerSection(
-//                  Some("Class of beneficiary 1"),
-//                  Nil,
-//                  None
-//                )
-//              )
-//          }
-//
-//          "class of beneficiary and trust beneficiary" in {
-//            val userAnswers: UserAnswers = emptyUserAnswers
-//              .set(ClassBeneficiaryStatus(0), Completed).success.value
-//              .set(TrustBeneficiaryStatus(0), Completed).success.value
-//
-//            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
-//              List(
-//                AnswerSection(
-//                  Some("Class of beneficiary 1"),
-//                  Nil,
-//                  Some("Beneficiaries")
-//                ),
-//                AnswerSection(
-//                  Some("Trust beneficiary 1"),
-//                  Nil,
-//                  None
-//                )
-//              )
-//          }
-//        }
-//      }
-//
-//    }
+    "return completed answer sections" when {
+
+      "only one protector" must {
+        "have 'Protectors' as section key" when {
+          "business protector only" in {
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(BusinessProtectorStatus(0), Completed).success.value
+
+            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+              List(
+                AnswerSection(
+                  Some("Business protector 1"),
+                  Nil,
+                  Some("Protectors")
+                )
+              )
+          }
+        }
+      }
+
+      "more than one Protector" must {
+        "have 'Protectors' as section key of the topmost section" when {
+          "Business protectors" in {
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(BusinessProtectorStatus(0), Completed).success.value
+              .set(BusinessProtectorStatus(1), Completed).success.value
+
+            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+              List(
+                AnswerSection(
+                  Some("Business protector 1"),
+                  Nil,
+                  Some("Protectors")
+                ),
+                AnswerSection(
+                  Some("Business protector 2"),
+                  Nil,
+                  None
+                )
+              )
+          }
+        }
+      }
+
+    }
   }
 
 }

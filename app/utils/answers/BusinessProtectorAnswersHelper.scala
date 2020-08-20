@@ -28,8 +28,8 @@ class BusinessProtectorAnswersHelper @Inject()(businessProtectorPrintHelper: Bus
   def businessProtectors(userAnswers: UserAnswers,
                            canEdit: Boolean)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
     for {
-      protectoros <- userAnswers.get(BusinessProtectors)
-      indexed = protectoros.zipWithIndex
+      protectors <- userAnswers.get(BusinessProtectors)
+      indexed = protectors.zipWithIndex
     } yield indexed.map {
       case (protectorViewModel, index) =>
         businessProtectorPrintHelper.printSection(userAnswers, protectorViewModel.name.getOrElse(""), index, userAnswers.draftId)

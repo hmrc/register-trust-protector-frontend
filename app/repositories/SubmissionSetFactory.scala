@@ -17,15 +17,20 @@
 package repositories
 
 import javax.inject.Inject
+import mapping.register.ProtectorsMapper
 import models._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import utils.RegistrationProgress
+import utils.answers.BusinessProtectorAnswersHelper
 import viewmodels.{AnswerRow, AnswerSection}
 
-class SubmissionSetFactory @Inject()() {
+class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
+                                     protectorsMapper: ProtectorsMapper,
+                                     businessProtectorAnswerHelper: BusinessProtectorAnswersHelper) {
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
-    val status = Some(Status.InProgress)
+    val status = registrationProgress.protectorsStatus(userAnswers)
     answerSectionsIfCompleted(userAnswers, status)
 
     RegistrationSubmission.DataSet(
@@ -37,49 +42,38 @@ class SubmissionSetFactory @Inject()() {
   }
 
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
-//    if (status.contains(Status.Completed)) {
-//      trusteesMapper.build(userAnswers) match {
-//        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/beneficiary", Json.toJson(assets)))
-//        case _ => List.empty
-//      }
-//    } else {
+    if (status.contains(Status.Completed)) {
+      protectorsMapper.build(userAnswers) match {
+        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/protector", Json.toJson(assets)))
+        case _ => List.empty
+      }
+    } else {
       List.empty
-//    }
+    }
   }
 
   def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
-//    if (status.contains(Status.Completed)) {
-//
-//      val individualBeneficiariesHelper = new IndividualBeneficiaryAnswersHelper(countryOptions)(userAnswers, userAnswers.draftId, false)
-//      val classOfBeneficiariesHelper = new ClassOfBeneficiariesAnswersHelper(countryOptions)(userAnswers, userAnswers.draftId, false)
-//      val charityBeneficiariesHelper = new CharityBeneficiaryAnswersHelper(countryOptions)(userAnswers, userAnswers.draftId, false)
-//      val trustBeneficiariesHelper = new TrustBeneficiaryAnswersHelper(countryOptions)(userAnswers, userAnswers.draftId, false)
-//
-//      val entitySections = List(
-//        individualBeneficiariesHelper.individualBeneficiaries,
-//        classOfBeneficiariesHelper.classOfBeneficiaries,
-//        charityBeneficiariesHelper.charityBeneficiaries,
-//        trustBeneficiariesHelper.trustBeneficiaries,
-//        companyBeneficiaryAnswersHelper.companyBeneficiaries(userAnswers, canEdit = false),
-//        largeBeneficiaryAnswersHelper.employmentRelatedBeneficiaries(userAnswers, canEdit = false),
-//        otherBeneficiaryAnswersHelper.otherBeneficiaries(userAnswers, canEdit = false)
-//      ).flatten.flatten
-//
-//      val updatedFirstSection = AnswerSection(
-//        entitySections.head.headingKey,
-//        entitySections.head.rows,
-//        Some(Messages("answerPage.section.beneficiaries.heading"))
-//      )
-//
-//      val updatedSections = updatedFirstSection :: entitySections.tail
-//
-//      updatedSections.map(convertForSubmission)
-//
-//    } else {
+    if (status.contains(Status.Completed)) {
+
+      val entitySections = List(
+        businessProtectorAnswerHelper.businessProtectors(userAnswers, canEdit = false)
+      ).flatten.flatten
+
+      val updatedFirstSection = AnswerSection(
+        entitySections.head.headingKey,
+        entitySections.head.rows,
+        Some(Messages("answerPage.section.protectors.heading"))
+      )
+
+      val updatedSections = updatedFirstSection :: entitySections.tail
+
+      updatedSections.map(convertForSubmission)
+
+    } else {
       List.empty
-//    }
+    }
   }
 
   private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {

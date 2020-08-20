@@ -16,13 +16,17 @@
 
 package utils.answers
 
-import models.{Address, InternationalAddress, UkAddress, UserAnswers}
+import java.time.format.DateTimeFormatter
+
+import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers}
 import pages.register.business.NamePage
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.countryOptions.CountryOptions
 
 object CheckAnswersFormatters {
+
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
   def utr(answer: String)(implicit messages: Messages): Html = {
     HtmlFormat.escape(answer)
@@ -78,6 +82,17 @@ object CheckAnswersFormatters {
       case a:UkAddress => ukAddress(a)
       case a:InternationalAddress => internationalAddress(a, countryOptions)
     }
+  }
+
+  def passportOrIDCard(passportOrIdCard: PassportOrIdCardDetails, countryOptions: CountryOptions): Html = {
+    val lines =
+      Seq(
+        Some(country(passportOrIdCard.country, countryOptions)),
+        Some(HtmlFormat.escape(passportOrIdCard.cardNumber)),
+        Some(HtmlFormat.escape(passportOrIdCard.expiryDate.format(dateFormatter)))
+      ).flatten
+
+    Html(lines.mkString("<br />"))
   }
 
 }

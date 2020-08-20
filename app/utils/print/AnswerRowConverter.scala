@@ -16,8 +16,10 @@
 
 package utils.print
 
+import java.time.LocalDate
+
 import com.google.inject.Inject
-import models.{Address, UserAnswers}
+import models.{Address, FullName, PassportOrIdCardDetails, UserAnswers}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
@@ -32,6 +34,18 @@ class AnswerRowConverter @Inject()() {
           (implicit messages: Messages): Bound = new Bound(userAnswers, name, countryOptions)
 
   class Bound(userAnswers: UserAnswers, name: String, countryOptions: CountryOptions)(implicit messages: Messages) {
+
+    def nameQuestion(query: Gettable[FullName],
+                     labelKey: String,
+                     changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map {x =>
+        AnswerRow(
+          s"$labelKey.checkYourAnswersLabel",
+          HtmlFormat.escape(x.toString),
+          Some(changeUrl)
+        )
+      }
+    }
 
     def stringQuestion(query: Gettable[String],
                        labelKey: String,
@@ -59,6 +73,18 @@ class AnswerRowConverter @Inject()() {
       }
     }
 
+    def dateQuestion(query: Gettable[LocalDate],
+                     labelKey: String,
+                     changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map {x =>
+        AnswerRow(
+          s"$labelKey.checkYourAnswersLabel",
+          HtmlFormat.escape(x.format(dateFormatter)),
+          Some(changeUrl),
+          name
+        )
+      }
+    }
     def addressQuestion[T <: Address](query: Gettable[T],
                                       labelKey: String,
                                       changeUrl: String)
@@ -67,6 +93,19 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
           addressFormatter(x, countryOptions),
+          Some(changeUrl),
+          name
+        )
+      }
+    }
+
+    def passportDetailsQuestion(query: Gettable[PassportOrIdCardDetails],
+                                labelKey: String,
+                                changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map {x =>
+        AnswerRow(
+          s"$labelKey.checkYourAnswersLabel",
+          passportOrIDCard(x, countryOptions),
           Some(changeUrl),
           name
         )

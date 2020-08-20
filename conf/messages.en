@@ -133,6 +133,7 @@ businessProtector.checkDetails.heading = Check business protector details
 
 answerPage.section.protectors.heading = Protectors
 answerPage.section.businessProtector.subheading = Business protector {0}
+answerPage.section.individualProtector.subheading = Individual protector {0}
 
 individualProtector.name.title = What is the protector’s name?
 individualProtector.name.heading = What is the protector’s name?

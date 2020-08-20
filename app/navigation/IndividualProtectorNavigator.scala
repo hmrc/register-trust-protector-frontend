@@ -16,7 +16,8 @@
 
 package navigation
 
-import controllers.register.individual.{routes => rts}
+import controllers.register.{routes => rts}
+import controllers.register.individual.{routes => irts}
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
@@ -28,13 +29,14 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = routes(draftId)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
-    case NamePage(index) => rts.DateOfBirthYesNoController.onPageLoad(index, draftId)
-    case DateOfBirthPage(index) => rts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
-    case NationalInsuranceNumberPage(index) => rts.NationalInsuranceNumberController.onPageLoad(index, draftId) // TODO
-    case UkAddressPage(index) => rts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case NonUkAddressPage(index) => rts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case PassportDetailsPage(index) => rts.PassportDetailsController.onPageLoad(index, draftId) // TODO
-    case IDCardDetailsPage(index) => rts.IDCardDetailsController.onPageLoad(index, draftId) // TODO
+    case NamePage(index) => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
+    case DateOfBirthPage(index) => irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
+    case NationalInsuranceNumberPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case UkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
+    case NonUkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
+    case PassportDetailsPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case IDCardDetailsPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case CheckDetailsPage => rts.AddAProtectorController.onPageLoad(draftId)
   }
 
   private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -42,38 +44,38 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
       yesNoNav(
         ua,
         DateOfBirthYesNoPage(index),
-        rts.DateOfBirthController.onPageLoad(index, draftId),
-        rts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        irts.DateOfBirthController.onPageLoad(index, draftId),
+        irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
     case NationalInsuranceYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         NationalInsuranceYesNoPage(index),
-        rts.NationalInsuranceNumberController.onPageLoad(index, draftId),
-        rts.AddressYesNoController.onPageLoad(index, draftId))
+        irts.NationalInsuranceNumberController.onPageLoad(index, draftId),
+        irts.AddressYesNoController.onPageLoad(index, draftId))
     case AddressYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         AddressYesNoPage(index),
-        rts.AddressUkYesNoController.onPageLoad(index, draftId),
-        rts.AddressYesNoController.onPageLoad(index, draftId))  // TODO
+        irts.AddressUkYesNoController.onPageLoad(index, draftId),
+        irts.CheckDetailsController.onPageLoad(index, draftId))
     case AddressUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         AddressUkYesNoPage(index),
-        rts.UkAddressController.onPageLoad(index, draftId),
-        rts.NonUkAddressController.onPageLoad(index, draftId))
+        irts.UkAddressController.onPageLoad(index, draftId),
+        irts.NonUkAddressController.onPageLoad(index, draftId))
     case PassportDetailsYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         PassportDetailsYesNoPage(index),
-        rts.PassportDetailsController.onPageLoad(index, draftId),
-        rts.IDCardDetailsYesNoController.onPageLoad(index, draftId))
+        irts.PassportDetailsController.onPageLoad(index, draftId),
+        irts.IDCardDetailsYesNoController.onPageLoad(index, draftId))
     case IDCardDetailsYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         IDCardDetailsYesNoPage(index),
-        rts.IDCardDetailsController.onPageLoad(index, draftId),
-        rts.IDCardDetailsYesNoController.onPageLoad(index, draftId)) // TODO
+        irts.IDCardDetailsController.onPageLoad(index, draftId),
+        irts.CheckDetailsController.onPageLoad(index, draftId))
   }
 
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {

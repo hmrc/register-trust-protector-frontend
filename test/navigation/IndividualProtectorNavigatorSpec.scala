@@ -17,7 +17,8 @@
 package navigation
 
 import base.SpecBase
-import controllers.register.individual.{routes => rts}
+import controllers.register.{routes => rts}
+import controllers.register.individual.{routes => irts}
 import generators.Generators
 import models._
 import org.scalacheck.Arbitrary.arbitrary
@@ -35,7 +36,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NamePage(index), draftId, userAnswers)
-            .mustBe(rts.DateOfBirthYesNoController.onPageLoad(index, draftId))
+            .mustBe(irts.DateOfBirthYesNoController.onPageLoad(index, draftId))
       }
     }
 
@@ -44,7 +45,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         baseAnswers =>
           val answers = baseAnswers.set(DateOfBirthYesNoPage(index), true).success.value
           navigator.nextPage(DateOfBirthYesNoPage(index), draftId, answers)
-            .mustBe(rts.DateOfBirthController.onPageLoad(index, draftId))
+            .mustBe(irts.DateOfBirthController.onPageLoad(index, draftId))
       }
     }
 
@@ -53,7 +54,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         baseAnswers =>
           val answers = baseAnswers.set(DateOfBirthYesNoPage(index), false).success.value
           navigator.nextPage(DateOfBirthYesNoPage(index), draftId, answers)
-            .mustBe(rts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+            .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
       }
     }
 
@@ -61,7 +62,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(DateOfBirthPage(index), draftId, userAnswers)
-            .mustBe(rts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+            .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
       }
     }
 
@@ -70,7 +71,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         baseAnswers =>
           val answers = baseAnswers.set(NationalInsuranceYesNoPage(index), true).success.value
           navigator.nextPage(NationalInsuranceYesNoPage(index), draftId, answers)
-            .mustBe(rts.NationalInsuranceNumberController.onPageLoad(index, draftId))
+            .mustBe(irts.NationalInsuranceNumberController.onPageLoad(index, draftId))
       }
     }
 
@@ -79,15 +80,15 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         baseAnswers =>
           val answers = baseAnswers.set(NationalInsuranceYesNoPage(index), false).success.value
           navigator.nextPage(NationalInsuranceYesNoPage(index), draftId, answers)
-            .mustBe(rts.AddressYesNoController.onPageLoad(index, draftId))
+            .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
       }
     }
 
-    "NationalInsurancePage -> ???" in {
+    "NationalInsurancePage -> CheckDetailsPage" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NationalInsuranceNumberPage(index), draftId, userAnswers)
-            .mustBe(rts.NationalInsuranceNumberController.onPageLoad(index, draftId)) // TODO
+            .mustBe(irts.CheckDetailsController.onPageLoad(index, draftId))
       }
     }
     
@@ -96,15 +97,15 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         .set(AddressYesNoPage(index), true).success.value
 
       navigator.nextPage(AddressYesNoPage(index), draftId, answers)
-        .mustBe(rts.AddressUkYesNoController.onPageLoad(index, draftId))
+        .mustBe(irts.AddressUkYesNoController.onPageLoad(index, draftId))
     }
 
-    "AddressYesNoPage -> No -> ???" in {
+    "AddressYesNoPage -> No -> CheckDetailsPage" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressYesNoPage(index), draftId, answers)
-        .mustBe(rts.AddressYesNoController.onPageLoad(index, draftId)) // TODO
+        .mustBe(irts.CheckDetailsController.onPageLoad(index, draftId))
     }
 
     "AddressUkYesNoPage -> Yes -> UKAddressPage" in {
@@ -112,7 +113,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         .set(AddressUkYesNoPage(index), true).success.value
 
       navigator.nextPage(AddressUkYesNoPage(index), draftId, answers)
-        .mustBe(rts.UkAddressController.onPageLoad(index, draftId))
+        .mustBe(irts.UkAddressController.onPageLoad(index, draftId))
     }
 
     "AddressUkYesNoPage -> No -> NonUKAddressPage" in {
@@ -120,14 +121,14 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         .set(AddressUkYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressUkYesNoPage(index), draftId, answers)
-        .mustBe(rts.NonUkAddressController.onPageLoad(index, draftId))
+        .mustBe(irts.NonUkAddressController.onPageLoad(index, draftId))
     }
 
     "UKAddressPage -> PassportDetailsYesNoController" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(UkAddressPage(index), draftId, userAnswers)
-            .mustBe(rts.PassportDetailsYesNoController.onPageLoad(index, draftId))  // TODO
+            .mustBe(irts.PassportDetailsYesNoController.onPageLoad(index, draftId))
       }
     }
 
@@ -135,7 +136,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NonUkAddressPage(index), draftId, userAnswers)
-            .mustBe(rts.PassportDetailsYesNoController.onPageLoad(index, draftId)) // TODO
+            .mustBe(irts.PassportDetailsYesNoController.onPageLoad(index, draftId))
       }
     }
 
@@ -144,7 +145,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         .set(PassportDetailsYesNoPage(index), true).success.value
 
       navigator.nextPage(PassportDetailsYesNoPage(index), draftId, answers)
-        .mustBe(rts.PassportDetailsController.onPageLoad(index, draftId))
+        .mustBe(irts.PassportDetailsController.onPageLoad(index, draftId))
     }
 
     "PassportDetailsYesNoPage -> No -> IDCardDetailsYesNoPage" in {
@@ -152,7 +153,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         .set(PassportDetailsYesNoPage(index), false).success.value
 
       navigator.nextPage(PassportDetailsYesNoPage(index), draftId, answers)
-        .mustBe(rts.IDCardDetailsYesNoController.onPageLoad(index, draftId))
+        .mustBe(irts.IDCardDetailsYesNoController.onPageLoad(index, draftId))
     }
 
     "IDCardDetailsYesNoPage -> Yes -> IDCardDetailsPage" in {
@@ -160,16 +161,23 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         .set(IDCardDetailsYesNoPage(index), true).success.value
 
       navigator.nextPage(IDCardDetailsYesNoPage(index), draftId, answers)
-        .mustBe(rts.IDCardDetailsController.onPageLoad(index, draftId))
+        .mustBe(irts.IDCardDetailsController.onPageLoad(index, draftId))
     }
 
-    "IDCardDetailsYesNoPage -> No -> ???" in {
+    "IDCardDetailsYesNoPage -> No -> CheckDetailsPage" in {
       val answers = emptyUserAnswers
         .set(IDCardDetailsYesNoPage(index), false).success.value
 
       navigator.nextPage(IDCardDetailsYesNoPage(index), draftId, answers)
-        .mustBe(rts.IDCardDetailsYesNoController.onPageLoad(index, draftId)) // TODO
+        .mustBe(irts.CheckDetailsController.onPageLoad(index, draftId))
     }
 
+    "CheckDetailsPage -> AddAProtectorPage" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          navigator.nextPage(CheckDetailsPage, draftId, userAnswers)
+            .mustBe(rts.AddAProtectorController.onPageLoad(draftId))
+      }
+    }
   }
 }

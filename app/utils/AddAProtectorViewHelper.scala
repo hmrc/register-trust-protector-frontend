@@ -19,9 +19,10 @@ package utils
 import models.UserAnswers
 import play.api.i18n.Messages
 import viewmodels.{AddRow, AddToRows}
-import viewmodels.addAnother.BusinessProtectorViewModel
+import viewmodels.addAnother.{BusinessProtectorViewModel, IndividualProtectorViewModel}
 import controllers.register.business.{routes => businessRts}
-import sections.BusinessProtectors
+import controllers.register.individual.{routes => individualRts}
+import sections.{BusinessProtectors, IndividualProtectors}
 
 class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implicit messages: Messages) {
 
@@ -58,10 +59,36 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
     InProgressComplete(inProgress = businessProtectorsInProgress, complete = businessProtectorsComplete)
   }
 
+  private def parseIndividualProtector(individualProtector : (IndividualProtectorViewModel, Int)) : AddRow = {
+
+    val vm = individualProtector._1
+    val index = individualProtector._2
+
+    AddRow(
+      name = parseName(vm.name.map(_.toString)),
+      typeLabel = messages("entities.protector.individual"),
+      changeUrl = if (vm.isComplete) {
+        individualRts.CheckDetailsController.onPageLoad(index, draftId).url
+      } else {
+        individualRts.NameController.onPageLoad(index, draftId).url
+      },
+      removeUrl = individualRts.CheckDetailsController.onPageLoad(index, draftId).url // TODO individualRts.RemoveIndividualBeneficiaryController.onPageLoad(index, draftId).url
+    )
+  }
+
+
+  private def individualProtectors = {
+    val individualProtectors = userAnswers.get(IndividualProtectors).toList.flatten.zipWithIndex
+    val individualProtectorsComplete = individualProtectors.filter(_._1.isComplete).map(parseIndividualProtector)
+    val individualProtectorsInProgress = individualProtectors.filterNot(_._1.isComplete).map(parseIndividualProtector)
+
+    InProgressComplete(inProgress = individualProtectorsInProgress, complete = individualProtectorsComplete)
+  }
+  
   def rows : AddToRows =
     AddToRows(
-      inProgress = businessProtectors.inProgress,
-      complete = businessProtectors.complete
+      inProgress = businessProtectors.inProgress ++ individualProtectors.inProgress,
+      complete = businessProtectors.complete ++ individualProtectors.complete
     )
 
 }

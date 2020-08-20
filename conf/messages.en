@@ -48,6 +48,7 @@ site.complete = Completed
 
 entities.no.name.added = No name added
 entities.protector.business = Business protector
+entities.protector.individual = Individual protector
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account

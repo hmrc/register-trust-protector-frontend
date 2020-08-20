@@ -16,6 +16,8 @@
 
 package viewmodels
 
-import play.twirl.api.Html
+case class AddToRows(inProgress : List[AddRow], complete: List[AddRow]) {
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+  def count : Int = inProgress.size + complete.size
+
+}

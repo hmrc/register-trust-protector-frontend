@@ -19,3 +19,13 @@ GET        /feature-not-available                       controllers.FeatureNotAv
 
 ->         /business                                    businessProtector.Routes
 ->         /individual                                  individualProtector.Routes
+
+GET        /:draftId/add                                controllers.register.AddAProtectorController.onPageLoad(draftId: String)
+POST       /:draftId/add                                controllers.register.AddAProtectorController.submitOne(draftId: String)
+POST       /:draftId/add-another                        controllers.register.AddAProtectorController.submitAnother(draftId: String)
+POST       /complete                                    controllers.register.AddAProtectorController.submitComplete(draftId: String)
+
+GET        /:draftId/individual-or-business             controllers.register.IndividualOrBusinessController.onPageLoad(draftId: String)
+POST       /:draftId/individual-or-business             controllers.register.IndividualOrBusinessController.onSubmit(draftId: String)
+
+GET        /:draftId/information-you-need               controllers.register.InfoController.onPageLoad(draftId: String)

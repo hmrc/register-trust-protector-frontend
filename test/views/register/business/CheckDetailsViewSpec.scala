@@ -14,8 +14,25 @@
  * limitations under the License.
  */
 
-package viewmodels
+package views.register.business
 
-import play.twirl.api.Html
+import viewmodels.AnswerSection
+import views.behaviours.ViewBehaviours
+import views.html.register.business.CheckDetailsView
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+class CheckDetailsViewSpec extends ViewBehaviours {
+
+  val index = 0
+  val messageKeyPrefix = "businessProtector.checkDetails"
+
+  "CheckAnswers view" must {
+
+    val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
+
+    val applyView = view.apply(AnswerSection(None, Seq()), index, fakeDraftId)(fakeRequest, messages)
+
+    behave like normalPage(applyView, messageKeyPrefix)
+
+    behave like pageWithBackLink(applyView)
+  }
+}

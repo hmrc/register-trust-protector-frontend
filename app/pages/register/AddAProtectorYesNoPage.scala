@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.register
 
-import play.twirl.api.Html
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.Protectors
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+case object AddAProtectorYesNoPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ Protectors \ toString
+
+  override def toString: String = "addAProtectorYesNo"
+}

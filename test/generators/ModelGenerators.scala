@@ -17,8 +17,9 @@
 package generators
 
 import models._
+import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
@@ -38,6 +39,16 @@ trait ModelGenerators {
       for {
         str <- arbitrary[String]
       } yield InternationalAddress(str,str,Some(str),str)
+    }
+
+  implicit lazy val arbitraryAddAProtector: Arbitrary[AddAProtector] =
+    Arbitrary {
+      Gen.oneOf(AddAProtector.values)
+    }
+
+  implicit lazy val arbitraryIndividualOrBusiness: Arbitrary[IndividualOrBusinessToAdd] =
+    Arbitrary {
+      Gen.oneOf(IndividualOrBusinessToAdd.values)
     }
 
 }

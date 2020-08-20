@@ -20,17 +20,68 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.AnswersPage
+import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, AnswersPage, IndividualOrBusinessPage}
 import play.api.mvc.Call
+import controllers.register.{routes => rts}
 import controllers.register.business.{routes => brts}
+import models.register.pages.AddAProtector
+import models.register.pages.IndividualOrBusinessToAdd.{Business, Individual}
+import sections.{BusinessProtectors, IndividualProtectors}
 
 class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
-    route(draftId, config)(page)(userAnswers)
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = route(draftId, config)(page)(userAnswers)
 
   private def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case AnswersPage => _ => brts.CheckDetailsController.onPageLoad(0, draftId) // TODO controllers.register.beneficiaries.routes.AddABeneficiaryController.onPageLoad(draftId)
+    case AnswersPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
+    case AddAProtectorPage => addProtectorRoute(draftId, config)
+    case AddAProtectorYesNoPage => addAProtectorYesNoRoute(draftId, config)
+    case IndividualOrBusinessPage => indiviudalOrBusinessRoute(draftId)
+
   }
+
+  private def protectorsCompletedRoute(draftId: String, config: FrontendAppConfig): Call = {
+    Call("GET", config.registrationProgressUrl(draftId))
+  }
+
+  private def indiviudalOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
+    userAnswers.get(IndividualOrBusinessPage) match {
+      case Some(Individual) => routeToIndividualProtectorIndex(userAnswers, draftId)
+      case Some(Business) => routeToBusinessProtectrIndex(userAnswers, draftId)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+
+  private def routeToIndividualProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
+    val individualProtectors = userAnswers.get(IndividualProtectors).getOrElse(List.empty)
+    rts.IndividualOrBusinessController.onPageLoad(draftId)  // TODO
+  }
+
+  private def routeToBusinessProtectrIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
+    val businessProtectors = userAnswers.get(BusinessProtectors).getOrElse(List.empty)
+    brts.NameController.onPageLoad(businessProtectors.size, draftId)
+  }
+
+  private def addProtectorRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {
+    val addAnother = answers.get(AddAProtectorPage)
+    addAnother match {
+      case Some(AddAProtector.YesNow) =>
+        controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
+      case Some(AddAProtector.YesLater) => protectorsCompletedRoute(draftId, config)
+      case Some(AddAProtector.NoComplete) => protectorsCompletedRoute(draftId, config)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def addAProtectorYesNoRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {
+    val add = answers.get(AddAProtectorYesNoPage)
+
+    add match {
+      case Some(true) =>
+        controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
+      case Some(false) => protectorsCompletedRoute(draftId, config)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
 }
 

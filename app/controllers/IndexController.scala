@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.register.RegistrationIdentifierAction
+import controllers.register.AnyProtectors
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.i18n.I18nSupport
@@ -24,6 +25,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import controllers.register.{routes => rts}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +33,7 @@ class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction
-                               ) extends FrontendBaseController with I18nSupport {
+                               ) extends FrontendBaseController with I18nSupport with AnyProtectors {
 
   implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
@@ -50,11 +52,10 @@ class IndexController @Inject()(
   }
 
   private def redirect(userAnswers: UserAnswers, draftId: String) = {
-    //    if (isAnyBeneficiaryAdded(userAnswers)) {
-    //      Redirect(controllers.register.beneficiaries.routes.AddABeneficiaryController.onPageLoad(draftId))
-    //    } else {
-    //      Redirect(controllers.register.beneficiaries.individualBeneficiary.routes.InfoController.onPageLoad(draftId))
-    //    }
-    Redirect(controllers.register.business.routes.NameController.onPageLoad(0, draftId)) //TODO Currently set for testing journey
+    if (isAnyProtectorAdded(userAnswers)) {
+      Redirect(rts.AddAProtectorController.onPageLoad(draftId))
+    } else {
+      Redirect(rts.InfoController.onPageLoad(draftId))
+    }
   }
 }

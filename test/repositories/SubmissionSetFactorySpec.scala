@@ -27,7 +27,7 @@ class SubmissionSetFactorySpec extends SpecBase {
 
     val factory = injector.instanceOf[SubmissionSetFactory]
 
-    "return no answer sections if no completed beneficiaries" in {
+    "return no answer sections if no completed protectors" in {
 
       factory.answerSectionsIfCompleted(emptyUserAnswers, Some(InProgress))
         .mustBe(Nil)

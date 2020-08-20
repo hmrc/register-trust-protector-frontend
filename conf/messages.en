@@ -33,7 +33,7 @@ session_expired.guidance = The details you have given have been deleted because 
 site.back = Back
 site.delete = Remove
 site.edit = Change
-site.hidden-delete = Delete {0}
+site.hidden-delete = Remove {0}
 site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
@@ -41,6 +41,11 @@ site.continue = Continue
 site.service_name = register-trust-protector-frontend
 site.textarea.char_limit = (Limit is {0} characters)
 site.save.continue = Save and continue
+site.inprogress = In Progress
+site.complete = Completed
+
+entities.no.name.added = No name added
+entities.protector.business = Business protector
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -125,3 +130,43 @@ businessProtector.checkDetails.heading = Check business protector details
 answerPage.section.protectors.heading = Protectors
 answerPage.section.businessProtector.subheading = Business protector {0}
 
+addAProtector.heading = Add a protector
+addAProtector.title = Add a protector
+addAProtector.singular.heading = Add a protector
+addAProtector.singular.title = Add a protector
+addAProtector.count.heading = You have added {0} protectors
+addAProtector.count.title = You have added {0} protectors
+addAProtector.additional-content = Do you need to add another protector?
+addAProtector.add-them-now = Yes, I want to add them now
+addAProtector.add-them-later = Yes, I want to add them later
+addAProtector.no-complete = No, I have added all of the protectors
+addAProtector.error.required = Select yes if you want to add another protector
+
+addAProtector.maxedOut = You cannot add another protector as you have entered a maximum of 25.
+addAProtector.maxedOut.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
+addAProtector.maxedOut.all = You cannot enter another protector as you have entered a maximum of 50.
+addAProtector.maxedOut.all.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
+
+addAProtectorYesNo.title = Do you want to add a protector?
+addAProtectorYesNo.heading = Do you want to add a protector?
+addAProtectorYesNo.error.required = Select yes if you want to add a protector
+
+protectorsInfo.title = Protector: information you’ll need to provide
+protectorsInfo.heading = Protector: information you’ll need to provide
+protectorsInfo.caption = Protectors
+protectorsInfo.subheading1 = Individual protector
+protectorsInfo.paragraph1 = For protectors named in the trust deed, tell us their name. If you know more details, tell us one of the following:
+protectorsInfo.bulletpoint1 = National Insurance number
+protectorsInfo.bulletpoint2 = address
+protectorsInfo.bulletpoint3 = passport or ID card details
+protectorsInfo.subheading2 = Business protector
+protectorsInfo.paragraph2 = If the protector is a business, tell us the business's name, and one of the following:
+protectorsInfo.bulletpoint4 = Unique Taxpayer Reference (UTR)
+protectorsInfo.bulletpoint5 = address
+
+individualOrBusiness.title = Is the protector an individual or a business?
+individualOrBusiness.heading = Is the protector an individual or a business?
+individualOrBusiness.checkYourAnswersLabel = Is the protector an individual or a business?
+individualOrBusiness.error.required = Select the type of protector you need to add
+individualOrBusiness.individual = Individual
+individualOrBusiness.business = Business

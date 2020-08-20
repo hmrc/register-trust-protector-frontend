@@ -24,7 +24,6 @@ import javax.inject.Inject
 import models.Status.Completed
 import navigation.Navigator
 import pages.entitystatus.IndividualProtectorStatus
-import pages.register.AnswersPage
 import pages.register.individual.CheckDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

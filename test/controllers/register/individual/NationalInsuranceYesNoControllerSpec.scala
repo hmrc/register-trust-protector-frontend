@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
-import pages.register.individual.{NationalInsuranceYesNoPage, NamePage}
+import pages.register.individual.{NamePage, NationalInsuranceYesNoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

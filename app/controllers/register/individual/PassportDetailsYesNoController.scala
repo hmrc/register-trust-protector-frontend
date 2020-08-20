@@ -19,11 +19,10 @@ package controllers.register.individual
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
-import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.register.individual.{NamePage, PassportDetailsYesNoPage}
+import pages.register.individual.PassportDetailsYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

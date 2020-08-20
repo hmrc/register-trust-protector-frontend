@@ -19,8 +19,7 @@ package controllers.register.individual
 import base.SpecBase
 import config.annotations.IndividualProtector
 import forms.NameFormProvider
-import models.ReadOnlyUserAnswers
-import models.FullName
+import models.{FullName, ReadOnlyUserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when

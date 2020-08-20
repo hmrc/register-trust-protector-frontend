@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
-import pages.register.individual.{PassportDetailsYesNoPage, NamePage}
+import pages.register.individual.{NamePage, PassportDetailsYesNoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

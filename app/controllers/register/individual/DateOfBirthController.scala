@@ -21,11 +21,10 @@ import java.time.LocalDate
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
-import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.register.individual.{DateOfBirthPage, NamePage}
+import pages.register.individual.DateOfBirthPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

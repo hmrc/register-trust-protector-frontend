@@ -52,7 +52,7 @@ entities.protector.business = Business protector
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-site.address.uk.title = What is the protector's address?
+site.address.uk.title = What is the protector’s address?
 site.address.uk.heading = What is {0}’s address?
 site.address.uk.line1 = Address line 1
 site.address.uk.line2 = Address line 2
@@ -187,10 +187,6 @@ individualProtector.addressUkYesNo.checkYourAnswersLabel = Is {0}’s address in
 individualProtector.addressUkYesNo.title = Is the protector’s address in the UK?
 individualProtector.addressUkYesNo.heading = Is {0}’s address in the UK?
 individualProtector.addressUkYesNo.error.required = Select yes if the protector’s address is in the UK
-
-individualProtector.ukAddress.checkYourAnswersLabel = What is {0}’s address?
-individualProtector.ukAddress.title = What is the protector’s address?
-individualProtector.ukAddress.heading = What is {0}’s address?
 
 individualProtector.passportDetailsYesNo.checkYourAnswersLabel = Do you know {0}’s passport details?
 individualProtector.passportDetailsYesNo.title = Do you know the protector’s passport details?

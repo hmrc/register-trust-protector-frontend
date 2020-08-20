@@ -24,6 +24,7 @@ import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, AnswersPage, I
 import play.api.mvc.Call
 import controllers.register.{routes => rts}
 import controllers.register.business.{routes => brts}
+import controllers.register.individual.{routes => irts}
 import models.register.pages.AddAProtector
 import models.register.pages.IndividualOrBusinessToAdd.{Business, Individual}
 import sections.{BusinessProtectors, IndividualProtectors}
@@ -36,7 +37,7 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
     case AnswersPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
     case AddAProtectorPage => addProtectorRoute(draftId, config)
     case AddAProtectorYesNoPage => addAProtectorYesNoRoute(draftId, config)
-    case IndividualOrBusinessPage => indiviudalOrBusinessRoute(draftId)
+    case IndividualOrBusinessPage => individualOrBusinessRoute(draftId)
 
   }
 
@@ -44,19 +45,19 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
     Call("GET", config.registrationProgressUrl(draftId))
   }
 
-  private def indiviudalOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
+  private def individualOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
     userAnswers.get(IndividualOrBusinessPage) match {
       case Some(Individual) => routeToIndividualProtectorIndex(userAnswers, draftId)
-      case Some(Business) => routeToBusinessProtectrIndex(userAnswers, draftId)
+      case Some(Business) => routeToBusinessProtectorIndex(userAnswers, draftId)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
 
   private def routeToIndividualProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
     val individualProtectors = userAnswers.get(IndividualProtectors).getOrElse(List.empty)
-    rts.IndividualOrBusinessController.onPageLoad(draftId)  // TODO
+    irts.NameController.onPageLoad(individualProtectors.size, draftId)
   }
 
-  private def routeToBusinessProtectrIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
+  private def routeToBusinessProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
     val businessProtectors = userAnswers.get(BusinessProtectors).getOrElse(List.empty)
     brts.NameController.onPageLoad(businessProtectors.size, draftId)
   }

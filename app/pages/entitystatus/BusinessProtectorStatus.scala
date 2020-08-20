@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.entitystatus
 
-import play.twirl.api.Html
+import models.Status
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.{BusinessProtectors, Protectors}
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+final case class BusinessProtectorStatus(index : Int) extends QuestionPage[Status] {
+
+  override def path: JsPath = JsPath \ Protectors \ BusinessProtectors \ index \ toString
+
+  override def toString: String = "status"
+}

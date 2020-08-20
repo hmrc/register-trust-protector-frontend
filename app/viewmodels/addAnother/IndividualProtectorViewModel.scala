@@ -14,8 +14,27 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.addAnother
 
-import play.twirl.api.Html
+import models.Status
+import play.api.libs.json.{Reads, __}
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+case class IndividualProtectorViewModel(name: Option[String], override val status: Status) extends ViewModel {
+
+  def isComplete: Boolean = name.nonEmpty && (status == Status.Completed)
+
+}
+
+object IndividualProtectorViewModel {
+
+  import play.api.libs.functional.syntax._
+
+  implicit val reads : Reads[IndividualProtectorViewModel] = (
+    (__ \ "name").readNullable[String] and
+      (__ \ "status").readWithDefault[Status](Status.InProgress)
+    )(IndividualProtectorViewModel.apply _)
+}
+
+
+
+

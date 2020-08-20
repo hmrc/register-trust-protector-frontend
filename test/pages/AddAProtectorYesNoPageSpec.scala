@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages
 
-import play.twirl.api.Html
+import pages.behaviours.PageBehaviours
+import pages.register.AddAProtectorYesNoPage
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+class AddAProtectorYesNoPageSpec extends PageBehaviours {
+
+  "AddAProtectorYesNoPage" must {
+
+    beRetrievable[Boolean](AddAProtectorYesNoPage)
+
+    beSettable[Boolean](AddAProtectorYesNoPage)
+
+    beRemovable[Boolean](AddAProtectorYesNoPage)
+  }
+}

@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages
 
-import play.twirl.api.Html
+import models.register.pages.IndividualOrBusinessToAdd
+import pages.behaviours.PageBehaviours
+import pages.register.IndividualOrBusinessPage
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+class IndividualOrBusinessPageSpec extends PageBehaviours {
+
+  "IndividualOrBusinessPage" must {
+
+    beRetrievable[IndividualOrBusinessToAdd](IndividualOrBusinessPage)
+
+    beSettable[IndividualOrBusinessToAdd](IndividualOrBusinessPage)
+
+    beRemovable[IndividualOrBusinessToAdd](IndividualOrBusinessPage)
+  }
+}

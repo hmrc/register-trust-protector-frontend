@@ -14,40 +14,33 @@
  * limitations under the License.
  */
 
-package views.register.business
+package views.register
 
-import forms.UkAddressFormProvider
+import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.UkAddressViewBehaviours
-import views.html.register.business.UkAddressView
+import views.behaviours.YesNoViewBehaviours
+import views.html.register.AddAProtectorYesNoView
 
-class UkAddressViewSpec extends UkAddressViewBehaviours {
+class AddAProtectorYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "site.address.uk"
-  val index = 0
-  val name: String = "Business"
+  val messageKeyPrefix = "addAProtectorYesNo"
 
-  override val form = new UkAddressFormProvider()()
+  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  "UkAddressView" must {
+  "addAProtectorYesNo view" must {
 
-    val view = viewFor[UkAddressView](Some(emptyUserAnswers))
+    val view = viewFor[AddAProtectorYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name, index, fakeDraftId)(fakeRequest, messages)
+      view.apply(form, fakeDraftId)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+    behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like ukAddressPage(
-      applyView,
-      Some(messageKeyPrefix),
-      name
-    )
+    behave like yesNoPage(form, applyView, messageKeyPrefix)
 
     behave like pageWithASubmitButton(applyView(form))
-
   }
 }

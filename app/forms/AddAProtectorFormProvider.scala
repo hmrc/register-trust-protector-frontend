@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms
 
-import play.twirl.api.Html
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.register.pages.AddAProtector
+import play.api.data.Form
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+class AddAProtectorFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[AddAProtector] =
+    Form(
+      "value" -> enumerable[AddAProtector]("addAProtector.error.required")
+    )
+}

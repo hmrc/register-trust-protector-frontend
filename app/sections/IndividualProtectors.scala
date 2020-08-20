@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package viewmodels
+package sections
 
-import play.twirl.api.Html
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import viewmodels.addAnother.IndividualProtectorViewModel
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+case object IndividualProtectors extends QuestionPage[List[IndividualProtectorViewModel]] {
+
+  override def path: JsPath = JsPath \ Protectors \ toString
+
+  override def toString: String = "individualProtectors"
+
+}

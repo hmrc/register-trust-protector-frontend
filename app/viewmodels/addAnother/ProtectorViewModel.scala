@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.addAnother
 
-import play.twirl.api.Html
+import models.Status
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+import scala.language.implicitConversions
+
+trait ProtectorViewModel {
+
+  val status : Status
+
+}
+

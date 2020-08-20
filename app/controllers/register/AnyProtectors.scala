@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-package viewmodels
+package controllers.register
 
-import play.twirl.api.Html
+import models.{Protectors, ReadableUserAnswers}
+import sections.{BusinessProtectors, IndividualProtectors}
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+trait AnyProtectors {
+
+  def protectors(userAnswers: ReadableUserAnswers): Protectors = Protectors(
+    userAnswers.get(IndividualProtectors).getOrElse(List.empty),
+    userAnswers.get(BusinessProtectors).getOrElse(List.empty)
+  )
+
+  def isAnyProtectorAdded(userAnswers: ReadableUserAnswers): Boolean = {
+    val protectorLists: Protectors = protectors(userAnswers)
+
+    protectorLists.individuals.nonEmpty ||
+      protectorLists.businesses.nonEmpty
+
+  }
+}

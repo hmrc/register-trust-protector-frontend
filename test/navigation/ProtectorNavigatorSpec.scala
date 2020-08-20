@@ -28,6 +28,7 @@ import pages.register._
 import pages.register.business.NamePage
 import play.api.mvc.Call
 import controllers.register.business.{routes => brts}
+import controllers.register.individual.{routes => irts}
 
 class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -132,6 +133,15 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
     }
 
+    "go to NamePage from IndividualOrBusinessPage when Individual option selected" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val answers = userAnswers.set(IndividualOrBusinessPage, value = IndividualOrBusinessToAdd.Individual).success.value
+
+          navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
+            .mustBe(irts.NameController.onPageLoad(0, fakeDraftId))
+      }
+    }
   }
 
 

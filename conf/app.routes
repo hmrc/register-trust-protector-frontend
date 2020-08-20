@@ -18,6 +18,7 @@ GET        /timeout                                     controllers.SessionTimeo
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 ->         /business                                    businessProtector.Routes
+->         /individual                                  individualProtector.Routes
 
 GET        /:draftId/add                                controllers.register.AddAProtectorController.onPageLoad(draftId: String)
 POST       /:draftId/add                                controllers.register.AddAProtectorController.submitOne(draftId: String)

@@ -41,15 +41,6 @@ class ProtectorsMapperSpec extends SpecBase with MustMatchers
 
     "when user answers is not empty" must {
 
-      "must not be able to create ProtectorsType when there is incomplete data" in {
-        val index = 0
-
-        val userAnswers = emptyUserAnswers
-          .set(business.NamePage(index), "Business").success.value
-
-        protectorsMapper.build(userAnswers) mustNot be(defined)
-      }
-
       "must be able to create ProtectorsType when there is a business protector" in {
 
         val index = 0

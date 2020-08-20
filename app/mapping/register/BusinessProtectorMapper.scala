@@ -44,7 +44,7 @@ class BusinessProtectorMapper @Inject()(addressMapper: AddressMapper) extends Ma
   private def buildIdentification(protector: BusinessProtector): Option[IdentificationOrgType] = {
     (protector.utr, protector.ukAddress, protector.internationalAddress) match {
       case (None, None, None) => None
-      case (utr,_ , _) => Some(IdentificationOrgType(utr, None))
+      case (Some(utr),_ , _) => Some(IdentificationOrgType(Some(utr), None))
       case (None, Some(address), _) => Some(IdentificationOrgType(None, addressMapper.build(address)))
       case (None, _, Some(address)) => Some(IdentificationOrgType(None, addressMapper.build(address)))
     }

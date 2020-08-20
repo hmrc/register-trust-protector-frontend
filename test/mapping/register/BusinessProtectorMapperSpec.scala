@@ -140,19 +140,12 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
                 IdentificationOrgType(
                   utr = None,
                   address = Some(
-                    AddressType("line1", "line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
+                    AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
                   ))
               ))
           )
       }
 
-      "must not be able to create ProtectorCompany when incomplete data " in {
-        val userAnswers =
-          emptyUserAnswers
-            .set(NamePage(index0), "Business Name").success.value
-
-        mapper.build(userAnswers) mustNot be(defined)
-      }
     }
   }
 }

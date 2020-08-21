@@ -21,18 +21,19 @@ import mapping.Mapping
 import models.UserAnswers
 import play.api.Logger
 
-class ProtectorsMapper @Inject()(businessProtectorMapper: BusinessProtectorMapper) extends Mapping[ProtectorsType] {
+class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorMapper,
+                                 businessProtectorMapper: BusinessProtectorMapper) extends Mapping[ProtectorsType] {
 
   override def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
 
     val business = businessProtectorMapper.build(userAnswers)
-
-    val all = Seq(business).flatten.flatten
+    val individual = individualProtectorMapper.build(userAnswers)
+    val all= Seq(individual, business).flatten.flatten
 
     if (all.nonEmpty) {
       Some(
         ProtectorsType(
-          protector = None,
+          protector = individual,
           protectorCompany = business
         )
       )

@@ -22,11 +22,12 @@ import models._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.RegistrationProgress
-import utils.answers.BusinessProtectorAnswersHelper
+import utils.answers.{BusinessProtectorAnswersHelper, IndividualProtectorAnswersHelper}
 import viewmodels.{AnswerRow, AnswerSection}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      protectorsMapper: ProtectorsMapper,
+                                     individualProtectorAnswersHelper: IndividualProtectorAnswersHelper,
                                      businessProtectorAnswerHelper: BusinessProtectorAnswersHelper) {
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
@@ -58,6 +59,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     if (status.contains(Status.Completed)) {
 
       val entitySections = List(
+        individualProtectorAnswersHelper.individualProtectors(userAnswers, canEdit = false),
         businessProtectorAnswerHelper.businessProtectors(userAnswers, canEdit = false)
       ).flatten.flatten
 

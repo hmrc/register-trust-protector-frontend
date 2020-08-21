@@ -20,7 +20,7 @@ import base.SpecBase
 import models.RegistrationSubmission.AnswerSection
 import models.Status.{Completed, InProgress}
 import models.UserAnswers
-import pages.entitystatus.BusinessProtectorStatus
+import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
 
 import scala.collection.immutable.Nil
 
@@ -53,6 +53,20 @@ class SubmissionSetFactorySpec extends SpecBase {
                 )
               )
           }
+
+          "individual protector only" in {
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(IndividualProtectorStatus(0), Completed).success.value
+
+            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+              List(
+                AnswerSection(
+                  Some("Individual protector 1"),
+                  Nil,
+                  Some("Protectors")
+                )
+              )
+          }
         }
       }
 
@@ -72,6 +86,46 @@ class SubmissionSetFactorySpec extends SpecBase {
                 ),
                 AnswerSection(
                   Some("Business protector 2"),
+                  Nil,
+                  None
+                )
+              )
+          }
+
+          "Individual protectors" in {
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(IndividualProtectorStatus(0), Completed).success.value
+              .set(IndividualProtectorStatus(1), Completed).success.value
+
+            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+              List(
+                AnswerSection(
+                  Some("Individual protector 1"),
+                  Nil,
+                  Some("Protectors")
+                ),
+                AnswerSection(
+                  Some("Individual protector 2"),
+                  Nil,
+                  None
+                )
+              )
+          }
+
+          "Individual and Business protectors" in {
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(IndividualProtectorStatus(0), Completed).success.value
+              .set(BusinessProtectorStatus(0), Completed).success.value
+
+            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+              List(
+                AnswerSection(
+                  Some("Individual protector 1"),
+                  Nil,
+                  Some("Protectors")
+                ),
+                AnswerSection(
+                  Some("Business protector 1"),
                   Nil,
                   None
                 )

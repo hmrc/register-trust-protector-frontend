@@ -18,11 +18,11 @@ package pages.register.business
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.{BusinessProtectors, Protectors}
+import sections.BusinessProtectors
 
 final case class NamePage(index : Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ Protectors \ BusinessProtectors \ index \ toString
+  override def path: JsPath = BusinessProtectors.path \ index \ toString
 
   override def toString: String = "name"
 }

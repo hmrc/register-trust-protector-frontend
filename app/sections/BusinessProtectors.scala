@@ -22,7 +22,7 @@ import viewmodels.addAnother.BusinessProtectorViewModel
 
 case object BusinessProtectors extends QuestionPage[List[BusinessProtectorViewModel]] {
 
-  override def path: JsPath = JsPath \ Protectors \ toString
+  override def path: JsPath = Protectors.path \ toString
 
   override def toString: String = "businessProtectors"
 

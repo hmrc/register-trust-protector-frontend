@@ -39,3 +39,6 @@ POST       /:draftId/:index/id-card                     controllers.register.ind
 
 GET        /:draftId/:index/check-details              controllers.register.individual.CheckDetailsController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/check-details              controllers.register.individual.CheckDetailsController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/remove                     controllers.register.individual.RemoveProtectorController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/remove                     controllers.register.individual.RemoveProtectorController.onSubmit(index: Int, draftId: String)

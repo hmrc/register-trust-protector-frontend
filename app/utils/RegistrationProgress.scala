@@ -22,7 +22,7 @@ import models.{ReadableUserAnswers, Status}
 import pages.QuestionPage
 import pages.register.AddAProtectorPage
 import play.api.libs.json.Reads
-import sections.BusinessProtectors
+import sections.{BusinessProtectors, IndividualProtectors}
 import viewmodels.addAnother._
 
 class RegistrationProgress extends AnyProtectors {
@@ -35,7 +35,8 @@ class RegistrationProgress extends AnyProtectors {
 
       val statusList: List[IsComplete] = List(
         AddingProtectorsIsComplete,
-        BusinessProtectorsAreComplete
+        BusinessProtectorsAreComplete,
+        IndividualProtectorsAreComplete
       )
 
       statusList match {
@@ -57,8 +58,8 @@ class RegistrationProgress extends AnyProtectors {
     def apply(userAnswers: ReadableUserAnswers): Boolean
   }
 
-  sealed class ListIsComplete[T <: ViewModel](section: QuestionPage[List[T]])
-                                             (implicit reads: Reads[T]) extends IsComplete {
+  sealed class ListIsComplete[T <: ProtectorViewModel](section: QuestionPage[List[T]])
+                                                      (implicit reads: Reads[T]) extends IsComplete {
 
     override def apply(userAnswers: ReadableUserAnswers): Boolean = {
       userAnswers.get(section) match {
@@ -74,5 +75,5 @@ class RegistrationProgress extends AnyProtectors {
   }
 
   private object BusinessProtectorsAreComplete extends ListIsComplete(BusinessProtectors)
-
+  private object IndividualProtectorsAreComplete extends ListIsComplete(IndividualProtectors)
 }

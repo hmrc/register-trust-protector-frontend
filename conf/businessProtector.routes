@@ -21,3 +21,6 @@ POST       /:draftId/:index/non-uk-address             controllers.register.busi
 
 GET        /:draftId/:index/check-details              controllers.register.business.CheckDetailsController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/check-details              controllers.register.business.CheckDetailsController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/remove                     controllers.register.business.RemoveProtectorController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/remove                     controllers.register.business.RemoveProtectorController.onSubmit(index: Int, draftId: String)

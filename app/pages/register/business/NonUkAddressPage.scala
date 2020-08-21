@@ -19,11 +19,11 @@ package pages.register.business
 import models.InternationalAddress
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.{BusinessProtectors, Protectors}
+import sections.BusinessProtectors
 
 case class NonUkAddressPage(index: Int) extends QuestionPage[InternationalAddress] {
 
-  override def path: JsPath = JsPath \ Protectors \ BusinessProtectors \ index \ toString
+  override def path: JsPath = BusinessProtectors.path \ index \ toString
 
   override def toString: String = "internationalAddress"
 }

@@ -55,7 +55,8 @@ class IndexController @Inject()(
     if (isAnyProtectorAdded(userAnswers)) {
       Redirect(rts.AddAProtectorController.onPageLoad(draftId))
     } else {
-      Redirect(rts.InfoController.onPageLoad(draftId))
+      Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
+//      Redirect(rts.InfoController.onPageLoad(draftId))
     }
   }
 }

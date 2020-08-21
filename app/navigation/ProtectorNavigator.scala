@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, AnswersPage, IndividualOrBusinessPage}
+import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, AnswersPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage}
 import play.api.mvc.Call
 import controllers.register.{routes => rts}
 import controllers.register.business.{routes => brts}
@@ -38,12 +38,19 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
     case AddAProtectorPage => addProtectorRoute(draftId, config)
     case AddAProtectorYesNoPage => addAProtectorYesNoRoute(draftId, config)
     case IndividualOrBusinessPage => individualOrBusinessRoute(draftId)
-
+    case TrustHasProtectorYesNoPage => trustHasProtectorRoute(draftId)
   }
 
   private def protectorsCompletedRoute(draftId: String, config: FrontendAppConfig): Call = {
     Call("GET", config.registrationProgressUrl(draftId))
   }
+
+  private def trustHasProtectorRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
+    userAnswers.get(TrustHasProtectorYesNoPage) match {
+      case Some(true) => controllers.register.routes.InfoController.onPageLoad(draftId)
+      case Some(false) => protectorsCompletedRoute(draftId, config)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
 
   private def individualOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
     userAnswers.get(IndividualOrBusinessPage) match {

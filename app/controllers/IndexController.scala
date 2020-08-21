@@ -56,7 +56,6 @@ class IndexController @Inject()(
       Redirect(rts.AddAProtectorController.onPageLoad(draftId))
     } else {
       Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
-//      Redirect(rts.InfoController.onPageLoad(draftId))
     }
   }
 }

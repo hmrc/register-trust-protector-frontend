@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package pages.register.individual
+package forms
 
-import models.FullName
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.IndividualProtectors
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-final case class NamePage(index: Int) extends QuestionPage[FullName] {
+trait RemoveForm {
 
-  override def path: JsPath = IndividualProtectors.path \ index \ toString
+  def apply(prefix: String): Form[Boolean]
 
-  override def toString: String = "name"
+}
+
+class RemoveIndexFormProvider @Inject() extends Mappings with RemoveForm {
+
+  override def apply(prefix: String): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"$prefix.error.required")
+    )
 }

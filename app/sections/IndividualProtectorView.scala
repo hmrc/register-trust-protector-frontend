@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package pages.register.individual
+package sections
 
-import models.FullName
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.IndividualProtectors
+import viewmodels.addAnother.ProtectorViewModel
 
-final case class NamePage(index: Int) extends QuestionPage[FullName] {
-
-  override def path: JsPath = IndividualProtectors.path \ index \ toString
-
-  override def toString: String = "name"
+case class IndividualProtectorView(index: Int) extends QuestionPage[ProtectorViewModel] {
+  override def path: JsPath = IndividualProtectors.path \ index
 }

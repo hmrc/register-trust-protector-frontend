@@ -39,7 +39,7 @@ class AddAProtectorControllerSpec extends SpecBase {
   private val max: Int = 25
 
   private def removeBusinessRoute(index: Int): String =
-    controllers.register.business.routes.CheckDetailsController.onPageLoad(index, fakeDraftId).url
+    controllers.register.business.routes.RemoveProtectorController.onPageLoad(index, fakeDraftId).url
 
   private def changeBusinessRoute(index: Int): String =
     controllers.register.business.routes.CheckDetailsController.onPageLoad(index, fakeDraftId).url

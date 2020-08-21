@@ -282,3 +282,8 @@ individualOrBusiness.checkYourAnswersLabel = Is the protector an individual or a
 individualOrBusiness.error.required = Select the type of protector you need to add
 individualOrBusiness.individual = Individual
 individualOrBusiness.business = Business
+
+removeProtector.title = Are you sure you want to remove the protector?
+removeProtector.heading = Are you sure you want to remove {0}?
+removeProtector.error.required = Select yes if you want to remove the protector
+removeProtector.default = the protector

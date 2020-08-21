@@ -46,7 +46,7 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
       } else {
         businessRts.NameController.onPageLoad(index, draftId).url
       },
-      removeUrl = businessRts.CheckDetailsController.onPageLoad(index, draftId).url // TODO businessRts.RemoveIndividualBeneficiaryController.onPageLoad(index, draftId).url
+      removeUrl = businessRts.RemoveProtectorController.onPageLoad(index, draftId).url
     )
   }
 
@@ -72,10 +72,9 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
       } else {
         individualRts.NameController.onPageLoad(index, draftId).url
       },
-      removeUrl = individualRts.CheckDetailsController.onPageLoad(index, draftId).url // TODO individualRts.RemoveIndividualBeneficiaryController.onPageLoad(index, draftId).url
+      removeUrl = individualRts.RemoveProtectorController.onPageLoad(index, draftId).url
     )
   }
-
 
   private def individualProtectors = {
     val individualProtectors = userAnswers.get(IndividualProtectors).toList.flatten.zipWithIndex

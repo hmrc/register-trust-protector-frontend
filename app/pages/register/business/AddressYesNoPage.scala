@@ -19,13 +19,13 @@ package pages.register.business
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.{BusinessProtectors, Protectors}
+import sections.BusinessProtectors
 
 import scala.util.Try
 
 final case class AddressYesNoPage(index : Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ Protectors \ BusinessProtectors \ index \ toString
+  override def path: JsPath = BusinessProtectors.path \ index \ toString
 
   override def toString: String = "addressYesNo"
 

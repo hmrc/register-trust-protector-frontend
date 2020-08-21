@@ -19,11 +19,11 @@ package pages.entitystatus
 import models.Status
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.{BusinessProtectors, IndividualProtectors, Protectors}
+import sections.IndividualProtectors
 
 final case class IndividualProtectorStatus(index : Int) extends QuestionPage[Status] {
 
-  override def path: JsPath = JsPath \ Protectors \ IndividualProtectors \ index \ toString
+  override def path: JsPath = IndividualProtectors.path \ index \ toString
 
   override def toString: String = "status"
 }

@@ -20,9 +20,8 @@ import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.register.pages.AddAProtector.NoComplete
 import navigation.Navigator
-import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
+import pages.register.TrustHasProtectorYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.RegistrationsRepository

@@ -283,6 +283,11 @@ individualOrBusiness.error.required = Select the type of protector you need to a
 individualOrBusiness.individual = Individual
 individualOrBusiness.business = Business
 
+removeProtector.title = Are you sure you want to remove the protector?
+removeProtector.heading = Are you sure you want to remove {0}?
+removeProtector.error.required = Select yes if you want to remove the protector
+removeProtector.default = the protector
+
 trustHasProtectorYesNo.title = Does the trust have a protector?
 trustHasProtectorYesNo.heading = Does the trust have a protector?
 trustHasProtectorYesNo.error.required = Select yes if the trust have a protector?

@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package viewmodels.addAnother
+package sections
 
-import models.Status
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import viewmodels.addAnother.ProtectorViewModel
 
-trait ViewModel {
-  val status: Status
+case class Protector(index: Int) extends QuestionPage[ProtectorViewModel]{
+
+  override def path: JsPath = Protectors.path \ index
+
 }

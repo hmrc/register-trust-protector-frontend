@@ -19,10 +19,9 @@ package viewmodels.addAnother
 import models.{FullName, Status}
 import play.api.libs.json.{Reads, __}
 
-case class IndividualProtectorViewModel(name: Option[FullName], override val status: Status) extends ViewModel {
-
+case class IndividualProtectorViewModel(name: Option[FullName], override val status: Status) extends ProtectorViewModel {
+  def displayName: Option[String] = name.map(_.toString)
   def isComplete: Boolean = name.nonEmpty && (status == Status.Completed)
-
 }
 
 object IndividualProtectorViewModel {

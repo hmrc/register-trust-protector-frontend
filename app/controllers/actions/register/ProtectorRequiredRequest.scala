@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.register.individual
+package controllers.actions.register
 
-import models.FullName
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.IndividualProtectors
+import models.UserAnswers
+import models.requests.RegistrationDataRequest
+import play.api.mvc.WrappedRequest
+import viewmodels.addAnother.ProtectorViewModel
 
-final case class NamePage(index: Int) extends QuestionPage[FullName] {
-
-  override def path: JsPath = IndividualProtectors.path \ index \ toString
-
-  override def toString: String = "name"
+case class ProtectorRequiredRequest[T](
+                                  request: RegistrationDataRequest[T],
+                                  protector: ProtectorViewModel) extends WrappedRequest[T](request){
+  val userAnswers:UserAnswers = request.userAnswers
 }

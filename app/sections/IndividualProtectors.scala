@@ -22,7 +22,7 @@ import viewmodels.addAnother.IndividualProtectorViewModel
 
 case object IndividualProtectors extends QuestionPage[List[IndividualProtectorViewModel]] {
 
-  override def path: JsPath = JsPath \ Protectors \ toString
+  override def path: JsPath = Protectors.path \ toString
 
   override def toString: String = "individualProtectors"
 

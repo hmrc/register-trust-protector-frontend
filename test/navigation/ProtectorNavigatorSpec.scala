@@ -27,6 +27,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register._
 import pages.register.business.NamePage
 import play.api.mvc.Call
+import controllers.register.{routes => rts}
 import controllers.register.business.{routes => brts}
 import controllers.register.individual.{routes => irts}
 
@@ -144,5 +145,28 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     }
   }
 
+  "TrustHasProtectorYesNoPage" when {
+
+    "go to InfoPage from TrustHasProtectorYesNoPage when yes selected" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val answers = userAnswers.set(TrustHasProtectorYesNoPage, value = true).success.value
+
+          navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, answers)
+            .mustBe(rts.InfoController.onPageLoad(fakeDraftId))
+      }
+    }
+
+    "go to RegistrationProgress from TrustHasProtectorYesNoPage when no selected" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val answers = userAnswers.set(TrustHasProtectorYesNoPage, value = false).success.value
+
+          navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, answers)
+            .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
+      }
+    }
+
+  }
 
 }

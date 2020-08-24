@@ -23,7 +23,7 @@ import sections.Protectors
 
 case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusinessToAdd] {
 
-  override def path: JsPath = JsPath \ Protectors \ toString
+  override def path: JsPath = Protectors.path \ toString
 
   override def toString: String = "individualOrBusiness"
 }

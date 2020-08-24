@@ -22,7 +22,7 @@ import sections.Protectors
 
 case object TrustHasProtectorYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ Protectors \ toString
+  override def path: JsPath = Protectors.path \ toString
 
   override def toString: String = "trustHasProtectorYesNo"
 

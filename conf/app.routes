@@ -29,3 +29,6 @@ GET        /:draftId/individual-or-business             controllers.register.Ind
 POST       /:draftId/individual-or-business             controllers.register.IndividualOrBusinessController.onSubmit(draftId: String)
 
 GET        /:draftId/information-you-need               controllers.register.InfoController.onPageLoad(draftId: String)
+
+GET        /:draftId/has-protectors                     controllers.register.TrustHasProtectorYesNoController.onPageLoad(draftId: String)
+POST       /:draftId/has-protectors                     controllers.register.TrustHasProtectorYesNoController.onSubmit(draftId: String)

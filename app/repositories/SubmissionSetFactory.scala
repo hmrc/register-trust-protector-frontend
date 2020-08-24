@@ -19,6 +19,7 @@ package repositories
 import javax.inject.Inject
 import mapping.register.ProtectorsMapper
 import models._
+import pages.register.TrustHasProtectorYesNoPage
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.RegistrationProgress
@@ -56,7 +57,12 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
-    if (status.contains(Status.Completed)) {
+    val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage) match {
+      case Some(true) => true
+      case _ => false
+    }
+
+    if (status.contains(Status.Completed) && trustHasProtectorYesNo) {
 
       val entitySections = List(
         individualProtectorAnswersHelper.individualProtectors(userAnswers, canEdit = false),

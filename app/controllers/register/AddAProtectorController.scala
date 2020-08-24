@@ -17,13 +17,13 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions.{RequiredAnswer, RequiredAnswerActionProvider, StandardActionSets}
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import javax.inject.Inject
 import models.Enumerable
 import models.register.pages.AddAProtector.NoComplete
 import navigation.Navigator
-import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage}
+import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, TrustHasProtectorYesNoPage}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddAProtectorViewHelper
-import views.html.register.{AddAProtectorView, AddAProtectorYesNoView}
+import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,24 +39,24 @@ class AddAProtectorController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            registrationsRepository: RegistrationsRepository,
                                            navigator: Navigator,
-                                           identify: RegistrationIdentifierAction,
-                                           getData: DraftIdRetrievalActionProvider,
-                                           requireData: RegistrationDataRequiredAction,
+                                           standardActionSets: StandardActionSets,
+                                           requiredAnswer: RequiredAnswerActionProvider,
                                            addAnotherFormProvider: AddAProtectorFormProvider,
                                            yesNoFormProvider: YesNoFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            addAnotherView: AddAProtectorView,
-                                           yesNoView: AddAProtectorYesNoView,
+                                           yesNoView: TrustHasProtectorYesNoView,
                                            config: FrontendAppConfig
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
 
   with I18nSupport with Enumerable.Implicits with AnyProtectors {
 
   private val addAnotherForm = addAnotherFormProvider()
-  private val yesNoForm = yesNoFormProvider.withPrefix("addAProtectorYesNo")
+  private val yesNoForm = yesNoFormProvider.withPrefix("trustHasProtectorYesNo")
 
-  private def routes(draftId: String) =
-    identify andThen getData(draftId) andThen requireData
+  def trustHasProtectorAnswer(draftId: String) =
+    requiredAnswer(RequiredAnswer(TrustHasProtectorYesNoPage, routes.TrustHasProtectorYesNoController.onPageLoad(draftId)))
+
 
   private def heading(count: Int)(implicit mp : MessagesProvider) = {
     count match {
@@ -66,7 +66,7 @@ class AddAProtectorController @Inject()(
     }
   }
 
-  def onPageLoad(draftId: String): Action[AnyContent] = routes(draftId) {
+  def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)) {
     implicit request =>
 
       val rows = new AddAProtectorViewHelper(request.userAnswers, draftId).rows
@@ -84,7 +84,7 @@ class AddAProtectorController @Inject()(
       }
   }
 
-  def submitOne(draftId : String) : Action[AnyContent] = routes(draftId).async {
+  def submitOne(draftId : String) : Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
@@ -101,7 +101,7 @@ class AddAProtectorController @Inject()(
       )
   }
 
-  def submitAnother(draftId: String): Action[AnyContent] = routes(draftId).async {
+  def submitAnother(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
 
       addAnotherForm.bindFromRequest().fold(
@@ -131,7 +131,7 @@ class AddAProtectorController @Inject()(
       )
   }
 
-  def submitComplete(draftId: String): Action[AnyContent] = routes(draftId).async {
+  def submitComplete(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, NoComplete))

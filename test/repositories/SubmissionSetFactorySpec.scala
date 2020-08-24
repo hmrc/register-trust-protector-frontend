@@ -21,6 +21,7 @@ import models.RegistrationSubmission.AnswerSection
 import models.Status.{Completed, InProgress}
 import models.UserAnswers
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
+import pages.register.TrustHasProtectorYesNoPage
 
 import scala.collection.immutable.Nil
 
@@ -38,11 +39,22 @@ class SubmissionSetFactorySpec extends SpecBase {
 
     "return completed answer sections" when {
 
+      "trust has protectors is set to 'false'" must {
+          "return an empty list" in {
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(TrustHasProtectorYesNoPage, false).success.value
+
+            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+              List.empty
+          }
+      }
+
       "only one protector" must {
         "have 'Protectors' as section key" when {
           "business protector only" in {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(BusinessProtectorStatus(0), Completed).success.value
+              .set(TrustHasProtectorYesNoPage, true).success.value
 
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
@@ -57,6 +69,7 @@ class SubmissionSetFactorySpec extends SpecBase {
           "individual protector only" in {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(IndividualProtectorStatus(0), Completed).success.value
+              .set(TrustHasProtectorYesNoPage, true).success.value
 
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
@@ -76,6 +89,7 @@ class SubmissionSetFactorySpec extends SpecBase {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(BusinessProtectorStatus(0), Completed).success.value
               .set(BusinessProtectorStatus(1), Completed).success.value
+              .set(TrustHasProtectorYesNoPage, true).success.value
 
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
@@ -96,6 +110,7 @@ class SubmissionSetFactorySpec extends SpecBase {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(IndividualProtectorStatus(0), Completed).success.value
               .set(IndividualProtectorStatus(1), Completed).success.value
+              .set(TrustHasProtectorYesNoPage, true).success.value
 
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
@@ -116,6 +131,7 @@ class SubmissionSetFactorySpec extends SpecBase {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(IndividualProtectorStatus(0), Completed).success.value
               .set(BusinessProtectorStatus(0), Completed).success.value
+              .set(TrustHasProtectorYesNoPage, true).success.value
 
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(

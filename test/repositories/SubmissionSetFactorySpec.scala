@@ -17,11 +17,14 @@
 package repositories
 
 import base.SpecBase
-import models.RegistrationSubmission.AnswerSection
+import models.RegistrationSubmission.{AnswerRow, AnswerSection}
 import models.Status.{Completed, InProgress}
-import models.UserAnswers
+import models.register.pages.AddAProtector.NoComplete
+import models.{RegistrationSubmission, Status, UserAnswers}
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
-import pages.register.TrustHasProtectorYesNoPage
+import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
+import pages.register.business.NamePage
+import play.api.libs.json.{JsNull, Json}
 
 import scala.collection.immutable.Nil
 
@@ -33,19 +36,27 @@ class SubmissionSetFactorySpec extends SpecBase {
 
     "return no answer sections if no completed protectors" in {
 
-      factory.answerSectionsIfCompleted(emptyUserAnswers, Some(InProgress))
-        .mustBe(Nil)
+      factory.createFrom(emptyUserAnswers) mustBe RegistrationSubmission.DataSet(
+        Json.toJson(emptyUserAnswers),
+        None,
+        List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
+        List.empty
+      )
     }
 
     "return completed answer sections" when {
 
       "trust has protectors is set to 'false'" must {
-          "return an empty list" in {
+          "return a completed empty set" in {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(TrustHasProtectorYesNoPage, false).success.value
 
-            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+            factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
+              Json.toJson(userAnswers),
+              Some(Status.Completed),
+              List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
               List.empty
+            )
           }
       }
 
@@ -54,16 +65,33 @@ class SubmissionSetFactorySpec extends SpecBase {
           "business protector only" in {
             val userAnswers: UserAnswers = emptyUserAnswers
               .set(BusinessProtectorStatus(0), Completed).success.value
+              .set(NamePage(0), "None of Your Business").success.value
               .set(TrustHasProtectorYesNoPage, true).success.value
+              .set(AddAProtectorPage, NoComplete).success.value
 
-            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+            val mappedJson = Json.parse(
+              """
+                |{"protectorCompany":[{"name":"None of Your Business"}]}
+                |""".stripMargin)
+
+            factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
+              Json.toJson(userAnswers),
+              Some(Status.Completed),
+              List(RegistrationSubmission.MappedPiece("trust/entities/protectors", mappedJson)),
               List(
                 AnswerSection(
                   Some("Business protector 1"),
-                  Nil,
+                  List(
+                    AnswerRow(
+                      "businessProtector.name.checkYourAnswersLabel",
+                      "None of Your Business",
+                      "None of Your Business"
+                    )
+                  ),
                   Some("Protectors")
                 )
               )
+            )
           }
 
           "individual protector only" in {

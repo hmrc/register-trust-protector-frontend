@@ -21,7 +21,7 @@ import mapping.register.ProtectorsMapper
 import models._
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNull, JsValue, Json}
 import utils.RegistrationProgress
 import utils.answers.{BusinessProtectorAnswersHelper, IndividualProtectorAnswersHelper}
 import viewmodels.{AnswerRow, AnswerSection}
@@ -33,7 +33,6 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
     val status = registrationProgress.protectorsStatus(userAnswers)
-    answerSectionsIfCompleted(userAnswers, status)
 
     RegistrationSubmission.DataSet(
       Json.toJson(userAnswers),
@@ -43,14 +42,17 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     )
   }
 
+  private def mappedPieces(protectorsJson: JsValue) =
+    List(RegistrationSubmission.MappedPiece("trust/entities/protectors", protectorsJson))
+
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
     if (status.contains(Status.Completed)) {
       protectorsMapper.build(userAnswers) match {
-        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/protectors", Json.toJson(assets)))
-        case _ => List.empty
+        case Some(assets) => mappedPieces(Json.toJson(assets))
+        case _ => mappedPieces(JsNull)
       }
     } else {
-      List.empty
+      mappedPieces(JsNull)
     }
   }
 

@@ -19,6 +19,7 @@ package mapping.register
 import base.SpecBase
 import generators.Generators
 import mapping.Mapping
+import models.FullName
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register._
 
@@ -31,7 +32,7 @@ class ProtectorsMapperSpec extends SpecBase with MustMatchers
 
     "when user answers is empty" must {
 
-      "must not be able to create ProtectorsType" in {
+      "not be able to create ProtectorsType" in {
 
         val userAnswers = emptyUserAnswers
 
@@ -41,7 +42,7 @@ class ProtectorsMapperSpec extends SpecBase with MustMatchers
 
     "when user answers is not empty" must {
 
-      "must be able to create ProtectorsType when there is a business protector" in {
+      "be able to create ProtectorsType when there is a business protector" in {
 
         val index = 0
 
@@ -55,6 +56,41 @@ class ProtectorsMapperSpec extends SpecBase with MustMatchers
         result.protectorCompany mustBe defined
       }
 
+      "be able to create ProtectorsType when there is an individual protector" in {
+
+        val index = 0
+
+        val userAnswers = emptyUserAnswers
+          .set(individual.NamePage(index), FullName("first", None, "last")).success.value
+          .set(individual.DateOfBirthYesNoPage(index), false).success.value
+          .set(individual.NationalInsuranceYesNoPage(index), true).success.value
+          .set(individual.NationalInsuranceNumberPage(index), "AB123456C").success.value
+
+        val result = protectorsMapper.build(userAnswers).value
+
+        result.protector mustBe defined
+      }
+
+      "be able to create ProtectorsType when there is an individual and business protector" in {
+
+        val index = 0
+
+        val userAnswers = emptyUserAnswers
+          .set(individual.NamePage(index), FullName("first", None, "last")).success.value
+          .set(individual.DateOfBirthYesNoPage(index), false).success.value
+          .set(individual.NationalInsuranceYesNoPage(index), true).success.value
+          .set(individual.NationalInsuranceNumberPage(index), "AB123456C").success.value
+
+          .set(business.NamePage(index), "Business").success.value
+          .set(business.UtrYesNoPage(index), true).success.value
+          .set(business.UtrPage(index), "1234567890").success.value
+
+
+        val result = protectorsMapper.build(userAnswers).value
+
+        result.protector mustBe defined
+        result.protectorCompany mustBe defined
+      }
     }
   }
 }

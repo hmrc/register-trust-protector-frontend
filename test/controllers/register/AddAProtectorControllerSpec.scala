@@ -22,14 +22,14 @@ import models.Status.Completed
 import models.UserAnswers
 import models.register.pages.AddAProtector
 import pages.entitystatus.BusinessProtectorStatus
-import pages.register.AddAProtectorPage
+import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.AddAProtectorViewHelper
 import viewmodels.AddRow
-import views.html.register.{AddAProtectorView, AddAProtectorYesNoView}
+import views.html.register.{AddAProtectorView, AddAProtectorYesNoView, TrustHasProtectorYesNoView}
 
 class AddAProtectorControllerSpec extends SpecBase {
 
@@ -46,6 +46,8 @@ class AddAProtectorControllerSpec extends SpecBase {
 
   private lazy val addAProtectorRoute = routes.AddAProtectorController.onPageLoad(fakeDraftId).url
 
+  private lazy val trustHasProtectorRoute = routes.TrustHasProtectorYesNoController.onPageLoad(fakeDraftId).url
+
   private lazy val addOnePostRoute = routes.AddAProtectorController.submitOne(fakeDraftId).url
 
   private lazy val addAnotherPostRoute = routes.AddAProtectorController.submitAnother(fakeDraftId).url
@@ -55,7 +57,7 @@ class AddAProtectorControllerSpec extends SpecBase {
   private val formProvider = new AddAProtectorFormProvider()
   private val form = formProvider()
 
-  private val yesNoForm = new YesNoFormProvider().withPrefix("addAProtectorYesNo")
+  private val yesNoForm = new YesNoFormProvider().withPrefix("trustHasProtectorYesNo")
 
   private lazy val protectorsComplete = List(
     AddRow("Business Name 1", typeLabel = "Business protector", changeBusinessRoute(0), removeBusinessRoute(0)),
@@ -64,6 +66,7 @@ class AddAProtectorControllerSpec extends SpecBase {
   )
 
   private val userAnswersWithProtectorsComplete = emptyUserAnswers
+    .set(TrustHasProtectorYesNoPage, true).success.value
     .set(NamePage(0), "Business Name 1").success.value
     .set(UtrYesNoPage(0), true).success.value
     .set(UtrPage(0), "1234567890").success.value
@@ -123,13 +126,13 @@ class AddAProtectorControllerSpec extends SpecBase {
 
       "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AddAProtectorYesNoView]
+        val view = application.injector.instanceOf[TrustHasProtectorYesNoView]
 
         status(result) mustEqual OK
 
@@ -142,7 +145,7 @@ class AddAProtectorControllerSpec extends SpecBase {
       "redirect to the next page when valid data is submitted" in {
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value)).build()
 
         val request =
           FakeRequest(POST, addOnePostRoute)
@@ -159,7 +162,7 @@ class AddAProtectorControllerSpec extends SpecBase {
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
 
         val request =
           FakeRequest(POST, addOnePostRoute)
@@ -167,7 +170,7 @@ class AddAProtectorControllerSpec extends SpecBase {
 
         val boundForm = yesNoForm.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[AddAProtectorYesNoView]
+        val view = application.injector.instanceOf[TrustHasProtectorYesNoView]
 
         val result = route(application, request).value
 
@@ -202,8 +205,9 @@ class AddAProtectorControllerSpec extends SpecBase {
       }
 
       "populate the view without value on a GET when the question has previously been answered" in {
-        val userAnswers = userAnswersWithProtectorsComplete.
-          set(AddAProtectorPage, AddAProtector.YesNow).success.value
+        val userAnswers = userAnswersWithProtectorsComplete
+          .set(AddAProtectorPage, AddAProtector.YesNow).success.value
+          .set(TrustHasProtectorYesNoPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -241,7 +245,7 @@ class AddAProtectorControllerSpec extends SpecBase {
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value)).build()
 
         val request =
           FakeRequest(POST, addAnotherPostRoute)
@@ -272,7 +276,7 @@ class AddAProtectorControllerSpec extends SpecBase {
 
         val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
 
@@ -286,7 +290,7 @@ class AddAProtectorControllerSpec extends SpecBase {
 
       "redirect to registration progress when user clicks continue" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value)).build()
 
         val request = FakeRequest(POST, submitCompleteRoute)
 

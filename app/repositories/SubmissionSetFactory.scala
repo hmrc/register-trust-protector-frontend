@@ -23,11 +23,12 @@ import pages.register.TrustHasProtectorYesNoPage
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.RegistrationProgress
-import utils.answers.BusinessProtectorAnswersHelper
+import utils.answers.{BusinessProtectorAnswersHelper, IndividualProtectorAnswersHelper}
 import viewmodels.{AnswerRow, AnswerSection}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      protectorsMapper: ProtectorsMapper,
+                                     individualProtectorAnswersHelper: IndividualProtectorAnswersHelper,
                                      businessProtectorAnswerHelper: BusinessProtectorAnswersHelper) {
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
@@ -45,7 +46,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
     if (status.contains(Status.Completed)) {
       protectorsMapper.build(userAnswers) match {
-        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/protector", Json.toJson(assets)))
+        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/protectors", Json.toJson(assets)))
         case _ => List.empty
       }
     } else {
@@ -64,6 +65,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     if (status.contains(Status.Completed) && trustHasProtectorYesNo) {
 
       val entitySections = List(
+        individualProtectorAnswersHelper.individualProtectors(userAnswers, canEdit = false),
         businessProtectorAnswerHelper.businessProtectors(userAnswers, canEdit = false)
       ).flatten.flatten
 

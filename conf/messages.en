@@ -45,6 +45,7 @@ site.save.continue = Save and continue
 site.error = Error:
 site.inprogress = In Progress
 site.complete = Completed
+site.sign_out = Sign out
 
 entities.no.name.added = No name added
 entities.protector.business = Business protector

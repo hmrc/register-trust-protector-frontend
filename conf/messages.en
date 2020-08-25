@@ -100,7 +100,7 @@ businessProtector.name.title = What is the business’s name?
 businessProtector.name.heading = What is the business’s name?
 businessProtector.name.checkYourAnswersLabel = What is the business’s name?
 businessProtector.name.error.required = Enter the business’s name
-businessProtector.name.error.invalidFormat = Business’s name must only include letters a to z, numbers, ampersands (&), apostrophes, forward slashes, full stops, hyphens, round brackets and spaces
+businessProtector.name.error.invalidFormat = Business name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 businessProtector.name.error.length = Business’s name cannot be more than 105 characters
 
 businessProtector.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
@@ -272,14 +272,14 @@ protectorsInfo.bulletpoint1 = National Insurance number
 protectorsInfo.bulletpoint2 = address
 protectorsInfo.bulletpoint3 = passport or ID card details
 protectorsInfo.subheading2 = Business protector
-protectorsInfo.paragraph2 = If the protector is a business, tell us the business's name, and one of the following:
+protectorsInfo.paragraph2 = If the protector is a business, tell us the business’s name, and one of the following:
 protectorsInfo.bulletpoint4 = Unique Taxpayer Reference (UTR)
 protectorsInfo.bulletpoint5 = address
 
 individualOrBusiness.title = Is the protector an individual or a business?
 individualOrBusiness.heading = Is the protector an individual or a business?
 individualOrBusiness.checkYourAnswersLabel = Is the protector an individual or a business?
-individualOrBusiness.error.required = Select the type of protector you need to add
+individualOrBusiness.error.required = Select if the protector is an individual or a business
 individualOrBusiness.individual = Individual
 individualOrBusiness.business = Business
 
@@ -291,4 +291,4 @@ removeProtector.default = the protector
 trustHasProtectorYesNo.title = Does the trust have a protector?
 trustHasProtectorYesNo.heading = Does the trust have a protector?
 trustHasProtectorYesNo.hint = This is an individual or business named in the deed that can affect the way the trust is managed.
-trustHasProtectorYesNo.error.required = Select yes if the trust have a protector?
+trustHasProtectorYesNo.error.required = Select yes if the trust has a protector

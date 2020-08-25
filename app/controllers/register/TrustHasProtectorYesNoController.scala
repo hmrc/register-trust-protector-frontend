@@ -50,7 +50,6 @@ class TrustHasProtectorYesNoController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-
       Ok(view(preparedForm, draftId))
   }
 

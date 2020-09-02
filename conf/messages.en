@@ -47,6 +47,7 @@ site.inprogress = In Progress
 site.complete = Completed
 site.sign_out = Sign out
 
+entities.protectors = Protectors
 entities.no.name.added = No name added
 entities.protector.business = Business protector
 entities.protector.individual = Individual protector

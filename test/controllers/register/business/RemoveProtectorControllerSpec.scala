@@ -69,7 +69,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
             fakeDraftId,
             index,
             defaultProtectorName,
-            routes.RemoveProtectorController.onSubmit(index, draftId))(fakeRequest, messages).toString
+            routes.RemoveProtectorController.onSubmit(index, draftId))(request, messages).toString
 
         application.stop()
       }
@@ -95,7 +95,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
             fakeDraftId,
             index,
             testName,
-            routes.RemoveProtectorController.onSubmit(index, draftId))(fakeRequest, messages).toString
+            routes.RemoveProtectorController.onSubmit(index, draftId))(request, messages).toString
 
         application.stop()
       }
@@ -184,7 +184,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
           fakeDraftId,
           index,
           defaultProtectorName,
-          routes.RemoveProtectorController.onSubmit(index, draftId))(fakeRequest, messages).toString
+          routes.RemoveProtectorController.onSubmit(index, draftId))(request, messages).toString
 
       application.stop()
     }

@@ -55,7 +55,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, name, index, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(fakeUtr), name, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(fakeUtr), name, index, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -124,7 +124,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, name, index, fakeDraftId)(request, messages).toString
 
       application.stop()
     }

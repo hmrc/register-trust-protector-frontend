@@ -137,7 +137,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId)(fakeRequest, messages).toString
+          view(form, fakeDraftId)(request, messages).toString
 
         application.stop()
       }
@@ -177,7 +177,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId)(fakeRequest, messages).toString
+          view(boundForm, fakeDraftId)(request, messages).toString
 
         application.stop()
       }
@@ -199,7 +199,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(fakeRequest, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
 
         application.stop()
       }
@@ -220,7 +220,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(fakeRequest, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
 
         application.stop()
       }
@@ -260,7 +260,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", Nil)(fakeRequest, messages).toString
+          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", Nil)(request, messages).toString
 
         application.stop()
       }

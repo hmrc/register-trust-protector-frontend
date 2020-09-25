@@ -264,9 +264,10 @@ addAProtectorYesNo.title = Do you want to add a protector?
 addAProtectorYesNo.heading = Do you want to add a protector?
 addAProtectorYesNo.error.required = Select yes if you want to add a protector
 
-protectorsInfo.title = Protector: information you’ll need to provide
-protectorsInfo.heading = Protector: information you’ll need to provide
+protectorsInfo.title = Information you’ll need to provide
+protectorsInfo.heading = Information you’ll need to provide
 protectorsInfo.caption = Protectors
+protectorsInfo.caption.hidden = This section is
 protectorsInfo.subheading1 = Individual protector
 protectorsInfo.paragraph1 = For protectors named in the trust deed, tell us their name. If you know more details, tell us one of the following:
 protectorsInfo.bulletpoint1 = National Insurance number

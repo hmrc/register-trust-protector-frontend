@@ -17,12 +17,12 @@
 package navigation
 
 import base.SpecBase
-import models._
 import controllers.register.business.{routes => brts}
 import generators.Generators
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
+import models._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.register.business._
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

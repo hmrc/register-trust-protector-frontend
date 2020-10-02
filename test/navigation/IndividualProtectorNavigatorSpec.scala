@@ -17,8 +17,8 @@
 package navigation
 
 import base.SpecBase
-import controllers.register.{routes => rts}
 import controllers.register.individual.{routes => irts}
+import controllers.register.{routes => rts}
 import generators.Generators
 import models._
 import org.scalacheck.Arbitrary.arbitrary

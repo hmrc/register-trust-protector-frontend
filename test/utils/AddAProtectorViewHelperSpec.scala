@@ -19,7 +19,6 @@ package utils
 import base.SpecBase
 import controllers.register.business.{routes => brts}
 import controllers.register.individual.{routes => irts}
-import controllers.routes
 import models.Status.{Completed, InProgress}
 import models.{FullName, UkAddress, UserAnswers}
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}

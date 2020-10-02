@@ -22,20 +22,18 @@ import models.Status.Completed
 import models.UserAnswers
 import models.register.pages.AddAProtector
 import pages.entitystatus.BusinessProtectorStatus
-import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
+import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.AddAProtectorViewHelper
 import viewmodels.AddRow
-import views.html.register.{AddAProtectorView, AddAProtectorYesNoView, TrustHasProtectorYesNoView}
+import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
 class AddAProtectorControllerSpec extends SpecBase {
 
   private def onwardRoute: Call = Call("GET", "/foo")
 
-  private val index: Int = 0
   private val max: Int = 25
 
   private def removeBusinessRoute(index: Int): String =
@@ -45,8 +43,6 @@ class AddAProtectorControllerSpec extends SpecBase {
     controllers.register.business.routes.CheckDetailsController.onPageLoad(index, fakeDraftId).url
 
   private lazy val addAProtectorRoute = routes.AddAProtectorController.onPageLoad(fakeDraftId).url
-
-  private lazy val trustHasProtectorRoute = routes.TrustHasProtectorYesNoController.onPageLoad(fakeDraftId).url
 
   private lazy val addOnePostRoute = routes.AddAProtectorController.submitOne(fakeDraftId).url
 

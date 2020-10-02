@@ -16,12 +16,10 @@
 
 package pages.business
 
-import java.time.LocalDate
-
 import models.{InternationalAddress, UkAddress, UserAnswers}
-import pages.behaviours.PageBehaviours
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NonUkAddressPage, UkAddressPage}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.behaviours.PageBehaviours
+import pages.register.business.{AddressUkYesNoPage, NonUkAddressPage, UkAddressPage}
 
 
 class AddressUkYesNoPageSpec extends PageBehaviours {

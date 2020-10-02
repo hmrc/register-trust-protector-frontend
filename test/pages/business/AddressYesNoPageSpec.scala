@@ -17,9 +17,9 @@
 package pages.business
 
 import models.{InternationalAddress, UkAddress, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NonUkAddressPage, UkAddressPage}
-import org.scalacheck.Arbitrary.arbitrary
 
 
 class AddressYesNoPageSpec extends PageBehaviours {

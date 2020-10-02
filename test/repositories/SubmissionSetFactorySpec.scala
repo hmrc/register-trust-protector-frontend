@@ -18,12 +18,12 @@ package repositories
 
 import base.SpecBase
 import models.RegistrationSubmission.{AnswerRow, AnswerSection}
-import models.Status.{Completed, InProgress}
+import models.Status.Completed
 import models.register.pages.AddAProtector.NoComplete
 import models.{RegistrationSubmission, Status, UserAnswers}
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
-import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
 import pages.register.business.NamePage
+import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
 import play.api.libs.json.{JsNull, Json}
 
 import scala.collection.immutable.Nil

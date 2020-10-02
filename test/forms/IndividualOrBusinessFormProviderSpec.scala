@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
+import models.register.pages.IndividualOrBusinessToAdd
 import play.api.data.FormError
 
 class IndividualOrBusinessFormProviderSpec extends OptionFieldBehaviours {

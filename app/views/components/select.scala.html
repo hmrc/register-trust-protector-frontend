@@ -40,10 +40,17 @@
 
     @field.errors.headOption.map{ error =>
         <span id="error-message-input" class="error-message">
-            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args:_*)
+            <span id="form-hint" class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args:_*)
         </span>
     }
-    <select class='form-control @selectClasses.mkString(" ")' id="@field.id" name="@field.name" aria-labelledby="@field.id-label" @selectAttribute>
+    <select class='form-control @selectClasses.mkString(" ")'
+            id="@field.id"
+            name="@field.name"
+            @if(hint.nonEmpty || field.hasErrors) {
+            aria-describedby="@if(hint.nonEmpty){form-hint}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-input}"
+            }
+            @selectAttribute
+    >
         @placeholder.map{ ph =>
             <option value="">@messages(ph)</option>
         }

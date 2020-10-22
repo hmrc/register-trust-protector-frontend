@@ -30,13 +30,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: String)(implicit val executionContext: ExecutionContext)
   extends ActionRefiner[RegistrationDataRequest, ProtectorRequiredRequest] {
 
+  private val logger: Logger = Logger(getClass)
+
   override protected def refine[A](request: RegistrationDataRequest[A]): Future[Either[Result, ProtectorRequiredRequest[A]]] = {
     Future.successful(
       request.userAnswers.get(page) match {
         case Some(protector) =>
           Right(register.ProtectorRequiredRequest(request, protector))
         case _ =>
-          Logger.info(s"[ProtectorRequiredAction] Did not find protector")
+          logger.info(s"[Session ID: ${request.sessionId}] Did not find protector")
           Left(Redirect(controllers.register.routes.AddAProtectorController.onPageLoad(draftId)))
       }
     )

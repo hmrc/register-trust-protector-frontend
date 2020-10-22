@@ -48,8 +48,9 @@ class AddAProtectorController @Inject()(
                                            yesNoView: TrustHasProtectorYesNoView,
                                            config: FrontendAppConfig
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
-
   with I18nSupport with Enumerable.Implicits with AnyProtectors {
+
+  private val logger: Logger = Logger(getClass)
 
   private val addAnotherForm = addAnotherFormProvider()
   private val yesNoForm = yesNoFormProvider.withPrefix("trustHasProtectorYesNo")
@@ -75,11 +76,11 @@ class AddAProtectorController @Inject()(
 
       if(rows.count > 0) {
         val listOfMaxed = allProtectors.maxedOutOptions.map(_.messageKey)
-        if(listOfMaxed.size == 1) {Logger.info(s"[AddAProtectorController] ${request.internalId} has maxed out protectors")}
-        else {Logger.info(s"[AddAProtectorController] ${request.internalId} has not maxed out protectors")}
+        if(listOfMaxed.size == 1) {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")}
+        else {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has not maxed out protectors")}
         Ok(addAnotherView(addAnotherForm, draftId, rows.inProgress, rows.complete, heading(rows.count), listOfMaxed))
       } else {
-        Logger.info(s"[AddAProtectorController] ${request.internalId} has added no protectors")
+        logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has added no protectors")
         Ok(yesNoView(yesNoForm, draftId))
       }
   }

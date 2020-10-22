@@ -24,6 +24,8 @@ import play.api.Logger
 class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorMapper,
                                  businessProtectorMapper: BusinessProtectorMapper) extends Mapping[ProtectorsType] {
 
+  private val logger: Logger = Logger(getClass)
+
   override def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
 
     val business = businessProtectorMapper.build(userAnswers)
@@ -38,7 +40,7 @@ class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorM
         )
       )
     } else {
-      Logger.info(s"[ProtectorsMapper][build] no protectors to map")
+      logger.info(s"[build] no protectors to map")
       None
     }
   }

@@ -25,8 +25,7 @@ import viewmodels.AnswerSection
 
 class BusinessProtectorAnswersHelper @Inject()(businessProtectorPrintHelper: BusinessProtectorPrintHelper) {
 
-  def businessProtectors(userAnswers: UserAnswers,
-                           canEdit: Boolean)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
+  def businessProtectors(userAnswers: UserAnswers)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
     for {
       protectors <- userAnswers.get(BusinessProtectors)
       indexed = protectors.zipWithIndex

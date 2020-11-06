@@ -67,8 +67,8 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     if (status.contains(Status.Completed) && trustHasProtectorYesNo) {
 
       val entitySections = List(
-        individualProtectorAnswersHelper.individualProtectors(userAnswers, canEdit = false),
-        businessProtectorAnswerHelper.businessProtectors(userAnswers, canEdit = false)
+        individualProtectorAnswersHelper.individualProtectors(userAnswers),
+        businessProtectorAnswerHelper.businessProtectors(userAnswers)
       ).flatten.flatten
 
       val updatedFirstSection = AnswerSection(

@@ -25,8 +25,7 @@ import viewmodels.AnswerSection
 
 class IndividualProtectorAnswersHelper @Inject()(individualProtectorPrintHelper: IndividualProtectorPrintHelper) {
 
-  def individualProtectors(userAnswers: UserAnswers,
-                           canEdit: Boolean)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
+  def individualProtectors(userAnswers: UserAnswers)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
     for {
       protectors <- userAnswers.get(IndividualProtectors)
       indexed = protectors.zipWithIndex

@@ -21,8 +21,7 @@ import mapping.Mapping
 import mapping.reads.{IndividualProtector, IndividualProtectors}
 import models.{PassportOrIdCardDetails, UserAnswers}
 
-class IndividualProtectorMapper @Inject()(nameMapper: NameMapper,
-                                          addressMapper: AddressMapper) extends Mapping[List[Protector]] {
+class IndividualProtectorMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[Protector]] {
   override def build(userAnswers: UserAnswers): Option[List[Protector]] = {
 
     val protectors: List[IndividualProtector] =
@@ -34,7 +33,7 @@ class IndividualProtectorMapper @Inject()(nameMapper: NameMapper,
         Some(
           list.map { protector =>
             Protector(
-              name = nameMapper.build(protector.name),
+              name = protector.name,
               dateOfBirth = protector.dateOfBirth,
               identification = buildIdentification(protector)
             )

@@ -18,6 +18,7 @@ package mapping.register
 
 import java.time.LocalDate
 
+import models.FullName
 import play.api.libs.json._
 
 /**
@@ -31,7 +32,7 @@ object ProtectorsType {
   implicit val protectorsTypeFormat: Format[ProtectorsType] = Json.format[ProtectorsType]
 }
 
-case class Protector(name: NameType,
+case class Protector(name: FullName,
                      dateOfBirth: Option[LocalDate],
                      identification: Option[IdentificationType])
 
@@ -44,14 +45,6 @@ case class ProtectorCompany(name: String,
 
 object ProtectorCompany {
   implicit val protectorCompanyFormat: Format[ProtectorCompany] = Json.format[ProtectorCompany]
-}
-
-case class NameType(firstName: String,
-                    middleName: Option[String],
-                    lastName: String)
-
-object NameType {
-  implicit val nameTypeFormat: Format[NameType] = Json.format[NameType]
 }
 
 case class IdentificationType(nino: Option[String],

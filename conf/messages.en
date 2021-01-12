@@ -95,6 +95,8 @@ site.address.international.line2 = Address line 2
 site.address.international.line3 = Address line 3 (optional)
 site.address.international.country = Country
 
+site.address.country.select = Select a country
+
 protector.name.default = the protector
 
 businessProtector.name.title = What is the business’s name?

@@ -179,5 +179,26 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .mustBe(rts.AddAProtectorController.onPageLoad(draftId))
       }
     }
+
+    "in 5mld" when {
+
+      "DateOfBirthYesNoPage -> No -> NationalityYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(DateOfBirthYesNoPage(index), false).success.value
+            navigator.nextPage(DateOfBirthYesNoPage(index), draftId, true, answers)
+              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+      "DateOfBirthPage -> NationalInsuranceYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(DateOfBirthPage(index), draftId, true, userAnswers)
+              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+    }
   }
 }

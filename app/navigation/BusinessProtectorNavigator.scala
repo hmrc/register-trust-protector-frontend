@@ -26,7 +26,11 @@ import controllers.register.business.{routes => brts}
 
 class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = routes(draftId)(page)(userAnswers)
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
+    nextPage(page, draftId, false, userAnswers)
+
+  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
+    routes(draftId)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
     case NamePage(index) => brts.UtrYesNoController.onPageLoad(index, draftId)

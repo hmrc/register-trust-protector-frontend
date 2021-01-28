@@ -26,11 +26,14 @@ import play.api.mvc.Call
 
 class IndividualProtectorNavigator @Inject()() extends Navigator {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = routes(draftId)(page)(userAnswers)
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
+    nextPage(page, draftId, false, userAnswers)
+
+  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
+    routes(draftId, is5mld)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
     case NamePage(index) => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
-    case DateOfBirthPage(index) => irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
     case NationalInsuranceNumberPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
     case UkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case NonUkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
@@ -39,13 +42,27 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case CheckDetailsPage => rts.AddAProtectorController.onPageLoad(draftId)
   }
 
-  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
+  private def is5mldNav(draftId: String, is5mld: Boolean) : PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case DateOfBirthPage(index) => _ =>
+      if(is5mld) {
+        controllers.routes.IndexController.onPageLoad(draftId)
+      } else {
+        irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
+      }
     case DateOfBirthYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         DateOfBirthYesNoPage(index),
         irts.DateOfBirthController.onPageLoad(index, draftId),
-        irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        if(is5mld) {
+          controllers.routes.IndexController.onPageLoad(draftId)
+        } else {
+          irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
+        }
+      )
+  }
+
+  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
     case NationalInsuranceYesNoPage(index) => ua =>
       yesNoNav(
         ua,
@@ -78,9 +95,9 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         irts.CheckDetailsController.onPageLoad(index, draftId))
   }
 
-  private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+  private def routes(draftId: String, is5mld: Boolean): PartialFunction[Page, ReadableUserAnswers => Call] = {
     simpleNavigation(draftId) andThen (c => (_:ReadableUserAnswers) => c) orElse
-      yesNoNavigation(draftId)
+      yesNoNavigation(draftId) orElse is5mldNav(draftId, is5mld)
   }
 
 }

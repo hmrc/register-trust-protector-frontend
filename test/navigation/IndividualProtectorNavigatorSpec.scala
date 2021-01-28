@@ -24,6 +24,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.individual._
+import pages.register.individual.mld5.{NationalityPage, NationalityUkYesNoPage, NationalityYesNoPage}
 
 class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

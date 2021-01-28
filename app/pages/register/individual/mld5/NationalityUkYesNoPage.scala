@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.register.individual
+package pages.register.individual.mld5
 
 import models.UserAnswers
 import pages.QuestionPage
@@ -23,15 +23,15 @@ import sections.IndividualProtectors
 
 import scala.util.Try
 
-final case class CountryOfResidenceInTheUkYesNoPage(index : Int) extends QuestionPage[Boolean] {
+final case class NationalityUkYesNoPage(index : Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = IndividualProtectors.path \ index \ toString
 
-  override def toString: String = "countryOfResidenceInTheUkYesNo"
+  override def toString: String = "nationalityUkYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) => userAnswers.set(CountryOfResidencePage(index), "GB")
+      case Some(true) => userAnswers.set(NationalityPage(index), "GB")
       case _ => super.cleanup(value, userAnswers)
     }
 }

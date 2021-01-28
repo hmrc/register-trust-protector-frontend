@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.register.individual
+package pages.register.individual.mld5
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath

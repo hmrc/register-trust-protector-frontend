@@ -18,10 +18,12 @@ package navigation
 
 import controllers.register.{routes => rts}
 import controllers.register.individual.{routes => irts}
+
 import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
 import pages.register.individual._
+import pages.register.individual.mld5.{NationalityPage, NationalityUkYesNoPage, NationalityYesNoPage}
 import play.api.mvc.Call
 
 class IndividualProtectorNavigator @Inject()() extends Navigator {

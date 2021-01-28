@@ -24,3 +24,12 @@ POST       /:draftId/:index/check-details              controllers.register.busi
 
 GET        /:draftId/:index/remove                     controllers.register.business.RemoveProtectorController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/remove                     controllers.register.business.RemoveProtectorController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/has-country-of-residence    controllers.register.business.mld5.CountryOfResidenceYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/has-country-of-residence    controllers.register.business.mld5.CountryOfResidenceYesNoController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/uk-residence                controllers.register.business.mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/uk-residence                controllers.register.business.mld5.CountryOfResidenceInTheUkYesNoController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/country-of-residence        controllers.register.business.mld5.CountryOfResidenceController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/country-of-residence        controllers.register.business.mld5.CountryOfResidenceController.onSubmit(index: Int, draftId: String)

@@ -191,10 +191,46 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
-      "DateOfBirthPage -> NationalInsuranceYesNoPage" in {
+      "NationalityYesNoPage -> Yes -> NationalityUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityYesNoPage(index), true).success.value
+            navigator.nextPage(NationalityYesNoPage(index), draftId, true, answers)
+              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+      "NationalityYesNoPage -> No -> NationalityUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityYesNoPage(index), false).success.value
+            navigator.nextPage(NationalityYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityUkYesNoPage -> No -> NationalityUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityUkYesNoPage(index), false).success.value
+            navigator.nextPage(NationalityUkYesNoPage(index), draftId, true, answers)
+              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+      "NationalityUkYesNoPage -> Yes -> NationalityUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityUkYesNoPage(index), true).success.value
+            navigator.nextPage(NationalityUkYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityPage -> NationalInsuranceYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            navigator.nextPage(DateOfBirthPage(index), draftId, true, userAnswers)
+            navigator.nextPage(NationalityPage(index), draftId, true, userAnswers)
               .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
         }
       }

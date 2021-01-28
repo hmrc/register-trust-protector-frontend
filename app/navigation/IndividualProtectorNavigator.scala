@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.ReadableUserAnswers
 import pages.Page
 import pages.register.individual._
-import pages.register.individual.mld5.{NationalityPage, NationalityUkYesNoPage, NationalityYesNoPage}
+import pages.register.individual.mld5._
 import play.api.mvc.Call
 
 class IndividualProtectorNavigator @Inject()() extends Navigator {
@@ -36,8 +36,8 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
     case NamePage(index) => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
-    case NationalityPage(index) => controllers.routes.IndexController.onPageLoad(draftId)
-    case NationalInsuranceNumberPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case NationalityPage(index) => irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
+    case CountryOfResidencePage(index) => irts.AddressYesNoController.onPageLoad(index, draftId)
     case UkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case NonUkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case PassportDetailsPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
@@ -63,15 +63,26 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
           irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
         }
       )
-  }
-
-  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case NationalInsuranceNumberPage(index) => _ =>
+      if(is5mld) {
+        controllers.routes.IndexController.onPageLoad(draftId)
+      } else {
+        irts.CheckDetailsController.onPageLoad(index, draftId)
+      }
     case NationalInsuranceYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         NationalInsuranceYesNoPage(index),
         irts.NationalInsuranceNumberController.onPageLoad(index, draftId),
-        irts.AddressYesNoController.onPageLoad(index, draftId))
+        if(is5mld) {
+          controllers.routes.IndexController.onPageLoad(draftId)
+        } else {
+          irts.AddressYesNoController.onPageLoad(index, draftId)
+        }
+      )
+  }
+
+  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
     case AddressYesNoPage(index) => ua =>
       yesNoNav(
         ua,
@@ -102,11 +113,23 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         NationalityYesNoPage(index),
         controllers.routes.IndexController.onPageLoad(draftId),
         irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+    case CountryOfResidenceYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        CountryOfResidenceYesNoPage(index),
+        controllers.routes.IndexController.onPageLoad(draftId),
+        irts.PassportDetailsYesNoController.onPageLoad(index, draftId))
     case NationalityUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         NationalityUkYesNoPage(index),
         irts.NationalInsuranceYesNoController.onPageLoad(index, draftId),
+        controllers.routes.IndexController.onPageLoad(draftId))
+    case CountryOfResidenceInTheUkYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        CountryOfResidenceInTheUkYesNoPage(index),
+        irts.AddressYesNoController.onPageLoad(index, draftId),
         controllers.routes.IndexController.onPageLoad(draftId))
   }
 

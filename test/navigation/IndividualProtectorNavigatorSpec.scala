@@ -24,7 +24,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.individual._
-import pages.register.individual.mld5.{NationalityPage, NationalityUkYesNoPage, NationalityYesNoPage}
+import pages.register.individual.mld5._
 
 class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -201,7 +201,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
-      "NationalityYesNoPage -> No -> NationalityUkYesNoPage" in {
+      "NationalityYesNoPage -> No -> NationalInsuranceYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           baseAnswers =>
             val answers = baseAnswers.set(NationalityYesNoPage(index), false).success.value
@@ -210,7 +210,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
-      "NationalityUkYesNoPage -> No -> NationalityUkYesNoPage" in {
+      "NationalityUkYesNoPage -> No -> NationalityPage" in {
         forAll(arbitrary[UserAnswers]) {
           baseAnswers =>
             val answers = baseAnswers.set(NationalityUkYesNoPage(index), false).success.value
@@ -232,7 +232,62 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(NationalityPage(index), draftId, true, userAnswers)
+              .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+
+
+      "NationalInsuranceYesNoPage -> No -> CountryOfResidenceYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalInsuranceYesNoPage(index), false).success.value
+            navigator.nextPage(NationalInsuranceYesNoPage(index), draftId, true, answers)
               .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+      "CountryOfResidenceYesNoPage -> Yes -> CountryOfResidenceUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceYesNoPage(index), true).success.value
+            navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
+              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+      "CountryOfResidenceYesNoPage -> No -> PassportDetailsYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceYesNoPage(index), false).success.value
+            navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.PassportDetailsYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidenceUkYesNoPage -> No -> CountryOfResidencePage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, true, answers)
+              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+        }
+      }
+
+      "CountryOfResidenceUkYesNoPage -> Yes -> AddressYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), true).success.value
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidencePage -> AddressYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(CountryOfResidencePage(index), draftId, true, userAnswers)
+              .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
         }
       }
 

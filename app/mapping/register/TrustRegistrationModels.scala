@@ -41,7 +41,9 @@ object Protector {
 }
 
 case class ProtectorCompany(name: String,
-                            identification: Option[IdentificationOrgType])
+                            identification: Option[IdentificationOrgType],
+                            countryOfResidence: Option[String]
+                           )
 
 object ProtectorCompany {
   implicit val protectorCompanyFormat: Format[ProtectorCompany] = Json.format[ProtectorCompany]

@@ -18,6 +18,7 @@ package navigation
 
 import controllers.register.{routes => rts}
 import controllers.register.individual.{routes => irts}
+import controllers.register.individual.mld5.{routes => mld5}
 
 import javax.inject.Inject
 import models.ReadableUserAnswers
@@ -75,7 +76,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         NationalInsuranceYesNoPage(index),
         irts.NationalInsuranceNumberController.onPageLoad(index, draftId),
         if(is5mld) {
-          controllers.routes.IndexController.onPageLoad(draftId)
+          mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
         } else {
           irts.AddressYesNoController.onPageLoad(index, draftId)
         }
@@ -117,7 +118,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
       yesNoNav(
         ua,
         CountryOfResidenceYesNoPage(index),
-        controllers.routes.IndexController.onPageLoad(draftId),
+        mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId),
         irts.PassportDetailsYesNoController.onPageLoad(index, draftId))
     case NationalityUkYesNoPage(index) => ua =>
       yesNoNav(
@@ -130,7 +131,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         ua,
         CountryOfResidenceInTheUkYesNoPage(index),
         irts.AddressYesNoController.onPageLoad(index, draftId),
-        controllers.routes.IndexController.onPageLoad(draftId))
+        mld5.CountryOfResidenceController.onPageLoad(index, draftId))
   }
 
   private def routes(draftId: String, is5mld: Boolean): PartialFunction[Page, ReadableUserAnswers => Call] = {

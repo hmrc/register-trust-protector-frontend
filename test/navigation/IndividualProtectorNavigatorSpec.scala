@@ -17,6 +17,7 @@
 package navigation
 
 import base.SpecBase
+import controllers.register.individual.mld5.{routes => mld5}
 import controllers.register.individual.{routes => irts}
 import controllers.register.{routes => rts}
 import generators.Generators
@@ -243,7 +244,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           baseAnswers =>
             val answers = baseAnswers.set(NationalInsuranceYesNoPage(index), false).success.value
             navigator.nextPage(NationalInsuranceYesNoPage(index), draftId, true, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+              .mustBe(mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId))
         }
       }
 
@@ -252,7 +253,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           baseAnswers =>
             val answers = baseAnswers.set(CountryOfResidenceYesNoPage(index), true).success.value
             navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+              .mustBe(mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId))
         }
       }
 
@@ -270,7 +271,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           baseAnswers =>
             val answers = baseAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
             navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, true, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+              .mustBe(mld5.CountryOfResidenceController.onPageLoad(index, draftId))
         }
       }
 

@@ -17,17 +17,17 @@
 package pages.individual.mld5
 
 import pages.behaviours.PageBehaviours
-import pages.register.individual.mld5.NationalityPage
+import pages.register.individual.mld5.LegallyCapableYesNoPage
 
-class NationalityPageSpec extends PageBehaviours {
+class LegallyCapableYesNoPageSpec extends PageBehaviours {
 
-  "NationalityPage" must {
+  "LegallyCapableYesNoPage" must {
 
-    beRetrievable[String](NationalityPage(0))
+    beRetrievable[Boolean](LegallyCapableYesNoPage(0))
 
-    beSettable[String](NationalityPage(0))
+    beSettable[Boolean](LegallyCapableYesNoPage(0))
 
-    beRemovable[String](NationalityPage(0))
+    beRemovable[Boolean](LegallyCapableYesNoPage(0))
   }
 
 }

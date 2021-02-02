@@ -23,7 +23,7 @@ import pages.register.individual.mld5.{NationalityUkYesNoPage, NationalityPage, 
 
 class NationalityUkYesNoPageSpec extends PageBehaviours {
 
-  "CountryOfResidenceInTheUkYesNoPage" must {
+  "NationalityUkYesNoPage" must {
 
     beRetrievable[Boolean](NationalityUkYesNoPage(0))
 

@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.register.individual.mld5.LegallyCapableYesNoView
 
 class LegallyCapableYesNoControllerSpec extends SpecBase with MockitoSugar {
 
@@ -51,12 +52,12 @@ class LegallyCapableYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-//      val view = application.injector.instanceOf[CountryOfResidenceYesNoView]
+      val view = application.injector.instanceOf[LegallyCapableYesNoView]
 
       status(result) mustEqual OK
 
-//      contentAsString(result) mustEqual
-//        view(form, draftId, index, trustName)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form, draftId, index, trustName.toString)(request, messages).toString
 
       application.stop()
     }
@@ -66,19 +67,18 @@ class LegallyCapableYesNoControllerSpec extends SpecBase with MockitoSugar {
       val userAnswers = emptyUserAnswers.set(NamePage(index), trustName).success.value
         .set(LegallyCapableYesNoPage(index), true).success.value
 
-
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, legallyCapable)
 
-//      val view = application.injector.instanceOf[CountryOfResidenceYesNoView]
+      val view = application.injector.instanceOf[LegallyCapableYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
-//      contentAsString(result) mustEqual
-//        view(form.fill(true), draftId, index, trustName)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form.fill(true), draftId, index, trustName.toString)(request, messages).toString
 
       application.stop()
     }
@@ -119,14 +119,14 @@ class LegallyCapableYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-//      val view = application.injector.instanceOf[CountryOfResidenceYesNoView]
+      val view = application.injector.instanceOf[LegallyCapableYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-//      contentAsString(result) mustEqual
-//        view(boundForm, draftId, index, trustName)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(boundForm, draftId, index, trustName.toString)(request, messages).toString
 
       application.stop()
     }

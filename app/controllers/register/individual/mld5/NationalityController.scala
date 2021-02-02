@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
+import views.html.register.individual.mld5.NationalityView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +41,8 @@ class NationalityController @Inject()(
                                               nameAction: NameRequiredAction,
                                               formProvider: CountryFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val countryOptions: CountryOptionsNonUK
+                                              val countryOptions: CountryOptionsNonUK,
+                                              view: NationalityView
                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withPrefix("individualProtector.5mld.nationality")
@@ -54,7 +56,7 @@ class NationalityController @Inject()(
           case Some(value) => form.fill(value)
         }
 
-        Ok
+        Ok(view(preparedForm, countryOptions.options, draftId, index, request.protectorName))
     }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] =
@@ -63,7 +65,7 @@ class NationalityController @Inject()(
 
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest),
+            Future.successful(BadRequest(view(formWithErrors, countryOptions.options, draftId, index, request.protectorName))),
 
           value => {
             for {

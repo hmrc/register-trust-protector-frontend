@@ -47,6 +47,19 @@ class AnswerRowConverter @Inject()() {
       }
     }
 
+    def utrQuestion(query: Gettable[String],
+                       labelKey: String,
+                       changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map { x =>
+        AnswerRow(
+          s"$labelKey.checkYourAnswersLabel",
+          nino(x),
+          Some(changeUrl),
+          name
+        )
+      }
+    }
+
     def stringQuestion(query: Gettable[String],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {
@@ -70,6 +83,23 @@ class AnswerRowConverter @Inject()() {
           Some(changeUrl),
           name
         )
+      }
+    }
+
+    def countryQuestion(ukResidentQuery: Gettable[Boolean],
+                        query: Gettable[String],
+                        labelKey: String,
+                        changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(ukResidentQuery) flatMap {
+        case false => userAnswers.get(query) map { x =>
+          AnswerRow(
+            s"$labelKey.checkYourAnswersLabel",
+            HtmlFormat.escape(country(x, countryOptions)),
+            Some(changeUrl),
+            name
+          )
+        }
+        case _ => None
       }
     }
 

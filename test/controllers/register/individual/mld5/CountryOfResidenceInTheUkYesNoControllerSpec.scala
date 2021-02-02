@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.register.individual.mld5.CountryOfResidenceInTheUkYesNoView
 
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
@@ -51,12 +52,12 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
       val result = route(application, request).value
 
-//      val view = application.injector.instanceOf[CountryOfResidenceInTheUkYesNoView]
+      val view = application.injector.instanceOf[CountryOfResidenceInTheUkYesNoView]
 
       status(result) mustEqual OK
 
-//      contentAsString(result) mustEqual
-//        view(form, draftId, index, name)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form, draftId, index, name.toString)(request, messages).toString
 
       application.stop()
     }
@@ -70,14 +71,14 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
       val request = FakeRequest(GET, countryOfResidenceInTheUkYesNo)
 
-//      val view = application.injector.instanceOf[CountryOfResidenceInTheUkYesNoView]
+      val view = application.injector.instanceOf[CountryOfResidenceInTheUkYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
-//      contentAsString(result) mustEqual
-//        view(form.fill(true), draftId, index, name)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form.fill(true), draftId, index, name.toString)(request, messages).toString
 
       application.stop()
     }
@@ -118,14 +119,14 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
       val boundForm = form.bind(Map("value" -> ""))
 
-//      val view = application.injector.instanceOf[CountryOfResidenceInTheUkYesNoView]
+      val view = application.injector.instanceOf[CountryOfResidenceInTheUkYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-//      contentAsString(result) mustEqual
-//        view(boundForm, draftId, index, name)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(boundForm, draftId, index, name.toString)(request, messages).toString
 
       application.stop()
     }

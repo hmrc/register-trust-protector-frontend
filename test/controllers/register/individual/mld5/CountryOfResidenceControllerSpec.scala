@@ -30,6 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
+import views.html.register.individual.mld5.CountryOfResidenceView
 
 class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
@@ -53,14 +54,14 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-//      val view = application.injector.instanceOf[CountryOfResidenceView]
+      val view = application.injector.instanceOf[CountryOfResidenceView]
 
       val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
       status(result) mustEqual OK
 
-//      contentAsString(result) mustEqual
-//        view(form, countryOptions, draftId, index, name)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form, countryOptions, draftId, index, name.toString)(request, messages).toString
 
       application.stop()
     }
@@ -74,7 +75,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       val request = FakeRequest(GET, countryOfResidence)
 
-//      val view = application.injector.instanceOf[CountryOfResidenceView]
+      val view = application.injector.instanceOf[CountryOfResidenceView]
 
       val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
@@ -82,8 +83,8 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual OK
 
-//      contentAsString(result) mustEqual
-//        view(form.fill("Spain"), countryOptions, draftId, index, name)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form.fill("Spain"), countryOptions, draftId, index, name.toString)(request, messages).toString
 
       application.stop()
     }
@@ -124,7 +125,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-//      val view = application.injector.instanceOf[CountryOfResidenceView]
+      val view = application.injector.instanceOf[CountryOfResidenceView]
 
       val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
@@ -132,8 +133,8 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual BAD_REQUEST
 
-//      contentAsString(result) mustEqual
-//        view(boundForm, countryOptions, draftId, index, name)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(boundForm, countryOptions, draftId, index, name.toString)(request, messages).toString
 
       application.stop()
     }

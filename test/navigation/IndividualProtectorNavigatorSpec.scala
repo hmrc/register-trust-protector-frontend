@@ -189,7 +189,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           baseAnswers =>
             val answers = baseAnswers.set(DateOfBirthYesNoPage(index), false).success.value
             navigator.nextPage(DateOfBirthYesNoPage(index), draftId, true, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+              .mustBe(mld5.NationalityYesNoController.onPageLoad(index, draftId))
         }
       }
 
@@ -198,7 +198,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           baseAnswers =>
             val answers = baseAnswers.set(NationalityYesNoPage(index), true).success.value
             navigator.nextPage(NationalityYesNoPage(index), draftId, true, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+              .mustBe(mld5.NationalityUkYesNoController.onPageLoad(index, draftId))
         }
       }
 
@@ -216,11 +216,11 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           baseAnswers =>
             val answers = baseAnswers.set(NationalityUkYesNoPage(index), false).success.value
             navigator.nextPage(NationalityUkYesNoPage(index), draftId, true, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(draftId))
+              .mustBe(mld5.NationalityController.onPageLoad(index, draftId))
         }
       }
 
-      "NationalityUkYesNoPage -> Yes -> NationalityUkYesNoPage" in {
+      "NationalityUkYesNoPage -> Yes -> NationalInsuranceYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           baseAnswers =>
             val answers = baseAnswers.set(NationalityUkYesNoPage(index), true).success.value

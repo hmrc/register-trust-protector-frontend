@@ -22,8 +22,6 @@
         @messages("error.summary.title")
     </h2>
 
-    @errors
-
     <ul role="list" class="error-summary-list">
         @for(error <- errors) {
         <li><a href="#@{errorHref(error)}">@messages(error.message, error.args:_*)</a></li>

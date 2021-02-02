@@ -55,6 +55,9 @@ POST       /:draftId/:index/uk-nationality                controllers.register.i
 GET        /:draftId/:index/nationality                 controllers.register.individual.mld5.NationalityController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/nationality                 controllers.register.individual.mld5.NationalityController.onSubmit(index: Int, draftId: String)
 
+GET        /:draftId/:index/legally-capable                 controllers.register.individual.mld5.LegallyCapableYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/legally-capable                 controllers.register.individual.mld5.LegallyCapableYesNoController.onSubmit(index: Int, draftId: String)
+
 GET        /:draftId/:index/check-details              controllers.register.individual.CheckDetailsController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/check-details              controllers.register.individual.CheckDetailsController.onSubmit(index: Int, draftId: String)
 

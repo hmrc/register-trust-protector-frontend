@@ -292,6 +292,37 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
+
+      "IDCardDetailsYesNoPage -> No -> LegallyCapablePage" in {
+        val answers = emptyUserAnswers
+          .set(IDCardDetailsYesNoPage(index), false).success.value
+
+        navigator.nextPage(IDCardDetailsYesNoPage(index), draftId, true, answers)
+          .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+      }
+
+      "PassportDetailsPage -> LegallyCapableYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) { answers =>
+          navigator.nextPage(PassportDetailsPage(index), draftId, true, answers)
+            .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "IdCardDetailsPage -> LegallyCapableYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) { answers =>
+          navigator.nextPage(IDCardDetailsPage(index), draftId, true, answers)
+            .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "LegallyCapableYesNoPage -> CheckDetailsPage" in {
+        forAll(arbitrary[UserAnswers]) { answers =>
+          navigator.nextPage(LegallyCapableYesNoPage(index), draftId, true, answers)
+            .mustBe(irts.CheckDetailsController.onPageLoad(index, draftId))
+        }
+      }
+
+
     }
   }
 }

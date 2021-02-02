@@ -41,8 +41,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case CountryOfResidencePage(index) => irts.AddressYesNoController.onPageLoad(index, draftId)
     case UkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case NonUkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case PassportDetailsPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
-    case IDCardDetailsPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case LegallyCapableYesNoPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
     case CheckDetailsPage => rts.AddAProtectorController.onPageLoad(draftId)
   }
 
@@ -81,6 +80,28 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
           irts.AddressYesNoController.onPageLoad(index, draftId)
         }
       )
+    case PassportDetailsPage(index) => _ =>
+      if(is5mld){
+        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+      } else {
+        irts.CheckDetailsController.onPageLoad(index, draftId)
+      }
+    case IDCardDetailsYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        IDCardDetailsYesNoPage(index),
+        irts.IDCardDetailsController.onPageLoad(index, draftId),
+        if(is5mld){
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+        } else {
+          irts.CheckDetailsController.onPageLoad(index, draftId)
+        })
+    case IDCardDetailsPage(index) => _ =>
+      if(is5mld){
+        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+      } else {
+        irts.CheckDetailsController.onPageLoad(index, draftId)
+      }
   }
 
   private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -102,12 +123,6 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         PassportDetailsYesNoPage(index),
         irts.PassportDetailsController.onPageLoad(index, draftId),
         irts.IDCardDetailsYesNoController.onPageLoad(index, draftId))
-    case IDCardDetailsYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        IDCardDetailsYesNoPage(index),
-        irts.IDCardDetailsController.onPageLoad(index, draftId),
-        irts.CheckDetailsController.onPageLoad(index, draftId))
     case NationalityYesNoPage(index) => ua =>
       yesNoNav(
         ua,

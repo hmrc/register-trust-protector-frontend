@@ -16,7 +16,7 @@
 
 package views
 
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
 
 object ViewUtils {
@@ -27,5 +27,21 @@ object ViewUtils {
 
   def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
     s"$title - ${messages("entities.protectors")} - ${messages("site.service_name")} - GOV.UK"
+  }
+
+  def errorHref(error: FormError): String = {
+
+    val suffix = error.args match {
+      case x if x.contains("day") || x.contains("month") || x.contains("year") =>
+        s"_${error.args.head}"
+      case Nil =>
+        val isSingleDateField = error.message.toLowerCase.contains("date")
+        if (error.key.toLowerCase.contains("date") || isSingleDateField) {
+          "_day"
+        } else {
+          ""
+        }
+    }
+    s"${error.key}$suffix"
   }
 }

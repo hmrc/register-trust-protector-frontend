@@ -21,6 +21,7 @@ import generators.Generators
 import models.{InternationalAddress, UkAddress}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register.business._
+import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 
 class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
@@ -43,9 +44,9 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
 
     "when user answers is not empty" must {
 
-      "return mapped data" when {
+      "map data" when {
 
-        "utr is set" in {
+        "name, utr is set" in {
           val userAnswers =
             emptyUserAnswers
               .set(NamePage(index0), "Business Name").success.value
@@ -57,11 +58,52 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
           businessProtectors mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
-            identification = Some(IdentificationOrgType(utr = Some("1234567890"), address = None))
+            identification = Some(IdentificationOrgType(utr = Some("1234567890"), address = None)),
+            countryOfResidence = None
           )
         }
 
-        "UK Address is set" in {
+        "name, utr, residency GB is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), "Business Name").success.value
+              .set(UtrYesNoPage(index0), true).success.value
+              .set(UtrPage(index0), "JP121212A").success.value
+              .set(CountryOfResidenceYesNoPage(index0), true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), true).success.value
+              .set(CountryOfResidencePage(index0), "GB").success.value
+
+          val businessProtectors = mapper.build(userAnswers)
+
+          businessProtectors mustBe defined
+          businessProtectors.value.head mustBe ProtectorCompany(
+            name = "Business Name",
+            identification = Some(IdentificationOrgType(utr = Some("JP121212A"), address = None)),
+            countryOfResidence = Some("GB")
+          )
+        }
+
+        "name, utr, residency country is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), "Business Name").success.value
+              .set(UtrYesNoPage(index0), true).success.value
+              .set(UtrPage(index0), "JP121212A").success.value
+              .set(CountryOfResidenceYesNoPage(index0), true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), false).success.value
+              .set(CountryOfResidencePage(index0), "FR").success.value
+
+          val businessProtectors = mapper.build(userAnswers)
+
+          businessProtectors mustBe defined
+          businessProtectors.value.head mustBe ProtectorCompany(
+            name = "Business Name",
+            identification = Some(IdentificationOrgType(utr = Some("JP121212A"), address = None)),
+            countryOfResidence = Some("FR")
+          )
+        }
+
+        "name, UK Address is set" in {
           val userAnswers =
             emptyUserAnswers
               .set(NamePage(index0), "Business Name").success.value
@@ -80,11 +122,12 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
               address = Some(
                 AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
               )
-            ))
+            )),
+            countryOfResidence = None
           )
         }
 
-        "International Address is set" in {
+        "name, International Address is set" in {
           val userAnswers =
             emptyUserAnswers
               .set(NamePage(index0), "Business Name").success.value
@@ -104,7 +147,35 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
               address = Some(
                 AddressType("Line1", "Line2", Some("Line3"), None, None, "US")
               )
-            ))
+            )),
+            countryOfResidence = None
+          )
+        }
+
+        "name, residency, address is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), "Business Name").success.value
+              .set(UtrYesNoPage(index0), false).success.value
+              .set(CountryOfResidenceYesNoPage(index0), true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), false).success.value
+              .set(CountryOfResidencePage(index0), "FR").success.value
+              .set(AddressYesNoPage(index0), true).success.value
+              .set(AddressUkYesNoPage(index0), true).success.value
+              .set(UkAddressPage(index0),
+                UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT")).success.value
+
+          val businessProtectors = mapper.build(userAnswers)
+
+          businessProtectors mustBe defined
+          businessProtectors.value.head mustBe ProtectorCompany(
+            name = "Business Name",
+            identification = Some(IdentificationOrgType(utr = None,
+              address = Some(
+                AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
+              )
+            )),
+            countryOfResidence = Some("FR")
           )
         }
 
@@ -132,8 +203,9 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
           List(
             ProtectorCompany(
               name = "Business Name 1",
-              identification = Some(IdentificationOrgType(utr = Some("1234567890"), address = None))),
-
+              identification = Some(IdentificationOrgType(utr = Some("1234567890"), address = None)),
+              countryOfResidence = None
+            ),
             ProtectorCompany(
               name = "Business Name 2",
               identification = Some(
@@ -142,7 +214,9 @@ class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
                   address = Some(
                     AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
                   ))
-              ))
+              ),
+              countryOfResidence = None
+            )
           )
       }
 

@@ -17,23 +17,59 @@
 package controllers.register
 
 import base.SpecBase
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.register.InfoView
+import services.FeatureFlagService
+import views.html.register.{InfoView, InfoView5MLD}
+
+import scala.concurrent.Future
 
 class InfoControllerSpec extends SpecBase {
 
+  lazy val mockFeatureFlagService: FeatureFlagService = mock[FeatureFlagService]
+
   "Info Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET with 5mld disabled" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
+        .thenReturn(Future.successful(false))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
+        bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+      ).build()
 
       val request = FakeRequest(GET, routes.InfoController.onPageLoad(fakeDraftId).url)
 
       val result = route(application, request).value
 
       val view = application.injector.instanceOf[InfoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(fakeDraftId)(request, messages).toString
+
+      application.stop()
+    }
+
+    "return OK and the correct view for a GET with 5mld enabled" in {
+
+      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
+        .thenReturn(Future.successful(true))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
+        bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+      ).build()
+
+      val request = FakeRequest(GET, routes.InfoController.onPageLoad(fakeDraftId).url)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[InfoView5MLD]
 
       status(result) mustEqual OK
 

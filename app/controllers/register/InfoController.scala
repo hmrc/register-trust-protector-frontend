@@ -20,18 +20,29 @@ import controllers.actions.StandardActionSets
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.register.InfoView
+import views.html.register.{InfoView, InfoView5MLD}
+
+import scala.concurrent.ExecutionContext
 
 class InfoController @Inject()(
                                 override val messagesApi: MessagesApi,
                                 standardActionSets: StandardActionSets,
                                 val controllerComponents: MessagesControllerComponents,
-                                view: InfoView
-                              ) extends FrontendBaseController with I18nSupport {
+                                view: InfoView,
+                                view5MLD: InfoView5MLD,
+                                featureFlagService: FeatureFlagService
+                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
+  def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
-      Ok(view(draftId))
+      featureFlagService.is5mldEnabled().map {
+        case true =>
+          Ok(view5MLD(draftId))
+        case _ =>
+          Ok(view(draftId))
+      }
+
   }
 }

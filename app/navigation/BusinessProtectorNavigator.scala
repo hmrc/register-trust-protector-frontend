@@ -23,6 +23,8 @@ import pages.Page
 import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
 import play.api.mvc.Call
 import controllers.register.business.{routes => brts}
+import controllers.register.business.mld5.{routes => mld5brts}
+import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 
 class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
@@ -32,11 +34,12 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
   override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
     routes(draftId)(page)(userAnswers)
 
-  private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
-    case NamePage(index) => brts.UtrYesNoController.onPageLoad(index, draftId)
-    case UtrPage(index) => brts.CheckDetailsController.onPageLoad(index, draftId)
-    case UkAddressPage(index) => brts.CheckDetailsController.onPageLoad(index, draftId)
-    case NonUkAddressPage(index) => brts.CheckDetailsController.onPageLoad(index, draftId)
+  private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case NamePage(index) => _ => brts.UtrYesNoController.onPageLoad(index, draftId)
+    case UtrPage(index) => ua => navigateAwayFromUtrPage(draftId, index, ua)
+    case UkAddressPage(index) => _ => brts.CheckDetailsController.onPageLoad(index, draftId)
+    case NonUkAddressPage(index) => _ => brts.CheckDetailsController.onPageLoad(index, draftId)
+    case CountryOfResidencePage(index) => ua => addressOrCheckAnswersRoute(draftId, index, ua)
   }
 
   private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -45,24 +48,68 @@ class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Na
         ua,
         UtrYesNoPage(index),
         brts.UtrController.onPageLoad(index, draftId),
-        brts.AddressYesNoController.onPageLoad(index, draftId))
+        navigateAwayFromUtrYesNoPage(draftId, index, ua)
+      )
     case AddressYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         AddressYesNoPage(index),
         brts.AddressUkYesNoController.onPageLoad(index, draftId),
-        brts.CheckDetailsController.onPageLoad(index, draftId))
+        brts.CheckDetailsController.onPageLoad(index, draftId)
+      )
     case AddressUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         AddressUkYesNoPage(index),
         brts.UkAddressController.onPageLoad(index, draftId),
-        brts.NonUkAddressController.onPageLoad(index, draftId))
+        brts.NonUkAddressController.onPageLoad(index, draftId)
+      )
+    case CountryOfResidenceYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        CountryOfResidenceYesNoPage(index),
+        mld5brts.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId),
+        addressOrCheckAnswersRoute(draftId, index, ua)
+      )
+    case CountryOfResidenceInTheUkYesNoPage(index) => ua =>
+      yesNoNav(
+        ua,
+        CountryOfResidenceInTheUkYesNoPage(index),
+        addressOrCheckAnswersRoute(draftId, index, ua),
+        mld5brts.CountryOfResidenceController.onPageLoad(index, draftId)
+      )
   }
 
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    simpleNavigation(draftId) andThen (c => (_:ReadableUserAnswers) => c) orElse
+    simpleNavigation(draftId) orElse
       yesNoNavigation(draftId)
+  }
+
+  private def addressOrCheckAnswersRoute(draftId: String, index: Int, userAnswers: ReadableUserAnswers): Call = {
+    userAnswers.get(UtrYesNoPage(index)) match {
+      case Some(true) =>
+        brts.CheckDetailsController.onPageLoad(index, draftId)
+      case Some(false) =>
+        brts.AddressYesNoController.onPageLoad(index, draftId)
+      case None =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromUtrPage(draftId: String, index: Int, userAnswers: ReadableUserAnswers): Call = {
+    if (userAnswers.is5mldEnabled) {
+      mld5brts.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
+    } else {
+      brts.CheckDetailsController.onPageLoad(index, draftId)
+    }
+  }
+
+  private def navigateAwayFromUtrYesNoPage(draftId: String, index: Int, userAnswers: ReadableUserAnswers): Call = {
+    if (userAnswers.is5mldEnabled) {
+      mld5brts.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
+    } else {
+      brts.AddressYesNoController.onPageLoad(index, draftId)
+    }
   }
 
 }

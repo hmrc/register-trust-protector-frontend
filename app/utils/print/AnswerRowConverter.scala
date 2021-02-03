@@ -47,6 +47,19 @@ class AnswerRowConverter @Inject()() {
       }
     }
 
+    def utrQuestion(query: Gettable[String],
+                       labelKey: String,
+                       changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map { x =>
+        AnswerRow(
+          s"$labelKey.checkYourAnswersLabel",
+          nino(x),
+          Some(changeUrl),
+          name
+        )
+      }
+    }
+
     def stringQuestion(query: Gettable[String],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {

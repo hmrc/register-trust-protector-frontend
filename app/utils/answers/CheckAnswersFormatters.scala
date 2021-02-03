@@ -22,7 +22,10 @@ import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress
 import pages.register.business.NamePage
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import uk.gov.hmrc.domain.Nino
 import utils.countryOptions.CountryOptions
+
+import scala.util.Try
 
 object CheckAnswersFormatters {
 
@@ -30,6 +33,13 @@ object CheckAnswersFormatters {
 
   def utr(answer: String): Html = {
     HtmlFormat.escape(answer)
+  }
+
+  def nino(answer: String) : Html = {
+    HtmlFormat.escape(
+      Try(Nino.apply(answer).formatted)
+      .getOrElse(answer)
+    )
   }
 
   def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {

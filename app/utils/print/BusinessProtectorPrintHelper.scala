@@ -23,6 +23,8 @@ import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 import controllers.register.business.{routes => brts}
+import controllers.register.business.mld5.{routes => mld5brts}
+import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 
 class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
                                              countryOptions: CountryOptions
@@ -49,7 +51,10 @@ class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
     Seq(
       bound.stringQuestion(NamePage(index), "businessProtector.name", brts.NameController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(UtrYesNoPage(index), "businessProtector.utrYesNo", brts.UtrYesNoController.onPageLoad(index, draftId).url),
-      bound.stringQuestion(UtrPage(index), "businessProtector.utr", brts.UtrController.onPageLoad(index, draftId).url),
+      bound.utrQuestion(UtrPage(index), "businessProtector.utr", brts.UtrController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage(index), "businessProtector.5mld.countryOfResidenceYesNo", mld5brts.CountryOfResidenceYesNoController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage(index), "businessProtector.5mld.countryOfResidenceInTheUkYesNo", mld5brts.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url),
+      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage(index), CountryOfResidencePage(index), "businessProtector.5mld.countryOfResidence", mld5brts.CountryOfResidenceController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(AddressYesNoPage(index), "businessProtector.addressYesNo", brts.AddressYesNoController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(AddressUkYesNoPage(index), "businessProtector.addressUkYesNo", brts.AddressUkYesNoController.onPageLoad(index, draftId).url),
       bound.addressQuestion(UkAddressPage(index), "site.address.uk", brts.UkAddressController.onPageLoad(index, draftId).url),

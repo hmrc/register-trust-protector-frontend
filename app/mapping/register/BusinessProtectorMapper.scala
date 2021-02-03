@@ -34,7 +34,8 @@ class BusinessProtectorMapper @Inject()(addressMapper: AddressMapper) extends Ma
           list.map { protector =>
             ProtectorCompany(
               name = protector.name,
-              identification = buildIdentification(protector)
+              identification = buildIdentification(protector),
+              countryOfResidence = protector.countryOfResidence
             )
           }
         )

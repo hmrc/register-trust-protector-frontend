@@ -22,9 +22,9 @@ import play.api.libs.json.{Format, Json}
 final case class BusinessProtector(name: String,
                                     utr: Option[String],
                                     ukAddress : Option[UkAddress],
-                                    internationalAddress : Option[InternationalAddress]
-                                   ) {
-}
+                                    internationalAddress : Option[InternationalAddress],
+                                    countryOfResidence: Option[String]
+                                   )
 
 object BusinessProtector {
   implicit val classFormat: Format[BusinessProtector] = Json.format[BusinessProtector]

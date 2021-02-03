@@ -35,7 +35,10 @@ class IndividualProtectorMapper @Inject()(addressMapper: AddressMapper) extends 
             Protector(
               name = protector.name,
               dateOfBirth = protector.dateOfBirth,
-              identification = buildIdentification(protector)
+              identification = buildIdentification(protector),
+              countryOfResidence = protector.countryOfResidence,
+              nationality = protector.nationality,
+              legallyIncapable = protector.legallyCapable
             )
           }
         )

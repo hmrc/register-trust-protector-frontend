@@ -66,7 +66,10 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
           individualProtectors.value.head mustBe Protector(
             name = FullName(firstName, None, lastName),
             dateOfBirth = None,
-            identification = Some(IdentificationType(nino = Some(nino), address = None, passport = None))
+            identification = Some(IdentificationType(nino = Some(nino), address = None, passport = None)),
+            None,
+            None,
+            None
           )
         }
 
@@ -91,7 +94,10 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
               address = Some(AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")),
               passport = None
             )),
-            dateOfBirth = None
+            dateOfBirth = None,
+            countryOfResidence = None,
+            nationality = None,
+            legallyIncapable = None
           )
         }
 
@@ -117,7 +123,10 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
               address = Some(AddressType("Line1", "Line2", Some("Line3"), None, None, "US")),
               passport = None
             )),
-            dateOfBirth = None
+            dateOfBirth = None,
+            countryOfResidence = None,
+            nationality = None,
+            legallyIncapable = None
           )
         }
 
@@ -144,7 +153,10 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
               address = Some(AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")),
               passport = Some(PassportType("12345", passportExpiry, "GB"))
             )),
-            dateOfBirth = Some(dateOfBirth)
+            dateOfBirth = Some(dateOfBirth),
+            countryOfResidence = None,
+            nationality = None,
+            legallyIncapable = None
           )
         }
       }
@@ -176,7 +188,11 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
             Protector(
               name = FullName("Individual Name 1", None, lastName),
               dateOfBirth = None,
-              identification = Some(IdentificationType(nino = Some(nino), address = None, passport = None))),
+              identification = Some(IdentificationType(nino = Some(nino), address = None, passport = None)),
+              countryOfResidence = None,
+              nationality = None,
+              legallyIncapable = None
+            ),
 
             Protector(
               name = FullName("Individual Name 2", None, lastName),
@@ -187,7 +203,11 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
                   address = Some(AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")),
                   passport = None
                 )
-              ))
+              ),
+              countryOfResidence = None,
+              nationality = None,
+              legallyIncapable = None
+            )
           )
       }
 

@@ -34,7 +34,11 @@ object ProtectorsType {
 
 case class Protector(name: FullName,
                      dateOfBirth: Option[LocalDate],
-                     identification: Option[IdentificationType])
+                     identification: Option[IdentificationType],
+                     countryOfResidence: Option[String],
+                     nationality: Option[String],
+                     legallyIncapable: Option[Boolean]
+                    )
 
 object Protector {
   implicit val protectorFormat: Format[Protector] = Json.format[Protector]

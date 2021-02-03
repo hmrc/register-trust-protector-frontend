@@ -40,6 +40,12 @@ class ViewUtilsSpec extends ViewSpecBase {
       result mustBe "value"
     }
 
+    "not refer to date field when error has arguments" in {
+      val error = FormError(key = "value", message = "name.error.required", args = Seq("^[A-Za-z0-9 ,.()/&'-]*$"))
+      val result = ViewUtils.errorHref(error)
+      result mustBe "value"
+    }
+
   }
 
 }

@@ -24,6 +24,6 @@ final case class LegallyCapableYesNoPage(index : Int) extends QuestionPage[Boole
 
   override def path: JsPath = IndividualProtectors.path \ index \ toString
 
-  override def toString: String = "legallyCapableYesNo"
+  override def toString: String = "legallyCapable"
 
 }

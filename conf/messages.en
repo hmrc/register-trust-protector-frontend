@@ -278,6 +278,28 @@ individualProtector.5mld.countryOfResidence.error.required = Enter a country
 individualProtector.5mld.countryOfResidence.error.length = The country of residence must be 100 characters or less
 individualProtector.5mld.countryOfResidence.error.invalidCharacters = The country of residence must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
 
+individualProtector.5mld.nationalityYesNo.checkYourAnswersLabel = Do you know {0}’s country of nationality?
+individualProtector.5mld.nationalityYesNo.title = Do you know the protector’s country of nationality?
+individualProtector.5mld.nationalityYesNo.heading = Do you know {0}’s country of nationality?
+individualProtector.5mld.nationalityYesNo.error.required = Select yes if you know the nationality’s country of residence
+
+individualProtector.5mld.nationalityUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
+individualProtector.5mld.nationalityUkYesNo.title = Does the protector have UK nationality?
+individualProtector.5mld.nationalityUkYesNo.heading = Does {0} have UK nationality?
+individualProtector.5mld.nationalityUkYesNo.error.required = Select yes if the protector has UK nationality
+
+individualProtector.5mld.nationality.title = What is the protector’s country of nationality?
+individualProtector.5mld.nationality.heading = What is {0}’s country of nationality?
+individualProtector.5mld.nationality.checkYourAnswersLabel = What is {0}’s country of nationality?
+individualProtector.5mld.nationality.error.required = Enter a country
+individualProtector.5mld.nationality.error.length = The country of nationality must be 100 characters or less
+individualProtector.5mld.nationality.error.invalidCharacters = The country of nationality must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
+
+individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel = Does {0} have mental capacity at time of registration?
+individualProtector.5mld.legallyCapableYesNo.title = Does the protector have mental capacity at time of registration?
+individualProtector.5mld.legallyCapableYesNo.heading = Does {0} have mental capacity at time of registration?
+individualProtector.5mld.legallyCapableYesNo.error.required = Select yes if the protector has mental capacity at time of registration
+
 
 individualProtector.checkDetails.title = Check individual protector details
 individualProtector.checkDetails.heading = Check individual protector details

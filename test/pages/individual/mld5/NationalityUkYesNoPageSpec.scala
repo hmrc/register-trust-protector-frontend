@@ -31,7 +31,7 @@ class NationalityUkYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](NationalityUkYesNoPage(0))
 
-    "Yes selected - set CountryOfResidencePage to 'GB' " in {
+    "Yes selected - set NationalityPage to 'GB' " in {
       forAll(arbitrary[UserAnswers]) {
         initial =>
           val answers: UserAnswers = initial.set(NationalityYesNoPage(0), false).success.value

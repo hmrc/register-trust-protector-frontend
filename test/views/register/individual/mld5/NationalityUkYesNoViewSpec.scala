@@ -30,7 +30,7 @@ class NationalityUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(prefix)
 
-  "countryOfResidenceInTheUkYesNo view" must {
+  "NationalityUkYesNo view" must {
 
     val view = viewFor[NationalityUkYesNoView](Some(emptyUserAnswers))
 

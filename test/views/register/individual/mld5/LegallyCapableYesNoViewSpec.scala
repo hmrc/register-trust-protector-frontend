@@ -30,7 +30,7 @@ class LegallyCapableYesNoViewSpec extends YesNoViewBehaviours {
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(prefix)
 
-  "legallyCapable view" must {
+  "legallyCapableYesNo view" must {
 
     val view = viewFor[LegallyCapableYesNoView](Some(emptyUserAnswers))
 

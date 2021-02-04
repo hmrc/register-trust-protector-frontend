@@ -257,12 +257,12 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         }
       }
 
-      "CountryOfResidenceYesNoPage -> No -> PassportDetailsYesNoPage" in {
+      "CountryOfResidenceYesNoPage -> No -> AddressYesNoPage" in {
         forAll(arbitrary[UserAnswers]) {
           baseAnswers =>
             val answers = baseAnswers.set(CountryOfResidenceYesNoPage(index), false).success.value
             navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
-              .mustBe(irts.PassportDetailsYesNoController.onPageLoad(index, draftId))
+              .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
         }
       }
 

@@ -35,14 +35,14 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
     routes(draftId, is5mld)(page)(userAnswers)
 
-  private def simpleNavigation(draftId: String): PartialFunction[Page, Call] = {
-    case NamePage(index) => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
-    case NationalityPage(index) => irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
-    case CountryOfResidencePage(index) => irts.AddressYesNoController.onPageLoad(index, draftId)
-    case UkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case NonUkAddressPage(index) => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case LegallyCapableYesNoPage(index) => irts.CheckDetailsController.onPageLoad(index, draftId)
-    case CheckDetailsPage => rts.AddAProtectorController.onPageLoad(draftId)
+  private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case NamePage(index) => _ => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
+    case NationalityPage(index) => _ => irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
+    case CountryOfResidencePage(index) => _ => irts.AddressYesNoController.onPageLoad(index, draftId)
+    case UkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
+    case NonUkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
+    case LegallyCapableYesNoPage(index) => _ => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case CheckDetailsPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
   }
 
   private def is5mldNav(draftId: String, is5mld: Boolean) : PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -150,8 +150,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   }
 
   private def routes(draftId: String, is5mld: Boolean): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    simpleNavigation(draftId) andThen (c => (_:ReadableUserAnswers) => c) orElse
-      yesNoNavigation(draftId) orElse is5mldNav(draftId, is5mld)
+    simpleNavigation(draftId) orElse yesNoNavigation(draftId) orElse is5mldNav(draftId, is5mld)
   }
 
 }

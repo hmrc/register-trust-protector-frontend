@@ -38,7 +38,7 @@ class IndividualProtectorMapper @Inject()(addressMapper: AddressMapper) extends 
               identification = buildIdentification(protector),
               countryOfResidence = protector.countryOfResidence,
               nationality = protector.nationality,
-              legallyIncapable = protector.legallyCapable
+              legallyIncapable = protector.legallyCapable.map(!_)
             )
           }
         )

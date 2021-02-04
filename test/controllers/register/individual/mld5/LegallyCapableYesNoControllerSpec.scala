@@ -39,7 +39,7 @@ class LegallyCapableYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val legallyCapable: String = routes.LegallyCapableYesNoController.onPageLoad(index, draftId).url
 
-  "CountryOfResidenceYesNo Controller" must {
+  "LegallyCapableYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 

@@ -26,7 +26,7 @@ import controllers.register.business.{routes => brts}
 import controllers.register.business.mld5.{routes => mld5brts}
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 
-class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
+class BusinessProtectorNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
     nextPage(page, draftId, false, userAnswers)

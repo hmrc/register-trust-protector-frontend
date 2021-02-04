@@ -263,7 +263,7 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
               identification = None,
               None,
               None,
-              Some(true)
+              Some(false)
             )
           }
         }

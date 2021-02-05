@@ -249,3 +249,7 @@ $error-colour: #d4351c;
 .clearfix {
     @include govuk-clearfix;
 }
+
+.no-details details summary .arrow-closed {
+  display: none;
+}

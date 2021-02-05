@@ -19,12 +19,10 @@ package mapping.register
 import javax.inject.Inject
 import mapping.Mapping
 import models.UserAnswers
-import play.api.Logger
+import play.api.Logging
 
 class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorMapper,
-                                 businessProtectorMapper: BusinessProtectorMapper) extends Mapping[ProtectorsType] {
-
-  private val logger: Logger = Logger(getClass)
+                                 businessProtectorMapper: BusinessProtectorMapper) extends Mapping[ProtectorsType] with Logging {
 
   override def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
 

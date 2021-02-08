@@ -21,16 +21,14 @@ import controllers.actions.register
 import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import pages.QuestionPage
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result}
 import viewmodels.addAnother.ProtectorViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: String)(implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[RegistrationDataRequest, ProtectorRequiredRequest] {
-
-  private val logger: Logger = Logger(getClass)
+  extends ActionRefiner[RegistrationDataRequest, ProtectorRequiredRequest] with Logging {
 
   override protected def refine[A](request: RegistrationDataRequest[A]): Future[Either[Result, ProtectorRequiredRequest[A]]] = {
     Future.successful(

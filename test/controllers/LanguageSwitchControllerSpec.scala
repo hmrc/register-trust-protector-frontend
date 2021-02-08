@@ -20,7 +20,6 @@ import base.SpecBase
 import config.FrontendAppConfig
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

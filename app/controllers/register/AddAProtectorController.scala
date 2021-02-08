@@ -24,12 +24,12 @@ import models.Enumerable
 import models.register.pages.AddAProtector.NoComplete
 import navigation.Navigator
 import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, TrustHasProtectorYesNoPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.RegistrationsRepository
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAProtectorViewHelper
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
@@ -48,9 +48,7 @@ class AddAProtectorController @Inject()(
                                            yesNoView: TrustHasProtectorYesNoView,
                                            config: FrontendAppConfig
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Enumerable.Implicits with AnyProtectors {
-
-  private val logger: Logger = Logger(getClass)
+  with I18nSupport with Enumerable.Implicits with AnyProtectors with Logging {
 
   private val addAnotherForm = addAnotherFormProvider()
   private val yesNoForm = yesNoFormProvider.withPrefix("trustHasProtectorYesNo")

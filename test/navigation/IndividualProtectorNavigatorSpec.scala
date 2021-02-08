@@ -17,6 +17,7 @@
 package navigation
 
 import base.SpecBase
+import controllers.register.individual.mld5.{routes => mld5}
 import controllers.register.individual.{routes => irts}
 import controllers.register.{routes => rts}
 import generators.Generators
@@ -24,6 +25,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.individual._
+import pages.register.individual.mld5._
 
 class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -178,6 +180,164 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           navigator.nextPage(CheckDetailsPage, draftId, userAnswers)
             .mustBe(rts.AddAProtectorController.onPageLoad(draftId))
       }
+    }
+
+    "in 5mld" when {
+
+      "DateOfBirthYesNoPage -> No -> NationalityYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(DateOfBirthYesNoPage(index), false).success.value
+            navigator.nextPage(DateOfBirthYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.NationalityYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityYesNoPage -> Yes -> NationalityUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityYesNoPage(index), true).success.value
+            navigator.nextPage(NationalityYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.NationalityUkYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityYesNoPage -> No -> NationalInsuranceYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityYesNoPage(index), false).success.value
+            navigator.nextPage(NationalityYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityUkYesNoPage -> No -> NationalityPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityUkYesNoPage(index), false).success.value
+            navigator.nextPage(NationalityUkYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.NationalityController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityUkYesNoPage -> Yes -> NationalInsuranceYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalityUkYesNoPage(index), true).success.value
+            navigator.nextPage(NationalityUkYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "NationalityPage -> NationalInsuranceYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(NationalityPage(index), draftId, true, userAnswers)
+              .mustBe(irts.NationalInsuranceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+
+
+      "NationalInsuranceYesNoPage -> No -> CountryOfResidenceYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(NationalInsuranceYesNoPage(index), false).success.value
+            navigator.nextPage(NationalInsuranceYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidenceYesNoPage -> Yes -> CountryOfResidenceUkYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceYesNoPage(index), true).success.value
+            navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidenceYesNoPage -> No -> AddressYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers
+              .set(CountryOfResidenceYesNoPage(index), false).success.value
+              .set(NationalInsuranceYesNoPage(index), false).success.value
+
+            navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidenceYesNoPage -> No -> LegallyCapableYesNo" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers
+              .set(CountryOfResidenceYesNoPage(index), false).success.value
+              .set(NationalInsuranceYesNoPage(index), true).success.value
+
+            navigator.nextPage(CountryOfResidenceYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidenceUkYesNoPage -> No -> CountryOfResidencePage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, true, answers)
+              .mustBe(mld5.CountryOfResidenceController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidenceUkYesNoPage -> Yes -> AddressYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          baseAnswers =>
+            val answers = baseAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), true).success.value
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, true, answers)
+              .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "CountryOfResidencePage -> AddressYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(CountryOfResidencePage(index), draftId, true, userAnswers)
+              .mustBe(irts.AddressYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+
+      "IDCardDetailsYesNoPage -> No -> LegallyCapablePage" in {
+        val answers = emptyUserAnswers
+          .set(IDCardDetailsYesNoPage(index), false).success.value
+
+        navigator.nextPage(IDCardDetailsYesNoPage(index), draftId, true, answers)
+          .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+      }
+
+      "PassportDetailsPage -> LegallyCapableYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) { answers =>
+          navigator.nextPage(PassportDetailsPage(index), draftId, true, answers)
+            .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "IdCardDetailsPage -> LegallyCapableYesNoPage" in {
+        forAll(arbitrary[UserAnswers]) { answers =>
+          navigator.nextPage(IDCardDetailsPage(index), draftId, true, answers)
+            .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
+        }
+      }
+
+      "LegallyCapableYesNoPage -> CheckDetailsPage" in {
+        forAll(arbitrary[UserAnswers]) { answers =>
+          navigator.nextPage(LegallyCapableYesNoPage(index), draftId, true, answers)
+            .mustBe(irts.CheckDetailsController.onPageLoad(index, draftId))
+        }
+      }
+
+
     }
   }
 }

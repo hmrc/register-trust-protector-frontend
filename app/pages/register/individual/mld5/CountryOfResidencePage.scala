@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.register.individual.mld5
 
-import models.ReadableUserAnswers
-import pages._
-import play.api.mvc.Call
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.IndividualProtectors
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
+final case class CountryOfResidencePage(index : Int) extends QuestionPage[String] {
 
-  override def nextPage(page: Page, fakeDraftId: String, userAnswers: ReadableUserAnswers): Call = desiredRoute
+  override def path: JsPath = IndividualProtectors.path \ index \ toString
 
-  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call = desiredRoute
+  override def toString: String = "countryOfResidence"
 
 }

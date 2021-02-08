@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.individual.mld5
 
-import models.ReadableUserAnswers
-import pages._
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
+import pages.register.individual.mld5.LegallyCapableYesNoPage
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
+class LegallyCapableYesNoPageSpec extends PageBehaviours {
 
-  override def nextPage(page: Page, fakeDraftId: String, userAnswers: ReadableUserAnswers): Call = desiredRoute
+  "LegallyCapableYesNoPage" must {
 
-  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call = desiredRoute
+    beRetrievable[Boolean](LegallyCapableYesNoPage(0))
+
+    beSettable[Boolean](LegallyCapableYesNoPage(0))
+
+    beRemovable[Boolean](LegallyCapableYesNoPage(0))
+  }
 
 }

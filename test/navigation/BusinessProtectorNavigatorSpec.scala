@@ -28,7 +28,7 @@ import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, Country
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new BusinessProtectorNavigator(frontendAppConfig)
+  val navigator = new BusinessProtectorNavigator()
   val index = 0
 
   "Business protector navigator" must {

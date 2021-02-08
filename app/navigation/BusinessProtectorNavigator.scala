@@ -26,9 +26,13 @@ import controllers.register.business.{routes => brts}
 import controllers.register.business.mld5.{routes => mld5brts}
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 
-class BusinessProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
+class BusinessProtectorNavigator @Inject()() extends Navigator {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = routes(draftId)(page)(userAnswers)
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
+    nextPage(page, draftId, false, userAnswers)
+
+  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
+    routes(draftId)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case NamePage(index) => _ => brts.UtrYesNoController.onPageLoad(index, draftId)

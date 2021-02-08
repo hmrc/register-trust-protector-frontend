@@ -18,7 +18,9 @@ package utils.print
 
 import com.google.inject.Inject
 import controllers.register.individual.{routes => irts}
+import controllers.register.individual.mld5.{routes => mld5}
 import models.UserAnswers
+import pages.register.individual.mld5._
 import pages.register.individual._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -50,6 +52,12 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
       bound.nameQuestion(NamePage(index), "individualProtector.name", irts.NameController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(DateOfBirthYesNoPage(index), "individualProtector.dateOfBirthYesNo", irts.DateOfBirthYesNoController.onPageLoad(index, draftId).url),
       bound.dateQuestion(DateOfBirthPage(index), "individualProtector.dateOfBirth", irts.DateOfBirthController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage(index), "individualProtector.5mld.countryOfResidenceYesNo", mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage(index), "individualProtector.5mld.countryOfResidenceInTheUkYesNo", mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url),
+      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage(index), CountryOfResidencePage(index), "individualProtector.5mld.countryOfResidence", mld5.CountryOfResidenceController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(NationalityYesNoPage(index), "individualProtector.5mld.nationalityYesNo", mld5.NationalityYesNoController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(NationalityUkYesNoPage(index), "individualProtector.5mld.nationalityUkYesNo", mld5.NationalityUkYesNoController.onPageLoad(index, draftId).url),
+      bound.countryQuestion(NationalityUkYesNoPage(index), NationalityPage(index), "individualProtector.5mld.nationality", mld5.NationalityController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(NationalInsuranceYesNoPage(index), "individualProtector.nationalInsuranceYesNo", irts.NationalInsuranceYesNoController.onPageLoad(index, draftId).url),
       bound.stringQuestion(NationalInsuranceNumberPage(index), "individualProtector.nationalInsuranceNumber", irts.NationalInsuranceNumberController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(AddressYesNoPage(index), "individualProtector.addressYesNo", irts.AddressYesNoController.onPageLoad(index, draftId).url),
@@ -59,7 +67,8 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
       bound.yesNoQuestion(PassportDetailsYesNoPage(index), "individualProtector.passportDetailsYesNo", irts.PassportDetailsYesNoController.onPageLoad(index, draftId).url),
       bound.passportDetailsQuestion(PassportDetailsPage(index), "individualProtector.passportDetails", irts.PassportDetailsController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(IDCardDetailsYesNoPage(index), "individualProtector.idCardDetailsYesNo", irts.IDCardDetailsYesNoController.onPageLoad(index, draftId).url),
-      bound.passportDetailsQuestion(IDCardDetailsPage(index), "individualProtector.idCardDetails", irts.IDCardDetailsController.onPageLoad(index, draftId).url)
+      bound.passportDetailsQuestion(IDCardDetailsPage(index), "individualProtector.idCardDetails", irts.IDCardDetailsController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(LegallyCapableYesNoPage(index), "individualProtector.5mld.legallyCapableYesNo", mld5.LegallyCapableYesNoController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

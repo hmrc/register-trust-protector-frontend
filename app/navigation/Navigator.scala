@@ -24,10 +24,16 @@ trait Navigator {
 
   def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call
 
+  def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call
+
   def yesNoNav(ua: ReadableUserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  def is5mld(is5mld: Boolean, yesCall: => Call, noCall: => Call): Call = {
+    if (is5mld) yesCall else noCall
   }
 
 }

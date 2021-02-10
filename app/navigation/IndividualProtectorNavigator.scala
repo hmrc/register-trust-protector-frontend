@@ -65,7 +65,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
       )
     case NationalInsuranceNumberPage(index) => _ =>
       if(is5mld) {
-        controllers.routes.IndexController.onPageLoad(draftId)
+        mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
       } else {
         mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
       }

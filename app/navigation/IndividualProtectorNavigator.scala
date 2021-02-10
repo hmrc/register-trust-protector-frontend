@@ -102,15 +102,20 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
       } else {
         irts.CheckDetailsController.onPageLoad(index, draftId)
       }
-  }
-
-  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
     case AddressYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         AddressYesNoPage(index),
         irts.AddressUkYesNoController.onPageLoad(index, draftId),
-        irts.CheckDetailsController.onPageLoad(index, draftId))
+        if(is5mld){
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+        } else {
+          irts.CheckDetailsController.onPageLoad(index, draftId)
+        }
+      )
+  }
+
+  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
     case AddressUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,

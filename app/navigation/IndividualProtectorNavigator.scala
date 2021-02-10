@@ -30,7 +30,7 @@ import play.api.mvc.Call
 class IndividualProtectorNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
-    nextPage(page, draftId, false, userAnswers)
+    nextPage(page, draftId, userAnswers.is5mldEnabled, userAnswers)
 
   override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
     routes(draftId, is5mld)(page)(userAnswers)

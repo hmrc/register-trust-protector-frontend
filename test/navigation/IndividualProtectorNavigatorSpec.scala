@@ -90,7 +90,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(NationalInsuranceNumberPage(index), draftId, userAnswers)
-            .mustBe(irts.CheckDetailsController.onPageLoad(index, draftId))
+            .mustBe(mld5.LegallyCapableYesNoController.onPageLoad(index, draftId))
       }
     }
     

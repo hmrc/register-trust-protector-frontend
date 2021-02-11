@@ -38,7 +38,6 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case NamePage(index) => _ => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
     case NationalityPage(index) => _ => irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
-    case CountryOfResidencePage(index) => _ => irts.AddressYesNoController.onPageLoad(index, draftId)
     case UkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case NonUkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case LegallyCapableYesNoPage(index) => _ => irts.CheckDetailsController.onPageLoad(index, draftId)
@@ -112,6 +111,17 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         } else {
           irts.CheckDetailsController.onPageLoad(index, draftId)
         }
+      )
+    case CountryOfResidencePage(index) => ua =>
+      yesNoNav(
+        ua,
+        NationalInsuranceYesNoPage(index),
+        if(is5mld){
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+        } else {
+          irts.CheckDetailsController.onPageLoad(index, draftId)
+        },
+        irts.AddressYesNoController.onPageLoad(index, draftId)
       )
   }
 

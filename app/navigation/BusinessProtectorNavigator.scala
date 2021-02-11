@@ -16,22 +16,19 @@
 
 package navigation
 
-import config.FrontendAppConfig
-import javax.inject.Inject
+import controllers.register.business.mld5.{routes => mld5brts}
+import controllers.register.business.{routes => brts}
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
-import play.api.mvc.Call
-import controllers.register.business.{routes => brts}
-import controllers.register.business.mld5.{routes => mld5brts}
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.register.business._
+import play.api.mvc.Call
+
+import javax.inject.Inject
 
 class BusinessProtectorNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
-    nextPage(page, draftId, false, userAnswers)
-
-  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
     routes(draftId)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {

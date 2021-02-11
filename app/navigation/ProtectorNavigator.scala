@@ -34,9 +34,6 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
     route(draftId, config)(page)(userAnswers)
 
-  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call =
-    nextPage(page, draftId, userAnswers)
-
   private def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case AnswersPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
     case AddAProtectorPage => addProtectorRoute(draftId, config)

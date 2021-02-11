@@ -165,7 +165,12 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
       yesNoNav(
         ua,
         CountryOfResidenceInTheUkYesNoPage(index),
-        irts.AddressYesNoController.onPageLoad(index, draftId),
+        yesNoNav(
+          ua,
+          NationalInsuranceYesNoPage(index),
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId),
+          irts.AddressYesNoController.onPageLoad(index, draftId)
+        ),
         mld5.CountryOfResidenceController.onPageLoad(index, draftId))
   }
 

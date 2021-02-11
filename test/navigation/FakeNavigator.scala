@@ -24,6 +24,4 @@ class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Naviga
 
   override def nextPage(page: Page, fakeDraftId: String, userAnswers: ReadableUserAnswers): Call = desiredRoute
 
-  override def nextPage(page: Page, draftId: String, is5mld: Boolean, userAnswers: ReadableUserAnswers): Call = desiredRoute
-
 }

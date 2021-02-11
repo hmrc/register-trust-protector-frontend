@@ -18,17 +18,16 @@ package controllers
 
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
-import controllers.register.AnyProtectors
-import javax.inject.Inject
+import controllers.register.{AnyProtectors, routes => rts}
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import controllers.register.{routes => rts}
 import services.FeatureFlagService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
@@ -37,12 +36,19 @@ class IndexController @Inject()(
                                  identify: RegistrationIdentifierAction,
                                  featureFlagService: FeatureFlagService,
                                  submissionDraftConnector: SubmissionDraftConnector
-                               ) extends FrontendBaseController with I18nSupport with AnyProtectors {
-
-  implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with AnyProtectors {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
+
+    def redirect(userAnswers: UserAnswers): Future[Result] = {
+      repository.set(userAnswers) map { _ =>
+        if (isAnyProtectorAdded(userAnswers)) {
+          Redirect(rts.AddAProtectorController.onPageLoad(draftId))
+        } else {
+          Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
+        }
+      }
+    }
 
     featureFlagService.is5mldEnabled() flatMap {
       is5mldEnabled =>
@@ -50,23 +56,12 @@ class IndexController @Inject()(
           isTaxable =>
             repository.get(draftId) flatMap {
               case Some(userAnswers) =>
-                val ua = userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable)
-                Future.successful(redirect(ua, draftId))
+                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
               case _ =>
                 val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable)
-                repository.set(userAnswers) map {
-                  _ => redirect(userAnswers, draftId)
-                }
+                redirect(userAnswers)
             }
         }
-    }
-  }
-
-  private def redirect(userAnswers: UserAnswers, draftId: String) = {
-    if (isAnyProtectorAdded(userAnswers)) {
-      Redirect(rts.AddAProtectorController.onPageLoad(draftId))
-    } else {
-      Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
     }
   }
 }

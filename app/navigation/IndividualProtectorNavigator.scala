@@ -66,7 +66,15 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         ua,
         AddressYesNoPage(index),
         irts.AddressUkYesNoController.onPageLoad(index, draftId),
-        irts.CheckDetailsController.onPageLoad(index, draftId))
+        navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled)
+      )
+    case CountryOfResidencePage(index) => ua =>
+      yesNoNav(
+        ua,
+        NationalInsuranceYesNoPage(index),
+        navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled),
+        irts.AddressYesNoController.onPageLoad(index, draftId)
+      )
     case AddressUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,

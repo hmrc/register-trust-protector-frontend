@@ -18,7 +18,6 @@ package utils.answers
 
 import base.SpecBase
 import play.api.i18n.{Lang, MessagesImpl}
-import play.twirl.api.Html
 
 import java.time.LocalDate
 

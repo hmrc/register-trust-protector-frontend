@@ -16,20 +16,26 @@
 
 package utils.answers
 
-import java.time.format.DateTimeFormatter
-
 import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers}
+import org.joda.time.{LocalDate => JodaDate}
 import pages.register.business.NamePage
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
 
+import java.time.{LocalDate => JavaDate}
+import javax.inject.Inject
 import scala.util.Try
 
-object CheckAnswersFormatters {
+class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
+                                       countryOptions: CountryOptions) {
 
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+  def formatDate(date: JavaDate)(implicit messages: Messages): String = {
+    val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
+    languageUtils.Dates.formatDate(convertedDate)
+  }
 
   def utr(answer: String): Html = {
     HtmlFormat.escape(answer)
@@ -50,7 +56,7 @@ object CheckAnswersFormatters {
     }
   }
 
-  def country(code: String, countryOptions: CountryOptions)(implicit messages: Messages): String =
+  def country(code: String)(implicit messages: Messages): String =
     countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
 
   def answer[T](key: String, answer: T)(implicit messages: Messages): Html =
@@ -75,31 +81,31 @@ object CheckAnswersFormatters {
     Html(lines.mkString("<br />"))
   }
 
-  def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
+  def internationalAddress(address: InternationalAddress)(implicit messages: Messages): Html = {
     val lines =
       Seq(
         Some(HtmlFormat.escape(address.line1)),
         Some(HtmlFormat.escape(address.line2)),
         address.line3.map(HtmlFormat.escape),
-        Some(country(address.country, countryOptions))
+        Some(country(address.country))
       ).flatten
 
     Html(lines.mkString("<br />"))
   }
 
-  def addressFormatter(address: Address, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
+  def addressFormatter(address: Address)(implicit messages: Messages): Html = {
     address match {
       case a:UkAddress => ukAddress(a)
-      case a:InternationalAddress => internationalAddress(a, countryOptions)
+      case a:InternationalAddress => internationalAddress(a)
     }
   }
 
-  def passportOrIDCard(passportOrIdCard: PassportOrIdCardDetails, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
+  def passportOrIDCard(passportOrIdCard: PassportOrIdCardDetails)(implicit messages: Messages): Html = {
     val lines =
       Seq(
-        Some(country(passportOrIdCard.country, countryOptions)),
+        Some(country(passportOrIdCard.country)),
         Some(HtmlFormat.escape(passportOrIdCard.cardNumber)),
-        Some(HtmlFormat.escape(passportOrIdCard.expiryDate.format(dateFormatter)))
+        Some(HtmlFormat.escape(formatDate(passportOrIdCard.expiryDate)))
       ).flatten
 
     Html(lines.mkString("<br />"))

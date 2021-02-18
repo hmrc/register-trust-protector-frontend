@@ -17,18 +17,15 @@
 package utils.print
 
 import com.google.inject.Inject
-import controllers.register.individual.{routes => irts}
 import controllers.register.individual.mld5.{routes => mld5}
+import controllers.register.individual.{routes => irts}
 import models.UserAnswers
-import pages.register.individual.mld5._
 import pages.register.individual._
+import pages.register.individual.mld5._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 
-class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                               countryOptions: CountryOptions
-                                          ) {
+class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def printSection(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
@@ -46,7 +43,7 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
 
   def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)
              (implicit messages: Messages): Seq[AnswerRow] = {
-    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name, countryOptions)
+    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     Seq(
       bound.nameQuestion(NamePage(index), "individualProtector.name", irts.NameController.onPageLoad(index, draftId).url),

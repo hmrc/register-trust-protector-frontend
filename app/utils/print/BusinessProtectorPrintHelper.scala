@@ -17,18 +17,15 @@
 package utils.print
 
 import com.google.inject.Inject
+import controllers.register.business.mld5.{routes => mld5brts}
+import controllers.register.business.{routes => brts}
 import models.UserAnswers
 import pages.register.business._
-import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection}
-import controllers.register.business.{routes => brts}
-import controllers.register.business.mld5.{routes => mld5brts}
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import play.api.i18n.Messages
+import viewmodels.{AnswerRow, AnswerSection}
 
-class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                             countryOptions: CountryOptions
-                                          ) {
+class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def printSection(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
@@ -46,7 +43,7 @@ class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
 
   def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)
              (implicit messages: Messages): Seq[AnswerRow] = {
-    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name, countryOptions)
+    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     Seq(
       bound.stringQuestion(NamePage(index), "businessProtector.name", brts.NameController.onPageLoad(index, draftId).url),

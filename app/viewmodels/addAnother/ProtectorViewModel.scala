@@ -23,6 +23,8 @@ import scala.language.implicitConversions
 trait ProtectorViewModel {
   val status: Status
   def displayName: Option[String]
+
+  def isComplete: Boolean = displayName.nonEmpty && (status == Status.Completed)
 }
 
 object ProtectorViewModel {

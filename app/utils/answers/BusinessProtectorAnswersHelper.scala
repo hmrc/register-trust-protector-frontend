@@ -16,22 +16,15 @@
 
 package utils.answers
 
-import javax.inject.Inject
-import models.UserAnswers
-import play.api.i18n.Messages
+import pages.QuestionPage
 import sections.BusinessProtectors
 import utils.print.BusinessProtectorPrintHelper
-import viewmodels.AnswerSection
+import viewmodels.addAnother.BusinessProtectorViewModel
 
-class BusinessProtectorAnswersHelper @Inject()(businessProtectorPrintHelper: BusinessProtectorPrintHelper) {
+import javax.inject.Inject
 
-  def businessProtectors(userAnswers: UserAnswers)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
-    for {
-      protectors <- userAnswers.get(BusinessProtectors)
-      indexed = protectors.zipWithIndex
-    } yield indexed.map {
-      case (protectorViewModel, index) =>
-        businessProtectorPrintHelper.printSection(userAnswers, protectorViewModel.name.getOrElse(""), index, userAnswers.draftId)
-    }
-  }
+class BusinessProtectorAnswersHelper @Inject()(printHelper: BusinessProtectorPrintHelper)
+  extends AnswersHelper[BusinessProtectorViewModel](printHelper) {
+
+  override val protectorType: QuestionPage[List[BusinessProtectorViewModel]] = BusinessProtectors
 }

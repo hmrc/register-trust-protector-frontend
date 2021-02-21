@@ -28,6 +28,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
   private val helper: BusinessProtectorPrintHelper = injector.instanceOf[BusinessProtectorPrintHelper]
   private val index: Int = 0
   private val name: String = "Business Name"
+  private val utr: String = "1234567890"
 
   "BusinessProtectorPrintHelper" must {
 
@@ -37,9 +38,9 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage(index), name).success.value
           .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), "JP121212A").success.value
+          .set(UtrPage(index), utr).success.value
 
-        val result = helper.printSection(userAnswers, name, index, draftId)
+        val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
           headingKey = Some("Business protector 1"),
           rows = Seq(
@@ -51,7 +52,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
-            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html("JP 12 12 12 A"),
+            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html(utr),
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             )
@@ -63,11 +64,11 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage(index), name).success.value
           .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), "JP121212A").success.value
+          .set(UtrPage(index), utr).success.value
           .set(CountryOfResidenceYesNoPage(index), true).success.value
           .set(CountryOfResidenceInTheUkYesNoPage(index), true).success.value
 
-        val result = helper.printSection(userAnswers, name, index, draftId)
+        val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
           headingKey = Some("Business protector 1"),
           rows = Seq(
@@ -79,7 +80,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
-            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html("JP 12 12 12 A"),
+            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html(utr),
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
@@ -99,12 +100,12 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage(index), name).success.value
           .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), "JP121212A").success.value
+          .set(UtrPage(index), utr).success.value
           .set(CountryOfResidenceYesNoPage(index), true).success.value
           .set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
           .set(CountryOfResidencePage(index), "FR").success.value
 
-        val result = helper.printSection(userAnswers, name, index, draftId)
+        val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
           headingKey = Some("Business protector 1"),
           rows = Seq(
@@ -116,7 +117,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
-            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html("JP 12 12 12 A"),
+            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html(utr),
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
@@ -140,7 +141,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage(index), name).success.value
           .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), "JP121212A").success.value
+          .set(UtrPage(index), utr).success.value
           .set(CountryOfResidenceYesNoPage(index), true).success.value
           .set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
           .set(CountryOfResidencePage(index), "FR").success.value
@@ -148,7 +149,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
           .set(AddressUkYesNoPage(index), true).success.value
           .set(UkAddressPage(index), UkAddress("Line 1", "Line 2", postcode = "NE981ZZ")).success.value
 
-        val result = helper.printSection(userAnswers, name, index, draftId)
+        val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
           headingKey = Some("Business protector 1"),
           rows = Seq(
@@ -160,7 +161,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
-            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html("JP 12 12 12 A"),
+            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html(utr),
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
@@ -196,7 +197,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage(index), name).success.value
           .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), "JP121212A").success.value
+          .set(UtrPage(index), utr).success.value
           .set(CountryOfResidenceYesNoPage(index), true).success.value
           .set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
           .set(CountryOfResidencePage(index), "FR").success.value
@@ -204,7 +205,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
           .set(AddressUkYesNoPage(index), false).success.value
           .set(NonUkAddressPage(index), InternationalAddress("Line 1", "Line 2", country = "FR")).success.value
 
-        val result = helper.printSection(userAnswers, name, index, draftId)
+        val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
           headingKey = Some("Business protector 1"),
           rows = Seq(
@@ -216,7 +217,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
-            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html("JP 12 12 12 A"),
+            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html(utr),
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
@@ -252,13 +253,13 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage(index), name).success.value
           .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), "JP121212A").success.value
+          .set(UtrPage(index), utr).success.value
           .set(CountryOfResidenceYesNoPage(index), true).success.value
           .set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
           .set(CountryOfResidencePage(index), "FR").success.value
           .set(AddressYesNoPage(index), false).success.value
 
-        val result = helper.printSection(userAnswers, name, index, draftId)
+        val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
           headingKey = Some("Business protector 1"),
           rows = Seq(
@@ -270,7 +271,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             ),
-            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html("JP 12 12 12 A"),
+            AnswerRow("businessProtector.utr.checkYourAnswersLabel", Html(utr),
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             ),

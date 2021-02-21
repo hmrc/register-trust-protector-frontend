@@ -17,55 +17,43 @@
 package utils.print
 
 import com.google.inject.Inject
-import controllers.register.individual.mld5.{routes => mld5}
-import controllers.register.individual.{routes => irts}
+import controllers.register.individual.mld5.routes._
+import controllers.register.individual.routes._
 import models.UserAnswers
 import pages.register.individual._
 import pages.register.individual.mld5._
 import play.api.i18n.Messages
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.AnswerRow
 
-class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) extends PrintHelper {
 
-  def printSection(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit messages: Messages): AnswerSection = {
-    AnswerSection(
-      Some(Messages("answerPage.section.individualProtector.subheading", index + 1)),
-      answers(userAnswers, name, index, draftId)
-    )
-  }
+  override val protectorType: String = "individualProtector"
 
-  def checkDetailsSection(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit messages: Messages): AnswerSection = {
-    AnswerSection(
-      None,
-      answers(userAnswers, name, index, draftId)
-    )
-  }
-
-  def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)
-             (implicit messages: Messages): Seq[AnswerRow] = {
+  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)
+                      (implicit messages: Messages): Seq[AnswerRow] = {
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     Seq(
-      bound.nameQuestion(NamePage(index), "individualProtector.name", irts.NameController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(DateOfBirthYesNoPage(index), "individualProtector.dateOfBirthYesNo", irts.DateOfBirthYesNoController.onPageLoad(index, draftId).url),
-      bound.dateQuestion(DateOfBirthPage(index), "individualProtector.dateOfBirth", irts.DateOfBirthController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(NationalityYesNoPage(index), "individualProtector.5mld.nationalityYesNo", mld5.NationalityYesNoController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(NationalityUkYesNoPage(index), "individualProtector.5mld.nationalityUkYesNo", mld5.NationalityUkYesNoController.onPageLoad(index, draftId).url),
-      bound.countryQuestion(NationalityUkYesNoPage(index), NationalityPage(index), "individualProtector.5mld.nationality", mld5.NationalityController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(NationalInsuranceYesNoPage(index), "individualProtector.nationalInsuranceYesNo", irts.NationalInsuranceYesNoController.onPageLoad(index, draftId).url),
-      bound.stringQuestion(NationalInsuranceNumberPage(index), "individualProtector.nationalInsuranceNumber", irts.NationalInsuranceNumberController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(CountryOfResidenceYesNoPage(index), "individualProtector.5mld.countryOfResidenceYesNo", mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage(index), "individualProtector.5mld.countryOfResidenceInTheUkYesNo", mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url),
-      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage(index), CountryOfResidencePage(index), "individualProtector.5mld.countryOfResidence", mld5.CountryOfResidenceController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(AddressYesNoPage(index), "individualProtector.addressYesNo", irts.AddressYesNoController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(AddressUkYesNoPage(index), "individualProtector.addressUkYesNo", irts.AddressUkYesNoController.onPageLoad(index, draftId).url),
-      bound.addressQuestion(UkAddressPage(index), "site.address.uk", irts.UkAddressController.onPageLoad(index, draftId).url),
-      bound.addressQuestion(NonUkAddressPage(index), "site.address.international", irts.NonUkAddressController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(PassportDetailsYesNoPage(index), "individualProtector.passportDetailsYesNo", irts.PassportDetailsYesNoController.onPageLoad(index, draftId).url),
-      bound.passportDetailsQuestion(PassportDetailsPage(index), "individualProtector.passportDetails", irts.PassportDetailsController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(IDCardDetailsYesNoPage(index), "individualProtector.idCardDetailsYesNo", irts.IDCardDetailsYesNoController.onPageLoad(index, draftId).url),
-      bound.passportDetailsQuestion(IDCardDetailsPage(index), "individualProtector.idCardDetails", irts.IDCardDetailsController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(LegallyCapableYesNoPage(index), "individualProtector.5mld.legallyCapableYesNo", mld5.LegallyCapableYesNoController.onPageLoad(index, draftId).url)
+      bound.nameQuestion(NamePage(index), "individualProtector.name", NameController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(DateOfBirthYesNoPage(index), "individualProtector.dateOfBirthYesNo", DateOfBirthYesNoController.onPageLoad(index, draftId).url),
+      bound.dateQuestion(DateOfBirthPage(index), "individualProtector.dateOfBirth", DateOfBirthController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(NationalityYesNoPage(index), "individualProtector.5mld.nationalityYesNo", NationalityYesNoController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(NationalityUkYesNoPage(index), "individualProtector.5mld.nationalityUkYesNo", NationalityUkYesNoController.onPageLoad(index, draftId).url),
+      bound.countryQuestion(NationalityUkYesNoPage(index), NationalityPage(index), "individualProtector.5mld.nationality", NationalityController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(NationalInsuranceYesNoPage(index), "individualProtector.nationalInsuranceYesNo", NationalInsuranceYesNoController.onPageLoad(index, draftId).url),
+      bound.ninoQuestion(NationalInsuranceNumberPage(index), "individualProtector.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage(index), "individualProtector.5mld.countryOfResidenceYesNo", CountryOfResidenceYesNoController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage(index), "individualProtector.5mld.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url),
+      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage(index), CountryOfResidencePage(index), "individualProtector.5mld.countryOfResidence", CountryOfResidenceController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(AddressYesNoPage(index), "individualProtector.addressYesNo", AddressYesNoController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(AddressUkYesNoPage(index), "individualProtector.addressUkYesNo", AddressUkYesNoController.onPageLoad(index, draftId).url),
+      bound.addressQuestion(UkAddressPage(index), "site.address.uk", UkAddressController.onPageLoad(index, draftId).url),
+      bound.addressQuestion(NonUkAddressPage(index), "site.address.international", NonUkAddressController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(PassportDetailsYesNoPage(index), "individualProtector.passportDetailsYesNo", PassportDetailsYesNoController.onPageLoad(index, draftId).url),
+      bound.passportDetailsQuestion(PassportDetailsPage(index), "individualProtector.passportDetails", PassportDetailsController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(IDCardDetailsYesNoPage(index), "individualProtector.idCardDetailsYesNo", IDCardDetailsYesNoController.onPageLoad(index, draftId).url),
+      bound.passportDetailsQuestion(IDCardDetailsPage(index), "individualProtector.idCardDetails", IDCardDetailsController.onPageLoad(index, draftId).url),
+      bound.yesNoQuestion(LegallyCapableYesNoPage(index), "individualProtector.5mld.legallyCapableYesNo", LegallyCapableYesNoController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

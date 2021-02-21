@@ -16,22 +16,15 @@
 
 package utils.answers
 
-import javax.inject.Inject
-import models.UserAnswers
-import play.api.i18n.Messages
+import pages.QuestionPage
 import sections.IndividualProtectors
 import utils.print.IndividualProtectorPrintHelper
-import viewmodels.AnswerSection
+import viewmodels.addAnother.IndividualProtectorViewModel
 
-class IndividualProtectorAnswersHelper @Inject()(individualProtectorPrintHelper: IndividualProtectorPrintHelper) {
+import javax.inject.Inject
 
-  def individualProtectors(userAnswers: UserAnswers)(implicit messages: Messages): Option[Seq[AnswerSection]] = {
-    for {
-      protectors <- userAnswers.get(IndividualProtectors)
-      indexed = protectors.zipWithIndex
-    } yield indexed.map {
-      case (protectorViewModel, index) =>
-        individualProtectorPrintHelper.printSection(userAnswers, protectorViewModel.name.map(_.toString).getOrElse(""), index, userAnswers.draftId)
-    }
-  }
+class IndividualProtectorAnswersHelper @Inject()(printHelper: IndividualProtectorPrintHelper)
+  extends AnswersHelper[IndividualProtectorViewModel](printHelper) {
+
+  override val protectorType: QuestionPage[List[IndividualProtectorViewModel]] = IndividualProtectors
 }

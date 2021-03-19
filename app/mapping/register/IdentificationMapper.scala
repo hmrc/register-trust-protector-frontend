@@ -16,10 +16,10 @@
 
 package mapping.register
 
-import models.{Address, AddressType, InternationalAddress, UkAddress}
+import models.{Address, AddressType, InternationalAddress, PassportOrIdCardDetails, PassportType, UkAddress}
 import utils.Constants.GB
 
-object AddressMapper {
+object IdentificationMapper {
 
   def buildAddress(address: Address): Option[AddressType] = {
     address match {
@@ -48,6 +48,10 @@ object AddressMapper {
       postCode = None,
       country = address.country
     )
+  }
+
+  def buildPassport(details: PassportOrIdCardDetails): Option[PassportType] = {
+    Some(PassportType(details.cardNumber, details.expiryDate, details.country))
   }
 
 }

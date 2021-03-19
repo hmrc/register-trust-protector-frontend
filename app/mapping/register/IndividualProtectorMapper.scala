@@ -17,7 +17,7 @@
 package mapping.register
 
 import mapping.reads.{IndividualProtector, IndividualProtectors}
-import models.{IdentificationType, PassportOrIdCardDetails, PassportType, Protector}
+import models.Protector
 import pages.QuestionPage
 
 class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
@@ -27,42 +27,9 @@ class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
   override def protectorType(protector: IndividualProtector): Protector = Protector(
     name = protector.name,
     dateOfBirth = protector.dateOfBirth,
-    identification = buildIdentification(protector),
+    identification = protector.identification,
     countryOfResidence = protector.countryOfResidence,
     nationality = protector.nationality,
     legallyIncapable = protector.legallyCapable.map(!_)
   )
-
-  private def buildIdentification(protector: IndividualProtector): Option[IdentificationType] = {
-    val nino = protector.nationalInsuranceNumber
-    val address = protector.address
-    val passport = protector.passportDetails
-    val idCard = protector.idCardDetails
-    (nino, address, passport, idCard) match {
-      case (None, None, None, None) =>
-        None
-      case (Some(_), _, _, _) =>
-        Some(IdentificationType(
-          nino = nino,
-          passport = None,
-          address = None
-        ))
-      case (_, _, _, _) =>
-        Some(IdentificationType(
-          nino = None,
-          passport = buildPassportOrIdCard(protector.passportDetails, protector.idCardDetails),
-          address = address
-        ))
-    }
-  }
-
-  private def buildPassportOrIdCard(passport: Option[PassportOrIdCardDetails], idCardDetails: Option[PassportOrIdCardDetails]): Option[PassportType] =
-    (passport, idCardDetails) match {
-      case (Some(passport), _) => buildPassport(passport)
-      case (_, Some(idCard)) => buildPassport(idCard)
-      case _ => None
-    }
-
-  private def buildPassport(details: PassportOrIdCardDetails): Option[PassportType] =
-    Some(PassportType(details.cardNumber, details.expiryDate, details.country))
 }

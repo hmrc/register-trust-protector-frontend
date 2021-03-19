@@ -16,16 +16,19 @@
 
 package mapping.reads
 
-import mapping.register.AddressMapper.buildAddress
+import mapping.register.IdentificationMapper.buildAddress
 import models.{AddressType, InternationalAddress, UkAddress}
 
 trait Protector {
   def ukAddress: Option[UkAddress]
   def internationalAddress: Option[InternationalAddress]
 
-  def address: Option[AddressType] = (ukAddress, internationalAddress) match {
-    case (Some(a), _) => buildAddress(a)
-    case (_, Some(a)) => buildAddress(a)
+  def address: Option[AddressType] = buildValue(ukAddress, internationalAddress)(buildAddress)
+
+  def buildValue[A, B](o1: Option[A], o2: Option[A])
+                      (build: A => Option[B]): Option[B] = (o1, o2) match {
+    case (Some(v), _) => build(v)
+    case (_, Some(v)) => build(v)
     case _ => None
   }
 }

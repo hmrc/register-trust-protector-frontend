@@ -16,20 +16,22 @@
 
 package mapping.register
 
-import mapping.reads.{IndividualProtector, IndividualProtectors}
-import models.Protector
+import models.UserAnswers
 import pages.QuestionPage
+import play.api.libs.json.Reads
 
-class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
+trait Mapper[A, B] {
 
-  override def section: QuestionPage[List[IndividualProtector]] = IndividualProtectors
+  def build(userAnswers: UserAnswers)(implicit rds: Reads[B]): Option[List[A]] = {
 
-  override def protectorType(protector: IndividualProtector): Protector = Protector(
-    name = protector.name,
-    dateOfBirth = protector.dateOfBirth,
-    identification = protector.identification,
-    countryOfResidence = protector.countryOfResidence,
-    nationality = protector.nationality,
-    legallyIncapable = protector.legallyCapable.map(!_)
-  )
+    userAnswers.get(section).getOrElse(List.empty) match {
+      case Nil => None
+      case list => Some(list.map(protectorType))
+    }
+  }
+
+  def section: QuestionPage[List[B]]
+
+  def protectorType(protector: B): A
+
 }

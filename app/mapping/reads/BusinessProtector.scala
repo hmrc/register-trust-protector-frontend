@@ -20,12 +20,11 @@ import models.{InternationalAddress, UkAddress}
 import play.api.libs.json.{Format, Json}
 
 final case class BusinessProtector(name: String,
-                                    utr: Option[String],
-                                    ukAddress : Option[UkAddress],
-                                    internationalAddress : Option[InternationalAddress],
-                                    countryOfResidence: Option[String]
-                                   )
+                                   utr: Option[String],
+                                   ukAddress: Option[UkAddress],
+                                   internationalAddress: Option[InternationalAddress],
+                                   countryOfResidence: Option[String]) extends Protector
 
 object BusinessProtector {
-  implicit val classFormat: Format[BusinessProtector] = Json.format[BusinessProtector]
+  implicit val formats: Format[BusinessProtector] = Json.format[BusinessProtector]
 }

@@ -17,10 +17,9 @@
 package mapping.register
 
 import java.time.LocalDate
-
 import base.SpecBase
 import generators.Generators
-import models.{FullName, InternationalAddress, PassportOrIdCardDetails, UkAddress}
+import models.{AddressType, FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, PassportType, Protector, UkAddress}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register.individual._
 import pages.register.individual.mld5._

@@ -16,24 +16,30 @@
 
 package mapping.reads
 
-import java.time.LocalDate
-
-import models.{FullName, InternationalAddress, PassportOrIdCardDetails, UkAddress}
+import mapping.register.IdentificationMapper.buildPassport
+import models.{FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, UkAddress}
 import play.api.libs.json.{Format, Json}
+
+import java.time.LocalDate
 
 final case class IndividualProtector(name: FullName,
                                      dateOfBirth: Option[LocalDate],
                                      nationalInsuranceNumber: Option[String],
-                                     ukAddress : Option[UkAddress],
-                                     internationalAddress : Option[InternationalAddress],
+                                     ukAddress: Option[UkAddress],
+                                     internationalAddress: Option[InternationalAddress],
                                      passportDetails: Option[PassportOrIdCardDetails],
                                      idCardDetails: Option[PassportOrIdCardDetails],
                                      countryOfResidence: Option[String],
                                      nationality: Option[String],
-                                     legallyCapable: Option[Boolean]
-                                    ) {
+                                     legallyCapable: Option[Boolean]) extends Protector {
+
+  val identification: Option[IdentificationType] = (nationalInsuranceNumber, address, passportDetails, idCardDetails) match {
+    case (None, None, None, None) => None
+    case (Some(_), _, _, _) => Some(IdentificationType(nationalInsuranceNumber, None, None))
+    case _ => Some(IdentificationType(None, buildValue(passportDetails, idCardDetails)(buildPassport), address))
+  }
 }
 
 object IndividualProtector {
-  implicit val classFormat: Format[IndividualProtector] = Json.format[IndividualProtector]
+  implicit val formats: Format[IndividualProtector] = Json.format[IndividualProtector]
 }

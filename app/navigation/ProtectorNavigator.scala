@@ -93,4 +93,3 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
   }
 
 }
-

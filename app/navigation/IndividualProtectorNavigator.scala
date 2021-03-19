@@ -179,4 +179,3 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   }
 
 }
-

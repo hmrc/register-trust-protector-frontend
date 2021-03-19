@@ -16,38 +16,25 @@
 
 package mapping.register
 
-import javax.inject.Inject
-import mapping.Mapping
 import mapping.reads.{BusinessProtector, BusinessProtectors}
-import models.UserAnswers
+import models.{IdentificationOrgType, ProtectorCompany}
+import pages.QuestionPage
 
-class BusinessProtectorMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[ProtectorCompany]] {
-  override def build(userAnswers: UserAnswers): Option[List[ProtectorCompany]] = {
+class BusinessProtectorMapper extends Mapper[ProtectorCompany, BusinessProtector] {
 
-    val protectors: List[BusinessProtector] =
-      userAnswers.get(BusinessProtectors).getOrElse(List.empty)
+  override def section: QuestionPage[List[BusinessProtector]] = BusinessProtectors
 
-    protectors match {
-      case Nil => None
-      case list =>
-        Some(
-          list.map { protector =>
-            ProtectorCompany(
-              name = protector.name,
-              identification = buildIdentification(protector),
-              countryOfResidence = protector.countryOfResidence
-            )
-          }
-        )
-    }
-  }
+  override def protectorType(protector: BusinessProtector): ProtectorCompany = ProtectorCompany(
+    name = protector.name,
+    identification = buildIdentification(protector),
+    countryOfResidence = protector.countryOfResidence
+  )
 
   private def buildIdentification(protector: BusinessProtector): Option[IdentificationOrgType] = {
     (protector.utr, protector.ukAddress, protector.internationalAddress) match {
       case (None, None, None) => None
       case (Some(utr),_ , _) => Some(IdentificationOrgType(Some(utr), None))
-      case (None, Some(address), _) => Some(IdentificationOrgType(None, addressMapper.build(address)))
-      case (None, _, Some(address)) => Some(IdentificationOrgType(None, addressMapper.build(address)))
+      case _ => Some(IdentificationOrgType(None, protector.address))
     }
   }
 }

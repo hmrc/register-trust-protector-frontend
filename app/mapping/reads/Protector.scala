@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package mapping
+package mapping.reads
 
-import models.UserAnswers
+import mapping.register.IdentificationMapper.buildAddress
+import models.{AddressType, InternationalAddress, UkAddress}
 
-trait Mapping[T] {
+trait Protector {
+  def ukAddress: Option[UkAddress]
+  def internationalAddress: Option[InternationalAddress]
 
-  def build(userAnswers: UserAnswers) : Option[T]
+  def address: Option[AddressType] = buildValue(ukAddress, internationalAddress)(buildAddress)
 
+  def buildValue[A, B](o1: Option[A], o2: Option[A])
+                      (build: A => Option[B]): Option[B] = (o1, o2) match {
+    case (Some(v), _) => build(v)
+    case (_, Some(v)) => build(v)
+    case _ => None
+  }
 }

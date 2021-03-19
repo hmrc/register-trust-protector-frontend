@@ -19,7 +19,9 @@ package viewmodels.addAnother
 import models.Status
 import play.api.libs.json.{Reads, _}
 
-case class BusinessProtectorViewModel(name: Option[String], override val status: Status) extends ProtectorViewModel {
+case class BusinessProtectorViewModel(name: Option[String],
+                                      status: Status) extends ProtectorViewModel {
+
   override def displayName: Option[String] = name
 }
 
@@ -32,5 +34,3 @@ object BusinessProtectorViewModel {
       (__ \ "status").readWithDefault[Status](Status.InProgress)
     )(BusinessProtectorViewModel.apply _)
 }
-
-

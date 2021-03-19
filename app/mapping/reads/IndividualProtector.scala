@@ -36,10 +36,10 @@ final case class IndividualProtector(name: FullName,
   val identification: Option[IdentificationType] = (nationalInsuranceNumber, address, passportDetails, idCardDetails) match {
     case (None, None, None, None) => None
     case (Some(_), _, _, _) => Some(IdentificationType(nationalInsuranceNumber, None, None))
-    case (_, _, _, _) => Some(IdentificationType(None, buildValue(passportDetails, idCardDetails)(buildPassport), address))
+    case _ => Some(IdentificationType(None, buildValue(passportDetails, idCardDetails)(buildPassport), address))
   }
 }
 
 object IndividualProtector {
-  implicit val classFormat: Format[IndividualProtector] = Json.format[IndividualProtector]
+  implicit val formats: Format[IndividualProtector] = Json.format[IndividualProtector]
 }

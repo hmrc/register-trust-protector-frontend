@@ -26,5 +26,5 @@ final case class BusinessProtector(name: String,
                                    countryOfResidence: Option[String]) extends Protector
 
 object BusinessProtector {
-  implicit val classFormat: Format[BusinessProtector] = Json.format[BusinessProtector]
+  implicit val formats: Format[BusinessProtector] = Json.format[BusinessProtector]
 }

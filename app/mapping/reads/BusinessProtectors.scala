@@ -20,7 +20,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.{BusinessProtectors => section}
 
-case object BusinessProtectors extends QuestionPage[List[BusinessProtector]]{
+case object BusinessProtectors extends QuestionPage[List[BusinessProtector]] {
   override def path: JsPath = section.path
   override def toString: String = section.toString
 }

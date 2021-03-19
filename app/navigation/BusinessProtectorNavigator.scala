@@ -110,4 +110,3 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
   }
 
 }
-

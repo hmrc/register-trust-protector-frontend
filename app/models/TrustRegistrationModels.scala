@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package mapping.register
+package models
+
+import play.api.libs.json._
 
 import java.time.LocalDate
-
-import models.FullName
-import play.api.libs.json._
 
 /**
   * Trust Registration API Schema - definitions models below
@@ -37,8 +36,7 @@ case class Protector(name: FullName,
                      identification: Option[IdentificationType],
                      countryOfResidence: Option[String],
                      nationality: Option[String],
-                     legallyIncapable: Option[Boolean]
-                    )
+                     legallyIncapable: Option[Boolean])
 
 object Protector {
   implicit val protectorFormat: Format[Protector] = Json.format[Protector]
@@ -46,8 +44,7 @@ object Protector {
 
 case class ProtectorCompany(name: String,
                             identification: Option[IdentificationOrgType],
-                            countryOfResidence: Option[String]
-                           )
+                            countryOfResidence: Option[String])
 
 object ProtectorCompany {
   implicit val protectorCompanyFormat: Format[ProtectorCompany] = Json.format[ProtectorCompany]
@@ -86,6 +83,3 @@ case class AddressType(line1: String,
 object AddressType {
   implicit val addressTypeFormat: Format[AddressType] = Json.format[AddressType]
 }
-
-
-

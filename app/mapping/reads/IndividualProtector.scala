@@ -16,23 +16,21 @@
 
 package mapping.reads
 
-import java.time.LocalDate
-
 import models.{FullName, InternationalAddress, PassportOrIdCardDetails, UkAddress}
 import play.api.libs.json.{Format, Json}
+
+import java.time.LocalDate
 
 final case class IndividualProtector(name: FullName,
                                      dateOfBirth: Option[LocalDate],
                                      nationalInsuranceNumber: Option[String],
-                                     ukAddress : Option[UkAddress],
-                                     internationalAddress : Option[InternationalAddress],
+                                     ukAddress: Option[UkAddress],
+                                     internationalAddress: Option[InternationalAddress],
                                      passportDetails: Option[PassportOrIdCardDetails],
                                      idCardDetails: Option[PassportOrIdCardDetails],
                                      countryOfResidence: Option[String],
                                      nationality: Option[String],
-                                     legallyCapable: Option[Boolean]
-                                    ) {
-}
+                                     legallyCapable: Option[Boolean]) extends Protector
 
 object IndividualProtector {
   implicit val classFormat: Format[IndividualProtector] = Json.format[IndividualProtector]

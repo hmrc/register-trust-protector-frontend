@@ -16,15 +16,16 @@
 
 package mapping.reads
 
-import models.{InternationalAddress, UkAddress}
-import play.api.libs.json.{Format, Json}
+import mapping.register.AddressMapper.buildAddress
+import models.{AddressType, InternationalAddress, UkAddress}
 
-final case class BusinessProtector(name: String,
-                                   utr: Option[String],
-                                   ukAddress: Option[UkAddress],
-                                   internationalAddress: Option[InternationalAddress],
-                                   countryOfResidence: Option[String]) extends Protector
+trait Protector {
+  def ukAddress: Option[UkAddress]
+  def internationalAddress: Option[InternationalAddress]
 
-object BusinessProtector {
-  implicit val classFormat: Format[BusinessProtector] = Json.format[BusinessProtector]
+  def address: Option[AddressType] = (ukAddress, internationalAddress) match {
+    case (Some(a), _) => buildAddress(a)
+    case (_, Some(a)) => buildAddress(a)
+    case _ => None
+  }
 }

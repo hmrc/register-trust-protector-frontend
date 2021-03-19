@@ -16,19 +16,19 @@
 
 package mapping.register
 
-import javax.inject.Inject
-import mapping.Mapping
-import models.UserAnswers
+import models.{ProtectorsType, UserAnswers}
 import play.api.Logging
 
-class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorMapper,
-                                 businessProtectorMapper: BusinessProtectorMapper) extends Mapping[ProtectorsType] with Logging {
+import javax.inject.Inject
 
-  override def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
+class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorMapper,
+                                 businessProtectorMapper: BusinessProtectorMapper) extends Logging {
+
+  def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
 
     val business = businessProtectorMapper.build(userAnswers)
     val individual = individualProtectorMapper.build(userAnswers)
-    val all= Seq(individual, business).flatten.flatten
+    val all = Seq(individual, business).flatten.flatten
 
     if (all.nonEmpty) {
       Some(

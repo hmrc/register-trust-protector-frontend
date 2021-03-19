@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package pages.register.business.mld5
+package mapping.register
 
 import models.UserAnswers
 import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.BusinessProtectors
-import utils.Constants.GB
+import play.api.libs.json.Reads
 
-import scala.util.Try
+trait Mapper[A, B] {
 
-final case class CountryOfResidenceInTheUkYesNoPage(index : Int) extends QuestionPage[Boolean] {
+  def build(userAnswers: UserAnswers)(implicit rds: Reads[B]): Option[List[A]] = {
 
-  override def path: JsPath = BusinessProtectors.path \ index \ toString
-
-  override def toString: String = "countryOfResidenceInTheUkYesNo"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(true) => userAnswers.set(CountryOfResidencePage(index), GB)
-      case _ => super.cleanup(value, userAnswers)
+    userAnswers.get(section).getOrElse(List.empty) match {
+      case Nil => None
+      case list => Some(list.map(protectorType))
     }
+  }
+
+  def section: QuestionPage[List[B]]
+
+  def protectorType(protector: B): A
+
 }

@@ -20,6 +20,7 @@ import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.IndividualProtectors
+import utils.Constants.GB
 
 import scala.util.Try
 
@@ -31,7 +32,7 @@ final case class NationalityUkYesNoPage(index : Int) extends QuestionPage[Boolea
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) => userAnswers.set(NationalityPage(index), "GB")
+      case Some(true) => userAnswers.set(NationalityPage(index), GB)
       case _ => super.cleanup(value, userAnswers)
     }
 }

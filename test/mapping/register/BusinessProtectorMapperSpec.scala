@@ -18,7 +18,7 @@ package mapping.register
 
 import base.SpecBase
 import generators.Generators
-import models.{InternationalAddress, UkAddress}
+import models.{AddressType, IdentificationOrgType, InternationalAddress, ProtectorCompany, UkAddress}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register.business._
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}

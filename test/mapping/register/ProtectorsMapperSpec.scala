@@ -18,7 +18,6 @@ package mapping.register
 
 import base.SpecBase
 import generators.Generators
-import mapping.Mapping
 import models.FullName
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register._
@@ -26,7 +25,7 @@ import pages.register._
 class ProtectorsMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val protectorsMapper : Mapping[ProtectorsType] = injector.instanceOf[ProtectorsMapper]
+  val protectorsMapper: ProtectorsMapper = injector.instanceOf[ProtectorsMapper]
 
   "ProtectorsMapper" when {
 

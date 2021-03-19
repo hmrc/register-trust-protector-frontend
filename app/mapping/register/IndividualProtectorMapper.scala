@@ -16,64 +16,53 @@
 
 package mapping.register
 
-import javax.inject.Inject
-import mapping.Mapping
 import mapping.reads.{IndividualProtector, IndividualProtectors}
-import models.{PassportOrIdCardDetails, UserAnswers}
+import models.{IdentificationType, PassportOrIdCardDetails, PassportType, Protector}
+import pages.QuestionPage
 
-class IndividualProtectorMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[Protector]] {
-  override def build(userAnswers: UserAnswers): Option[List[Protector]] = {
+class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
 
-    val protectors: List[IndividualProtector] =
-      userAnswers.get(IndividualProtectors).getOrElse(List.empty)
+  override def section: QuestionPage[List[IndividualProtector]] = IndividualProtectors
 
-    protectors match {
-      case Nil => None
-      case list =>
-        Some(
-          list.map { protector =>
-            Protector(
-              name = protector.name,
-              dateOfBirth = protector.dateOfBirth,
-              identification = buildIdentification(protector),
-              countryOfResidence = protector.countryOfResidence,
-              nationality = protector.nationality,
-              legallyIncapable = protector.legallyCapable.map(!_)
-            )
-          }
-        )
-    }
-  }
+  override def protectorType(protector: IndividualProtector): Protector = Protector(
+    name = protector.name,
+    dateOfBirth = protector.dateOfBirth,
+    identification = buildIdentification(protector),
+    countryOfResidence = protector.countryOfResidence,
+    nationality = protector.nationality,
+    legallyIncapable = protector.legallyCapable.map(!_)
+  )
 
   private def buildIdentification(protector: IndividualProtector): Option[IdentificationType] = {
     val nino = protector.nationalInsuranceNumber
-    val address = (protector.ukAddress, protector.internationalAddress) match {
-      case (None, None) => None
-      case (Some(address), _) => addressMapper.build(address)
-      case (_, Some(address)) => addressMapper.build(address)
-    }
+    val address = protector.address
     val passport = protector.passportDetails
     val idCard = protector.idCardDetails
     (nino, address, passport, idCard) match {
-      case (None, None, None, None) => None
-      case (Some(_), _, _, _) => Some(IdentificationType(nino, None, None))
+      case (None, None, None, None) =>
+        None
+      case (Some(_), _, _, _) =>
+        Some(IdentificationType(
+          nino = nino,
+          passport = None,
+          address = None
+        ))
       case (_, _, _, _) =>
         Some(IdentificationType(
           nino = None,
           passport = buildPassportOrIdCard(protector.passportDetails, protector.idCardDetails),
           address = address
-        )
-        )
+        ))
     }
   }
 
-  private def buildPassportOrIdCard(passport: Option[PassportOrIdCardDetails], idCardDetails: Option[PassportOrIdCardDetails]) =
+  private def buildPassportOrIdCard(passport: Option[PassportOrIdCardDetails], idCardDetails: Option[PassportOrIdCardDetails]): Option[PassportType] =
     (passport, idCardDetails) match {
       case (Some(passport), _) => buildPassport(passport)
       case (_, Some(idCard)) => buildPassport(idCard)
-      case (None, None) => None
+      case _ => None
     }
 
-  private def buildPassport(details: PassportOrIdCardDetails) =
+  private def buildPassport(details: PassportOrIdCardDetails): Option[PassportType] =
     Some(PassportType(details.cardNumber, details.expiryDate, details.country))
 }

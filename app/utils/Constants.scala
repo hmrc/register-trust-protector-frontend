@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package mapping
+package utils
 
-import models.UserAnswers
-
-trait Mapping[T] {
-
-  def build(userAnswers: UserAnswers) : Option[T]
-
+object Constants {
+  final val GB = "GB"
 }

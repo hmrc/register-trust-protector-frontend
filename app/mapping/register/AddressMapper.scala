@@ -16,68 +16,38 @@
 
 package mapping.register
 
-import models.{Address, InternationalAddress, UkAddress, UserAnswers}
-import pages.QuestionPage
+import models.{Address, AddressType, InternationalAddress, UkAddress}
+import utils.Constants.GB
 
-class AddressMapper  {
+object AddressMapper {
 
-  def build(userAnswers           : UserAnswers,
-            isUk                  : QuestionPage[Boolean],
-            ukAddress             : QuestionPage[UkAddress],
-            internationalAddress  : QuestionPage[InternationalAddress]) : Option[AddressType] = {
-
-    userAnswers.get(isUk) flatMap {
-      uk =>
-        if(uk) {
-          buildUkAddress(userAnswers.get(ukAddress))
-        } else {
-          buildInternationalAddress(userAnswers.get(internationalAddress))
-        }
-    }
-  }
-
-   private def buildUkAddress(address: Option[UkAddress]): Option[AddressType] = {
-    address.map{
-      x=>
-        AddressType(
-          x.line1,
-          x.line2,
-          x.line3,
-          x.line4,
-          Some(x.postcode),
-          "GB")
-    }
-  }
-
-  private def buildInternationalAddress(address: Option[InternationalAddress]): Option[AddressType] = {
-    address.map{
-      x=>
-        AddressType(
-          x.line1,
-          x.line2,
-          x.line3,
-          None,
-          None,
-          x.country
-        )
-    }
-  }
-
-  def build(address: Address) : Option[AddressType] = {
+  def buildAddress(address: Address): Option[AddressType] = {
     address match {
-      case a : UkAddress =>
-        buildUkAddress(Some(a))
-      case a : InternationalAddress =>
-        buildInternationalAddress(Some(a))
+      case a: UkAddress => Some(buildUkAddress(a))
+      case a: InternationalAddress => Some(buildInternationalAddress(a))
     }
   }
 
-  def build(ukOrInternationalAddress : Option[Address]): Option[AddressType] = {
-    ukOrInternationalAddress flatMap {
-      case ukAddress : UkAddress => buildUkAddress(Some(ukAddress))
-      case international : InternationalAddress => buildInternationalAddress(Some(international))
-    }
+  private def buildUkAddress(address: UkAddress): AddressType = {
+    AddressType(
+      line1 = address.line1,
+      line2 = address.line2,
+      line3 = address.line3,
+      line4 = address.line4,
+      postCode = Some(address.postcode),
+      country = GB
+    )
   }
 
+  private def buildInternationalAddress(address: InternationalAddress): AddressType = {
+    AddressType(
+      line1 = address.line1,
+      line2 = address.line2,
+      line3 = address.line3,
+      line4 = None,
+      postCode = None,
+      country = address.country
+    )
+  }
 
 }

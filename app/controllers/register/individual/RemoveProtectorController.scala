@@ -25,7 +25,7 @@ import pages.QuestionPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Call, MessagesControllerComponents}
 import repositories.RegistrationsRepository
-import sections.IndividualProtectorView
+import sections.IndividualProtector
 import viewmodels.addAnother.ProtectorViewModel
 import views.html.RemoveIndexView
 
@@ -40,6 +40,6 @@ class RemoveProtectorController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: RemoveIndexView
                                          )(implicit val ec: ExecutionContext) extends RemoveIndexController {
-  def protectorAtIndex(index: Int): QuestionPage[ProtectorViewModel] = IndividualProtectorView(index)
+  def protectorAtIndex(index: Int): QuestionPage[ProtectorViewModel] = IndividualProtector(index)
   def submitCall(index: Int, draftId: String): Call = routes.RemoveProtectorController.onSubmit(index, draftId)
 }

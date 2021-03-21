@@ -16,13 +16,14 @@
 
 package mapping.register
 
-import mapping.reads.{IndividualProtector, IndividualProtectors}
+import mapping.reads.IndividualProtector
 import models.Protector
-import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.IndividualProtectors
 
 class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
 
-  override def section: QuestionPage[List[IndividualProtector]] = IndividualProtectors
+  override def jsPath: JsPath = IndividualProtectors.path
 
   override def protectorType(protector: IndividualProtector): Protector = Protector(
     name = protector.name,

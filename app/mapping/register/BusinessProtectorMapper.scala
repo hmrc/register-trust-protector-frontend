@@ -16,25 +16,18 @@
 
 package mapping.register
 
-import mapping.reads.{BusinessProtector, BusinessProtectors}
-import models.{IdentificationOrgType, ProtectorCompany}
-import pages.QuestionPage
+import mapping.reads.BusinessProtector
+import models.ProtectorCompany
+import play.api.libs.json.JsPath
+import sections.BusinessProtectors
 
 class BusinessProtectorMapper extends Mapper[ProtectorCompany, BusinessProtector] {
 
-  override def section: QuestionPage[List[BusinessProtector]] = BusinessProtectors
+  override def jsPath: JsPath = BusinessProtectors.path
 
   override def protectorType(protector: BusinessProtector): ProtectorCompany = ProtectorCompany(
     name = protector.name,
-    identification = buildIdentification(protector),
+    identification = protector.identification,
     countryOfResidence = protector.countryOfResidence
   )
-
-  private def buildIdentification(protector: BusinessProtector): Option[IdentificationOrgType] = {
-    (protector.utr, protector.ukAddress, protector.internationalAddress) match {
-      case (None, None, None) => None
-      case (Some(utr),_ , _) => Some(IdentificationOrgType(Some(utr), None))
-      case _ => Some(IdentificationOrgType(None, protector.address))
-    }
-  }
 }

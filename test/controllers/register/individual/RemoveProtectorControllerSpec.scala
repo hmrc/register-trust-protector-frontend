@@ -29,7 +29,7 @@ import pages.register.individual.NamePage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
-import sections.IndividualProtectorView
+import sections.IndividualProtector
 import views.html.RemoveIndexView
 
 import scala.concurrent.Future
@@ -130,7 +130,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
 
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(registrationsRepository, times(1)).set(uaCaptor.capture)(any(), any())
-        uaCaptor.getValue.get(IndividualProtectorView(index)) mustNot be(defined)
+        uaCaptor.getValue.get(IndividualProtector(index)) mustNot be(defined)
 
         application.stop()
       }

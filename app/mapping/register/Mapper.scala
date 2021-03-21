@@ -16,21 +16,25 @@
 
 package mapping.register
 
+import mapping.reads.Protector
 import models.UserAnswers
 import pages.QuestionPage
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsPath, Reads}
 
-trait Mapper[A, B] {
+trait Mapper[A, B <: Protector] {
+
+  case object Protectors extends QuestionPage[List[B]] {
+    override def path: JsPath = jsPath
+  }
 
   def build(userAnswers: UserAnswers)(implicit rds: Reads[B]): Option[List[A]] = {
-
-    userAnswers.get(section).getOrElse(List.empty) match {
+    userAnswers.get(Protectors).getOrElse(Nil) match {
       case Nil => None
       case list => Some(list.map(protectorType))
     }
   }
 
-  def section: QuestionPage[List[B]]
+  def jsPath: JsPath
 
   def protectorType(protector: B): A
 

@@ -48,7 +48,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
     if (status.contains(Status.Completed)) {
       protectorsMapper.build(userAnswers) match {
-        case Some(assets) => mappedPieces(Json.toJson(assets))
+        case Some(protectors) => mappedPieces(Json.toJson(protectors))
         case _ => mappedPieces(JsNull)
       }
     } else {
@@ -59,10 +59,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
-    val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage) match {
-      case Some(true) => true
-      case _ => false
-    }
+    val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage).contains(true)
 
     if (status.contains(Status.Completed) && trustHasProtectorYesNo) {
 

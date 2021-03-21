@@ -20,8 +20,6 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import viewmodels.addAnother.ProtectorViewModel
 
-case class Protector(index: Int) extends QuestionPage[ProtectorViewModel]{
-
-  override def path: JsPath = Protectors.path \ index
-
+case class BusinessProtector(index: Int) extends QuestionPage[ProtectorViewModel] {
+  override def path: JsPath = BusinessProtectors.path \ index
 }

@@ -28,7 +28,7 @@ import pages.register.business.NamePage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
-import sections.BusinessProtectorView
+import sections.BusinessProtector
 import views.html.RemoveIndexView
 
 import scala.concurrent.Future
@@ -129,7 +129,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
 
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(registrationsRepository, times(1)).set(uaCaptor.capture)(any(), any())
-        uaCaptor.getValue.get(BusinessProtectorView(index)) mustNot be(defined)
+        uaCaptor.getValue.get(BusinessProtector(index)) mustNot be(defined)
 
         application.stop()
       }

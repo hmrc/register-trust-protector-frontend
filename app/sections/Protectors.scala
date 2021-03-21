@@ -19,7 +19,7 @@ package sections
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object Protectors extends QuestionPage[List[Nothing]]{
+case object Protectors extends QuestionPage[List[Nothing]] {
 
   override def path: JsPath = JsPath \ toString
 

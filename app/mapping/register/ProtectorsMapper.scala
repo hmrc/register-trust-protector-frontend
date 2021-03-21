@@ -26,20 +26,12 @@ class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorM
 
   def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
 
-    val business = businessProtectorMapper.build(userAnswers)
-    val individual = individualProtectorMapper.build(userAnswers)
-    val all = Seq(individual, business).flatten.flatten
-
-    if (all.nonEmpty) {
-      Some(
-        ProtectorsType(
-          protector = individual,
-          protectorCompany = business
-        )
-      )
-    } else {
-      logger.info(s"[build] no protectors to map")
-      None
+    (individualProtectorMapper.build(userAnswers), businessProtectorMapper.build(userAnswers)) match {
+      case (None, None) =>
+        logger.info(s"[build] no protectors to map")
+        None
+      case (individuals, businesses) =>
+        Some(ProtectorsType(protector = individuals, protectorCompany = businesses))
     }
   }
 }

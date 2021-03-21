@@ -20,6 +20,6 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import viewmodels.addAnother.ProtectorViewModel
 
-case class IndividualProtectorView(index: Int) extends QuestionPage[ProtectorViewModel] {
+case class IndividualProtector(index: Int) extends QuestionPage[ProtectorViewModel] {
   override def path: JsPath = IndividualProtectors.path \ index
 }

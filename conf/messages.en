@@ -301,6 +301,11 @@ individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel = Does {0} ha
 individualProtector.5mld.legallyCapableYesNo.title = Does the protector have mental capacity at time of registration?
 individualProtector.5mld.legallyCapableYesNo.heading = Does {0} have mental capacity at time of registration?
 individualProtector.5mld.legallyCapableYesNo.error.required = Select yes if the protector has mental capacity at time of registration
+individualProtector.5mld.legallyCapableYesNo.p1 = A protector does not have mental capacity if they cannot understand information about the trust due to any of the following:
+individualProtector.5mld.legallyCapableYesNo.bulletpoint1 = mental illness
+individualProtector.5mld.legallyCapableYesNo.bulletpoint2 = learning disability
+individualProtector.5mld.legallyCapableYesNo.bulletpoint3 = dementia or a related condition
+individualProtector.5mld.legallyCapableYesNo.bulletpoint4 = being unable to communicate
 
 
 individualProtector.checkDetails.title = Check individual protector details

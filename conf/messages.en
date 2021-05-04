@@ -298,7 +298,7 @@ individualProtector.5mld.nationality.error.length = The country of nationality m
 individualProtector.5mld.nationality.error.invalidCharacters = The country of nationality must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
 
 individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel = Does {0} have mental capacity at time of registration?
-individualProtector.5mld.legallyCapableYesNo.title = Does the protector have mental capacity at time of registration?
+individualProtector.5mld.legallyCapableYesNo.title = Does the protector have mental capacity at the time of registration?
 individualProtector.5mld.legallyCapableYesNo.heading = Does {0} have mental capacity at time of registration?
 individualProtector.5mld.legallyCapableYesNo.error.required = Select yes if the protector has mental capacity at time of registration
 individualProtector.5mld.legallyCapableYesNo.p1 = A protector does not have mental capacity if they cannot understand information about the trust due to any of the following:

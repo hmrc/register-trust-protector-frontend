@@ -299,8 +299,8 @@ individualProtector.5mld.nationality.error.invalidCharacters = The country of na
 
 individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel = Does {0} have mental capacity at the time of registration?
 individualProtector.5mld.legallyCapableYesNo.title = Does the protector have mental capacity at the time of registration?
-individualProtector.5mld.legallyCapableYesNo.heading = Does {0} have mental capacity at time of registration?
-individualProtector.5mld.legallyCapableYesNo.error.required = Select yes if the protector has mental capacity at time of registration
+individualProtector.5mld.legallyCapableYesNo.heading = Does {0} have mental capacity at the time of registration?
+individualProtector.5mld.legallyCapableYesNo.error.required = Select yes if the protector has mental capacity at the time of registration
 individualProtector.5mld.legallyCapableYesNo.p1 = A protector does not have mental capacity if they cannot understand information about the trust due to any of the following:
 individualProtector.5mld.legallyCapableYesNo.bulletpoint1 = mental illness
 individualProtector.5mld.legallyCapableYesNo.bulletpoint2 = learning disability

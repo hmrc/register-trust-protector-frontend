@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.register.individual
+package controllers.register.business
 
 import base.SpecBase
-import config.annotations.IndividualProtector
-import models.{FullName, UserAnswers}
+import config.annotations.BusinessProtector
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -26,17 +26,17 @@ import org.mockito.Mockito.verify
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.register.IndividualOrBusinessPage
-import pages.register.individual.NamePage
+import pages.register.business.NamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.print.IndividualProtectorPrintHelper
-import views.html.register.individual.CheckDetailsView
+import utils.print.BusinessProtectorPrintHelper
+import views.html.register.business.CheckDetailsView
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val index: Int = 0
-  private val name = FullName("Test", None, "Name")
+  private val name = "Company"
 
   private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index, fakeDraftId).url
 
@@ -54,8 +54,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val result = route(application, request).value
 
       val view = application.injector.instanceOf[CheckDetailsView]
-      val printHelper = application.injector.instanceOf[IndividualProtectorPrintHelper]
-      val answerSection = printHelper.checkDetailsSection(emptyUserAnswers, name.toString, index, fakeDraftId)
+      val printHelper = application.injector.instanceOf[BusinessProtectorPrintHelper]
+      val answerSection = printHelper.checkDetailsSection(emptyUserAnswers, name, index, fakeDraftId)
 
       status(result) mustEqual OK
 
@@ -68,7 +68,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "remove IndividualOrBusinessPage and redirect" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(new FakeNavigator))
+        .overrides(bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(new FakeNavigator))
         .build()
 
       val request = FakeRequest(POST, checkDetailsRoute)

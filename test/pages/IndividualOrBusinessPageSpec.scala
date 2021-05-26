@@ -17,9 +17,9 @@
 package pages
 
 import models.Status._
-import models.{FullName, UserAnswers}
 import models.register.pages.IndividualOrBusinessToAdd
 import models.register.pages.IndividualOrBusinessToAdd._
+import models.{FullName, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}

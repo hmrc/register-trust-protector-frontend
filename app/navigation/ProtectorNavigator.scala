@@ -17,17 +17,20 @@
 package navigation
 
 import config.FrontendAppConfig
-import javax.inject.Inject
-import models.ReadableUserAnswers
-import pages.Page
-import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, AnswersPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage}
-import play.api.mvc.Call
-import controllers.register.{routes => rts}
 import controllers.register.business.{routes => brts}
 import controllers.register.individual.{routes => irts}
+import controllers.register.{routes => rts}
+import models.ReadableUserAnswers
 import models.register.pages.AddAProtector
 import models.register.pages.IndividualOrBusinessToAdd.{Business, Individual}
+import pages.register._
+import pages.{Page, QuestionPage}
+import play.api.libs.json.Reads
+import play.api.mvc.Call
 import sections.{BusinessProtectors, IndividualProtectors}
+import viewmodels.addAnother.ProtectorViewModel
+
+import javax.inject.Inject
 
 class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
@@ -61,13 +64,25 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
     }
 
   private def routeToIndividualProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
-    val individualProtectors = userAnswers.get(IndividualProtectors).getOrElse(List.empty)
-    irts.NameController.onPageLoad(individualProtectors.size, draftId)
+    routeToProtectorIndex(userAnswers, IndividualProtectors, irts.NameController.onPageLoad, draftId)
   }
 
   private def routeToBusinessProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
-    val businessProtectors = userAnswers.get(BusinessProtectors).getOrElse(List.empty)
-    brts.NameController.onPageLoad(businessProtectors.size, draftId)
+    routeToProtectorIndex(userAnswers, BusinessProtectors, brts.NameController.onPageLoad, draftId)
+  }
+
+  private def routeToProtectorIndex[T <: ProtectorViewModel](userAnswers: ReadableUserAnswers,
+                                                             page: QuestionPage[List[T]],
+                                                             route: (Int, String) => Call,
+                                                             draftId: String)
+                                                            (implicit rds: Reads[T]): Call = {
+    val protectors = userAnswers.get(page).getOrElse(List.empty)
+    val index = protectors match {
+      case Nil => 0
+      case x if !x.last.isComplete => x.size - 1
+      case x => x.size
+    }
+    route(index, draftId)
   }
 
   private def addProtectorRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {

@@ -51,4 +51,9 @@ trait ModelGenerators {
       Gen.oneOf(IndividualOrBusinessToAdd.values)
     }
 
+  implicit lazy val arbitraryStatus: Arbitrary[Status] =
+    Arbitrary {
+      Gen.oneOf(Status.values.toList)
+    }
+
 }

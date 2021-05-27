@@ -19,11 +19,10 @@ package controllers.register.business
 import config.FrontendAppConfig
 import controllers.actions._
 import controllers.actions.register.business.NameRequiredAction
-import javax.inject.Inject
 import models.Status.Completed
 import navigation.Navigator
 import pages.entitystatus.BusinessProtectorStatus
-import pages.register.AnswersPage
+import pages.register.{AnswersPage, IndividualOrBusinessPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
@@ -32,6 +31,7 @@ import utils.print.BusinessProtectorPrintHelper
 import viewmodels.AnswerSection
 import views.html.register.business.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -56,11 +56,10 @@ class CheckDetailsController @Inject()(
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(BusinessProtectorStatus(index), Completed)
-
       for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessProtectorStatus(index), Completed))
+        cleanedAnswers <- Future.fromTry(updatedAnswers.remove(IndividualOrBusinessPage))
+        _ <- repository.set(cleanedAnswers)
       } yield Redirect(navigator.nextPage(AnswersPage, draftId, request.userAnswers))
   }
 }

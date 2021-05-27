@@ -16,14 +16,37 @@
 
 package pages.register
 
+import models.UserAnswers
 import models.register.pages.IndividualOrBusinessToAdd
+import models.register.pages.IndividualOrBusinessToAdd._
 import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.Protectors
+import play.api.libs.json.{JsPath, Reads}
+import sections.{BusinessProtectors, IndividualProtectors, Protectors}
+import viewmodels.addAnother.ProtectorViewModel
+
+import scala.util.{Success, Try}
 
 case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusinessToAdd] {
 
   override def path: JsPath = Protectors.path \ toString
 
   override def toString: String = "individualOrBusiness"
+
+  override def cleanup(value: Option[IndividualOrBusinessToAdd], userAnswers: UserAnswers): Try[UserAnswers] = {
+
+    def cleanupLastIfInProgress[T <: ProtectorViewModel](page: QuestionPage[List[T]])
+                                                        (implicit rds: Reads[T]): Try[UserAnswers] = {
+      val protectors = userAnswers.get(page).getOrElse(Nil)
+      protectors match {
+        case x if x.nonEmpty && !x.last.isComplete => userAnswers.deleteAtPath(page.path \ (protectors.size - 1))
+        case _ => Success(userAnswers)
+      }
+    }
+
+    value match {
+      case Some(Individual) => cleanupLastIfInProgress(BusinessProtectors)
+      case Some(Business) => cleanupLastIfInProgress(IndividualProtectors)
+      case None => super.cleanup(value, userAnswers)
+    }
+  }
 }

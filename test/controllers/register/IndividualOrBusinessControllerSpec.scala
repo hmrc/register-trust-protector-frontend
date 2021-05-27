@@ -67,7 +67,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, draftId)(request, messages).toString
+        view(form.fill(individualOrBusinessAnswer), draftId)(request, messages).toString
 
       application.stop()
     }

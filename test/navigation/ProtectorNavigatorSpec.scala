@@ -22,15 +22,19 @@ import controllers.register.business.{routes => brts}
 import controllers.register.individual.{routes => irts}
 import controllers.register.{routes => rts}
 import generators.Generators
-import models.UserAnswers
+import models.Status.{Completed, InProgress}
 import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
+import models.{FullName, Status, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register._
-import pages.register.business.NamePage
+import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
+import pages.register.{business => bus, individual => ind, _}
 import play.api.mvc.Call
 
 class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val max: Int = 25
 
   private def protectorsCompletedRoute(draftId: String, config: FrontendAppConfig): Call = {
     Call("GET", config.registrationProgressUrl(draftId))
@@ -97,7 +101,7 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         userAnswers =>
 
           val answers = userAnswers
-            .set(NamePage(0), "Business").success.value
+            .set(bus.NamePage(0), "Business").success.value
             .set(AddAProtectorPage, AddAProtector.YesLater).success.value
 
           navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
@@ -110,7 +114,7 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         userAnswers =>
 
           val answers = userAnswers
-            .set(NamePage(0), "Business").success.value
+            .set(bus.NamePage(0), "Business").success.value
             .set(AddAProtectorPage, AddAProtector.NoComplete).success.value
 
           navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
@@ -123,23 +127,107 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   "IndividualOrBusinessPage" when {
 
-    "go to NamePage from IndividualOrBusinessPage when Business option selected" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val answers = userAnswers.set(IndividualOrBusinessPage, value = IndividualOrBusinessToAdd.Business).success.value
+    "Business option selected" must {
 
-          navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
-            .mustBe(brts.NameController.onPageLoad(0, fakeDraftId))
+      val name = "Company"
+      val selection = IndividualOrBusinessToAdd.Business
+
+      "go to NamePage at index 0 when no other businesses" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(IndividualOrBusinessPage, selection).success.value
+
+            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
+              .mustBe(brts.NameController.onPageLoad(0, fakeDraftId))
+        }
+      }
+
+      "go to NamePage at index n when the last business is completed" in {
+        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
+          (userAnswers, status, n) =>
+
+            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
+              val statusAtIndex = if (index == n - 1) Completed else status
+              acc
+                .set(bus.NamePage(index), name).success.value
+                .set(BusinessProtectorStatus(index), statusAtIndex).success.value
+            })
+
+            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
+
+            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
+              .mustBe(brts.NameController.onPageLoad(n, fakeDraftId))
+        }
+      }
+
+      "go to NamePage at index (n-1) when the last business is in progress" in {
+        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
+          (userAnswers, status, n) =>
+
+            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
+              val statusAtIndex = if (index == n - 1) InProgress else status
+              acc
+                .set(bus.NamePage(index), name).success.value
+                .set(BusinessProtectorStatus(index), statusAtIndex).success.value
+            })
+
+            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
+
+            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
+              .mustBe(brts.NameController.onPageLoad(n - 1, fakeDraftId))
+        }
       }
     }
 
-    "go to NamePage from IndividualOrBusinessPage when Individual option selected" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val answers = userAnswers.set(IndividualOrBusinessPage, value = IndividualOrBusinessToAdd.Individual).success.value
+    "Individual option selected" must {
 
-          navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
-            .mustBe(irts.NameController.onPageLoad(0, fakeDraftId))
+      val name = FullName("Joe", None, "Bloggs")
+      val selection = IndividualOrBusinessToAdd.Individual
+
+      "go to NamePage at index 0 when no other individuals" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(IndividualOrBusinessPage, selection).success.value
+
+            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
+              .mustBe(irts.NameController.onPageLoad(0, fakeDraftId))
+        }
+      }
+
+      "go to NamePage at index n when the last individual is completed" in {
+        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
+          (userAnswers, status, n) =>
+
+            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
+              val statusAtIndex = if (index == n - 1) Completed else status
+              acc
+                .set(ind.NamePage(index), name).success.value
+                .set(IndividualProtectorStatus(index), statusAtIndex).success.value
+            })
+
+            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
+
+            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
+              .mustBe(irts.NameController.onPageLoad(n, fakeDraftId))
+        }
+      }
+
+      "go to NamePage at index (n-1) when the last individual is in progress" in {
+        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
+          (userAnswers, status, n) =>
+
+            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
+              val statusAtIndex = if (index == n - 1) InProgress else status
+              acc
+                .set(ind.NamePage(index), name).success.value
+                .set(IndividualProtectorStatus(index), statusAtIndex).success.value
+            })
+
+            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
+
+            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
+              .mustBe(irts.NameController.onPageLoad(n - 1, fakeDraftId))
+        }
       }
     }
   }

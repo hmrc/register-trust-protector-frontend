@@ -18,7 +18,6 @@ package controllers.register
 
 import controllers.actions._
 import forms.IndividualOrBusinessFormProvider
-import javax.inject.Inject
 import models.register.pages.IndividualOrBusinessToAdd
 import navigation.Navigator
 import pages.register.IndividualOrBusinessPage
@@ -29,22 +28,30 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.IndividualOrBusinessView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualOrBusinessController @Inject()(
-                                                      override val messagesApi: MessagesApi,
-                                                      standardActionSets: StandardActionSets,
-                                                      navigator: Navigator,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      view: IndividualOrBusinessView,
-                                                      formProvider: IndividualOrBusinessFormProvider,
-                                                      repository: RegistrationsRepository
-                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                override val messagesApi: MessagesApi,
+                                                standardActionSets: StandardActionSets,
+                                                navigator: Navigator,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: IndividualOrBusinessView,
+                                                formProvider: IndividualOrBusinessFormProvider,
+                                                repository: RegistrationsRepository
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[IndividualOrBusinessToAdd] = formProvider()
+  private val form: Form[IndividualOrBusinessToAdd] = formProvider()
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
-    implicit request => Ok(view(form, draftId))
+    implicit request =>
+
+      val preparedForm = request.userAnswers.get(IndividualOrBusinessPage) match {
+        case Some(value) => form.fill(value)
+        case None => form
+      }
+
+      Ok(view(preparedForm, draftId))
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {

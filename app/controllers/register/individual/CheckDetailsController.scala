@@ -20,10 +20,12 @@ import config.FrontendAppConfig
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
+
 import javax.inject.Inject
 import models.Status.Completed
 import navigation.Navigator
 import pages.entitystatus.IndividualProtectorStatus
+import pages.register.IndividualOrBusinessPage
 import pages.register.individual.CheckDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,11 +59,10 @@ class CheckDetailsController @Inject()(
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(IndividualProtectorStatus(index), Completed)
-
       for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualProtectorStatus(index), Completed))
+        cleanedAnswers <- Future.fromTry(updatedAnswers.remove(IndividualOrBusinessPage))
+        _ <- repository.set(cleanedAnswers)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
   }
 }

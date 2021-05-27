@@ -56,10 +56,12 @@ class CheckDetailsController @Inject()(
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
 
+      val answers = request.userAnswers.set(BusinessProtectorStatus(index), Completed)
+        .flatMap(_.remove(IndividualOrBusinessPage))
+
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessProtectorStatus(index), Completed))
-        cleanedAnswers <- Future.fromTry(updatedAnswers.remove(IndividualOrBusinessPage))
-        _ <- repository.set(cleanedAnswers)
+        updatedAnswers <- Future.fromTry(answers)
+        _ <- repository.set(updatedAnswers)
       } yield Redirect(navigator.nextPage(AnswersPage, draftId, request.userAnswers))
   }
 }

@@ -20,8 +20,6 @@ import config.FrontendAppConfig
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
-
-import javax.inject.Inject
 import models.Status.Completed
 import navigation.Navigator
 import pages.entitystatus.IndividualProtectorStatus
@@ -35,6 +33,7 @@ import utils.print.IndividualProtectorPrintHelper
 import viewmodels.AnswerSection
 import views.html.register.individual.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -59,10 +58,12 @@ class CheckDetailsController @Inject()(
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
 
+      val answers = request.userAnswers.set(IndividualProtectorStatus(index), Completed)
+        .flatMap(_.remove(IndividualOrBusinessPage))
+
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualProtectorStatus(index), Completed))
-        cleanedAnswers <- Future.fromTry(updatedAnswers.remove(IndividualOrBusinessPage))
-        _ <- repository.set(cleanedAnswers)
+        updatedAnswers <- Future.fromTry(answers)
+        _ <- repository.set(updatedAnswers)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
   }
 }

@@ -18,13 +18,16 @@ package controllers.register.business
 
 import base.SpecBase
 import config.annotations.BusinessProtector
+import models.Status.Completed
 import models.UserAnswers
+import models.register.pages.IndividualOrBusinessToAdd.Business
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.verify
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import pages.entitystatus.BusinessProtectorStatus
 import pages.register.IndividualOrBusinessPage
 import pages.register.business.NamePage
 import play.api.inject.bind
@@ -41,6 +44,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index, fakeDraftId).url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
+    .set(IndividualOrBusinessPage, Business).success.value
     .set(NamePage(index), name).success.value
 
   "CheckDetails Controller" must {
@@ -81,6 +85,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+      uaCaptor.getValue.get(BusinessProtectorStatus(index)).get mustBe Completed
       uaCaptor.getValue.get(IndividualOrBusinessPage) mustNot be(defined)
 
       application.stop()

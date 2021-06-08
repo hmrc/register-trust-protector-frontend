@@ -14,6 +14,21 @@
  * limitations under the License.
  *@
 
-@(headingKey: String, optionalParam: Option[String] = None, headingSize: String = "heading-large")(implicit messages: Messages)
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import utils.DateErrorFormatter._
+@import viewmodels.RadioOption
 
-<h1 class="@headingSize">@messages(headingKey, optionalParam.getOrElse(""))</h1>
+@this(
+    govUkErrorSummary: GovukErrorSummary
+)
+
+@(errors: Seq[FormError], radioOptions: Seq[RadioOption] = Nil)(implicit messages: Messages)
+
+@if(errors.nonEmpty) {
+    @govUkErrorSummary(ErrorSummary(
+        errorList = errors
+            .map(err => err.copy(key = errorHref(err, radioOptions), args = formatArgs(err.args)))
+            .asTextErrorLinks,
+        title = Text(messages("error.summary.title"))
+    ))
+}

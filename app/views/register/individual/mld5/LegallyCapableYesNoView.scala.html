@@ -35,12 +35,11 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("individualProtector.5mld.legallyCapableYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("individualProtector.5mld.legallyCapableYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = LegallyCapableYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 

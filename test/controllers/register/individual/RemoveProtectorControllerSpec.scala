@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
 
-  private val prefix = "removeProtector"
+  private val prefix = "removeProtectorYesNo"
   private val formProvider = new YesNoFormProvider()
   private def form(prefix: String): Form[Boolean] = formProvider.withPrefix(prefix)
 

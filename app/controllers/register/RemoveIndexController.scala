@@ -39,7 +39,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
   val view: RemoveIndexView
   implicit val ec: ExecutionContext
 
-  private val prefix = "removeProtector"
+  private val prefix = "removeProtectorYesNo"
 
   def protectorAtIndex(index: Int): QuestionPage[ProtectorViewModel]
 

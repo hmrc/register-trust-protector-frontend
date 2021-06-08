@@ -15,10 +15,13 @@
  *@
 
 @import controllers.register.individual.routes._
-@import models.FullName
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
@@ -31,16 +34,17 @@
 
     @formHelper(action = NationalInsuranceNumberController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_nino(
+        @inputText(
             field = form("value"),
             label = messages("individualProtector.nationalInsuranceNumber.heading", name),
-            labelClass = Some("heading-large"),
+            labelClass = Some("govuk-label--l"),
+            inputClass = Some("govuk-input govuk-input--width-10"),
             labelAsHeading = true,
             hint = Some(messages("individualProtector.nationalInsuranceNumber.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

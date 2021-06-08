@@ -17,9 +17,15 @@
 @import controllers.register.routes._
 @import models.register.pages.AddAProtector
 @import viewmodels.AddRow
+@import views.html.components.{ErrorSummary, Heading, InputRadio, AddToList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+        headingI: Heading,
+        inputRadio: InputRadio,
+        addToList: AddToList,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
@@ -38,29 +44,31 @@
 
         @formHelper(action = if(maxedOut.size == 1) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors, AddAProtector.options)
 
-        @components.heading(heading)
+        @headingI(heading)
 
-        @components.data_list(inProgress, "inprogress", "protector")
+        @addToList(inProgress, "inprogress", "protector")
 
-        @components.data_list(complete, "complete", "protector")
+        @addToList(complete, "complete", "protector")
 
         @if(maxedOut.size == 1) {
-        <ul>
-            <li class="panel-indent"><p>@messages("addAProtector.maxedOut")</p></li>
-            <li class="panel-indent"><p>@messages("addAProtector.maxedOut.paragraph")</p></li>
-        </ul>
+        <div class="govuk-inset-text">
+            <ul class="govuk-list">
+                <li>@messages("addAProtector.maxedOut")</li>
+                <li>@messages("addAProtector.maxedOut.paragraph")</li>
+            </ul>
+        </div>
         } else {
-            @components.input_radio(
+            @inputRadio(
                 field = form("value"),
                 legend = messages("addAProtector.additional-content"),
-                legendClass = Some("heading-medium"),
-                inputs = AddAProtector.options,
-                legendAsH2Heading = true
+                headingIsLegend = false,
+                inputs = mapRadioOptionsToRadioItems(form("value"), false, AddAProtector.options),
+                legendClass = Some("govuk-fieldset__legend--m")
             )
         }
 
-        @components.submit_button()
+        @submitButton()
     }
 }

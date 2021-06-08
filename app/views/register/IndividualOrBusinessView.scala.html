@@ -16,9 +16,13 @@
 
 @import controllers.register.routes._
 @import models.register.pages.IndividualOrBusinessToAdd
+@import views.html.components.{ErrorSummary, InputRadio, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
@@ -31,17 +35,15 @@
 
     @formHelper(action = IndividualOrBusinessController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors, IndividualOrBusinessToAdd.options)
 
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("individualOrBusiness.heading"),
-            legendClass = Some("heading-large"),
-            inputs = IndividualOrBusinessToAdd.options.toSeq,
-            legendAsHeading = true,
-            fieldSetClass = Some("inline")
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, IndividualOrBusinessToAdd.options),
+            headingIsLegend = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -35,7 +35,6 @@ class   FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val repositoryKey: String = "protectors"
 
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
   val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
@@ -74,8 +73,8 @@ class   FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
-  lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
-  lazy val timeoutLength: String = configuration.get[String]("timeout.length")
+  lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
+  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),

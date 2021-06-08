@@ -14,24 +14,24 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import config.FrontendAppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import resources._
 
 @this(
-appConfig: FrontendAppConfig,
-govukLayout: GovukLayout,
-hmrcHead: HmrcHead,
-hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-hmrcStandardFooter: HmrcStandardFooter,
-hmrcStandardHeader: HmrcStandardHeader,
-standardBetaBanner: StandardBetaBanner,
-hmrcScripts: HmrcScripts,
-stylesheets: Stylesheets,
-govukBackLink: GovukBackLink,
-hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        appConfig: FrontendAppConfig,
+        govukLayout: GovukLayout,
+        hmrcHead: HmrcHead,
+        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+        hmrcStandardFooter: HmrcStandardFooter,
+        hmrcStandardHeader: HmrcStandardHeader,
+        standardBetaBanner: StandardBetaBanner,
+        hmrcScripts: HmrcScripts,
+        stylesheets: Stylesheets,
+        govukBackLink: GovukBackLink,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
 @(title: String,
@@ -55,7 +55,8 @@ showBackLink: Boolean = false
             title = Some(messages("timeout.title")),
             message = Some(messages("timeout.message")),
             keepAliveButtonText = Some(messages("timeout.keep-alive-button"))
-    )}
+        )
+    }
 
     @stylesheets()
 }
@@ -64,30 +65,30 @@ showBackLink: Boolean = false
     @hmrcLanguageSelectHelper()
     @if(showBackLink) {
         @govukBackLink(BackLink(
-        attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
+            attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
         ))
     }
 }
 
 @mainContentWithGetHelp = {
-@mainContent
-@hmrcReportTechnicalIssueHelper()
+    @mainContent
+    @hmrcReportTechnicalIssueHelper()
 }
 
 @govukLayout(
     pageTitle = Some(breadcrumbTitle(title)),
     headBlock = Some(hmrcHead(
-    headBlock = Some(headScripts)
-)),
+        headBlock = Some(headScripts)
+    )),
     headerBlock = Some(hmrcStandardHeader(
-    serviceUrl = Some(appConfig.trustsUrl),
-    signOutUrl = if(canSignOut) Some(controllers.register.routes.LogoutController.logout().url) else None,
-    phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrl))
-)),
+        serviceUrl = Some(appConfig.trustsUrl),
+        signOutUrl = if(canSignOut) Some(controllers.register.routes.LogoutController.logout().url) else None,
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrl))
+    )),
     beforeContentBlock = Some(beforeContentBlock),
     scriptsBlock = Some(hmrcScripts()),
     footerBlock = Some(hmrcStandardFooter(
-    accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
-))
+        accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
+    ))
 )(mainContentWithGetHelp)
 

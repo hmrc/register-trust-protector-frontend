@@ -15,10 +15,13 @@
  *@
 
 @import controllers.register.individual.routes._
-@import models.FullName
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
         main_template: MainTemplate,
+        errorSummary: ErrorSummary,
+        inputDate: InputDate,
+        submitButton: SubmitButton,
         formHelper: FormWithCSRF
 )
 
@@ -31,16 +34,15 @@
 
     @formHelper(action = DateOfBirthController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("individualProtector.dateOfBirth.heading", name),
-            legendClass = "heading-large",
             legendAsHeading = true,
             hint = Some(messages(s"individualProtector.dateOfBirth.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

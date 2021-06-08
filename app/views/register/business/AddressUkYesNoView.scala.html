@@ -15,10 +15,14 @@
  *@
 
 @import controllers.register.business.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
         main_template: MainTemplate,
-        formHelper: FormWithCSRF
+        formHelper: FormWithCSRF,
+        errorSummary: ErrorSummary,
+        inputYesNo: InputYesNo,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String, index : Int, draftId: String)(implicit request: Request[_], messages: Messages)
@@ -30,14 +34,14 @@
 
     @formHelper(action = AddressUkYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("businessProtector.addressUkYesNo.heading", name),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -14,15 +14,20 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerSection
 @import controllers.register.business.routes._
+@import utils.SectionFormatter.formatSections
+@import viewmodels.AnswerSection
+@import viewmodels.Section
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    heading: Heading,
+    govukSummaryList: GovukSummaryList,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
-
-@(answerSection: AnswerSection, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
+@(answerSection: Seq[Section], index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("businessProtector.checkDetails.title"),
@@ -31,10 +36,10 @@
 
     @formHelper(action = CheckDetailsController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.heading("businessProtector.checkDetails.heading")
+        @heading("businessProtector.checkDetails.heading")
 
-        @components.answer_section(answerSection)
+        @govukSummaryList(SummaryList(rows = formatSections(answerSection)))
 
-        @components.submit_button()
+        @submitButton()
     }
 }

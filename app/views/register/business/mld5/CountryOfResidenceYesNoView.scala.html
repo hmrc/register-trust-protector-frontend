@@ -15,32 +15,34 @@
  *@
 
 @import controllers.register.business.mld5.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], draftId: String, index: Int, trustName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("businessProtector.5mld.countryOfResidenceYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("businessProtector.5mld.countryOfResidenceYesNo.title")}",
+    showBackLink = true
 ) {
 
         @formHelper(action = CountryOfResidenceYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("businessProtector.5mld.countryOfResidenceYesNo.heading", trustName),
-            legendClass = Some("heading-large"),
             legendAsHeading = true,
             hint = Some(messages("businessProtector.5mld.countryOfResidenceYesNo.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

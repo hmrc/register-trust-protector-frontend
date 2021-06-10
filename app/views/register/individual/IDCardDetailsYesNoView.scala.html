@@ -15,32 +15,33 @@
  *@
 
 @import controllers.register.individual.routes._
-@import models.FullName
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], name: String, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("individualProtector.idCardDetailsYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("individualProtector.idCardDetailsYesNo.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = IDCardDetailsYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("individualProtector.idCardDetailsYesNo.heading", name),
-            legendClass = Some("heading-large"),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

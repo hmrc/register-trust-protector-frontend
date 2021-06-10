@@ -1,3 +1,5 @@
+service.name = Register and Maintain a Trust
+
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
@@ -39,7 +41,6 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = Register and Maintain a Trust
 site.textarea.char_limit = (Limit is {0} characters)
 site.save.continue = Save and continue
 site.error = Error:
@@ -319,8 +320,6 @@ individualProtector.checkDetails.heading = Check individual protector details
 
 addAProtector.heading = Add a protector
 addAProtector.title = Add a protector
-addAProtector.singular.heading = Add a protector
-addAProtector.singular.title = Add a protector
 addAProtector.count.heading = You have added {0} protectors
 addAProtector.count.title = You have added {0} protectors
 addAProtector.additional-content = Do you need to add another protector?
@@ -329,7 +328,7 @@ addAProtector.add-them-later = Yes, I want to add them later
 addAProtector.no-complete = No, I have added all of the protectors
 addAProtector.error.required = Select yes if you want to add another protector
 
-addAProtector.maxedOut = You cannot add another protector as you have entered a maximum of 25.
+addAProtector.maxedOut = You cannot add another {0} as you have entered a maximum of 25.
 addAProtector.maxedOut.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
 addAProtector.maxedOut.all = You cannot enter another protector as you have entered a maximum of 50.
 addAProtector.maxedOut.all.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
@@ -416,10 +415,10 @@ individualOrBusiness.error.required = Select if the protector is an individual o
 individualOrBusiness.individual = Individual
 individualOrBusiness.business = Business
 
-removeProtector.title = Are you sure you want to remove the protector?
-removeProtector.heading = Are you sure you want to remove {0}?
-removeProtector.error.required = Select yes if you want to remove the protector
-removeProtector.default = the protector
+removeProtectorYesNo.title = Are you sure you want to remove the protector?
+removeProtectorYesNo.heading = Are you sure you want to remove {0}?
+removeProtectorYesNo.error.required = Select yes if you want to remove the protector
+removeProtectorYesNo.default = the protector
 
 trustHasProtectorYesNo.title = Does the trust have a protector?
 trustHasProtectorYesNo.heading = Does the trust have a protector?

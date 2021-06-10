@@ -15,18 +15,23 @@
  *@
 
 @import controllers.register.individual.mld5.routes._
+@import views.html.components.{ErrorSummary, Heading, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    heading: Heading,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], draftId: String, index: Int, trustName: String)(implicit request: Request[_], messages: Messages)
 
 @content = {
-<p>@messages("individualProtector.5mld.legallyCapableYesNo.p1")</p>
+<p class="govuk-body">@messages("individualProtector.5mld.legallyCapableYesNo.p1")</p>
 
-<ul class="govuk-list trust-list--bullet">
+<ul class="govuk-list govuk-list--bullet">
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint1")</li>
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint2")</li>
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint3")</li>
@@ -35,24 +40,25 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("individualProtector.5mld.legallyCapableYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("individualProtector.5mld.legallyCapableYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = LegallyCapableYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading(messages("individualProtector.5mld.legallyCapableYesNo.heading", trustName))
 
-        @components.input_yes_no(
+        @content
+
+        @inputYesNo(
             field = form("value"),
             label = messages("individualProtector.5mld.legallyCapableYesNo.heading", trustName),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true,
-            additionalContent = Some(content)
-
+            legendAsHeading = false,
+            legendClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

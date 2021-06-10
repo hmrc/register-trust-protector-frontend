@@ -15,26 +15,30 @@
  *@
 
 @import controllers.register.routes._
+@import views.html.components.{HeadingWithCaption, BulletList, SubmitButton}
 
 @this(
-    main_template: MainTemplate
+        main_template: MainTemplate,
+        headingWithCaption: HeadingWithCaption,
+        bulletList: BulletList,
+        formHelper: FormWithCSRF,
+        submitButton: SubmitButton
 )
 
 @(draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("protectorsInfo.5mld.nonTaxable.title")
+    title = messages("protectorsInfo.5mld.nonTaxable.title"),
+    showBackLink = true
     ) {
 
-    @components.back_link()
+    @headingWithCaption("protectorsInfo.5mld.nonTaxable")
 
-    @components.heading_with_caption("protectorsInfo.5mld.nonTaxable")
+    <h2 class="govuk-heading-m">@messages("protectorsInfo.5mld.nonTaxable.subheading1")</h2>
 
-    <h2>@messages("protectorsInfo.5mld.nonTaxable.subheading1")</h2>
+    <p class="govuk-body">@messages("protectorsInfo.5mld.nonTaxable.paragraph1")</p>
 
-    <p>@messages("protectorsInfo.5mld.nonTaxable.paragraph1")</p>
-
-    @components.bullet_list("protectorsInfo.5mld.nonTaxable.individual",
+    @bulletList("protectorsInfo.5mld.nonTaxable.individual",
         List(
             "bulletpoint1",
             "bulletpoint2",
@@ -42,10 +46,10 @@
         )
     )
 
-    <p>@messages("protectorsInfo.5mld.nonTaxable.individual.mental.capacity.p1")</p>
-    <p>@messages("protectorsInfo.5mld.nonTaxable.individual.mental.capacity.p2")</p>
+    <p class="govuk-body">@messages("protectorsInfo.5mld.nonTaxable.individual.mental.capacity.p1")</p>
+    <p class="govuk-body">@messages("protectorsInfo.5mld.nonTaxable.individual.mental.capacity.p2")</p>
 
-    @components.bullet_list("protectorsInfo.5mld.nonTaxable.individual.mental.capacity",
+    @bulletList("protectorsInfo.5mld.nonTaxable.individual.mental.capacity",
         List(
             "bulletpoint1",
             "bulletpoint2",
@@ -54,9 +58,9 @@
         )
     )
 
-    <h2>@messages("protectorsInfo.5mld.nonTaxable.subheading2")</h2>
+    <h2 class="govuk-heading-m">@messages("protectorsInfo.5mld.nonTaxable.subheading2")</h2>
 
-    <p>@messages("protectorsInfo.5mld.nonTaxable.paragraph3")</p>
+    <p class="govuk-body">@messages("protectorsInfo.5mld.nonTaxable.paragraph3")</p>
 
     <details class="govuk-details section" data-module="govuk-details">
         <summary class="govuk-details__summary">
@@ -66,12 +70,14 @@
         </summary>
         <div class="govuk-details__text">
             <h3>@messages("protectorsInfo.5mld.nonTaxable.details.individual.heading")</h3>
-            <p>@messages("protectorsInfo.5mld.nonTaxable.details.individual.paragraph1")</p>
+            <p class="govuk-body">@messages("protectorsInfo.5mld.nonTaxable.details.individual.paragraph1")</p>
             <h3>@messages("protectorsInfo.5mld.nonTaxable.details.business.heading")</h3>
-            <p>@messages("protectorsInfo.5mld.nonTaxable.details.business.paragraph1")</p>
+            <p class="govuk-body">@messages("protectorsInfo.5mld.nonTaxable.details.business.paragraph1")</p>
         </div>
     </details>
 
-    @components.button_link(messages("site.continue"), IndividualOrBusinessController.onPageLoad(draftId).url)
+    @formHelper(action = InfoController.onSubmit(draftId), 'autoComplete -> "off") {
+        @submitButton(Some(messages("site.continue")))
+    }
 
 }

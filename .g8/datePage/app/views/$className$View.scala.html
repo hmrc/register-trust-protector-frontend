@@ -1,5 +1,10 @@
+@import views.html.components.{ErrorSummary, SubmitButton}
+
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    submitButton: SubmitButton, errorSummary: ErrorSummary,
+        submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
@@ -13,7 +18,7 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.input_date(
             field = form("value"),
@@ -21,6 +26,6 @@
             headingIsLegend = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

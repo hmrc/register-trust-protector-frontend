@@ -1,3 +1,6 @@
+->         /govuk-frontend                     govuk.Routes
+->         /hmrc-frontend                      hmrcfrontend.Routes
+
 # microservice specific routes
 
 GET        /:draftId/start                              controllers.IndexController.onPageLoad(draftId: String)
@@ -7,6 +10,7 @@ GET        /assets/*file                                controllers.Assets.versi
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
+POST       /this-service-has-been-reset                 controllers.SessionExpiredController.onSubmit
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
@@ -31,6 +35,7 @@ GET        /:draftId/individual-or-business             controllers.register.Ind
 POST       /:draftId/individual-or-business             controllers.register.IndividualOrBusinessController.onSubmit(draftId: String)
 
 GET        /:draftId/information-you-need               controllers.register.InfoController.onPageLoad(draftId: String)
+POST       /:draftId/information-you-need               controllers.register.InfoController.onSubmit(draftId: String)
 
 GET        /:draftId/has-protectors                     controllers.register.TrustHasProtectorYesNoController.onPageLoad(draftId: String)
 POST       /:draftId/has-protectors                     controllers.register.TrustHasProtectorYesNoController.onSubmit(draftId: String)

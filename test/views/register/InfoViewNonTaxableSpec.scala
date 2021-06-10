@@ -52,6 +52,5 @@ class InfoViewNonTaxableSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
 
-    behave like pageWithContinueButton(applyView, routes.IndividualOrBusinessController.onPageLoad(fakeDraftId).url )
   }
 }

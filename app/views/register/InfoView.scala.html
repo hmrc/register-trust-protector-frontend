@@ -15,26 +15,30 @@
  *@
 
 @import controllers.register.routes._
+@import views.html.components.{HeadingWithCaption, BulletList, SubmitButton}
 
 @this(
-    main_template: MainTemplate
+        main_template: MainTemplate,
+        headingWithCaption: HeadingWithCaption,
+        bulletList: BulletList,
+        formHelper: FormWithCSRF,
+        submitButton: SubmitButton
 )
 
 @(draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("protectorsInfo.title")
+    title = messages("protectorsInfo.title"),
+    showBackLink = true
     ) {
 
-    @components.back_link()
+    @headingWithCaption("protectorsInfo")
 
-    @components.heading_with_caption("protectorsInfo")
+    <h2 class="govuk-heading-m">@messages("protectorsInfo.subheading1")</h2>
 
-    <h2>@messages("protectorsInfo.subheading1")</h2>
+    <p class="govuk-body">@messages("protectorsInfo.paragraph1")</p>
 
-    <p>@messages("protectorsInfo.paragraph1")</p>
-
-    @components.bullet_list("protectorsInfo",
+    @bulletList("protectorsInfo",
         List(
             "bulletpoint1",
             "bulletpoint2",
@@ -42,17 +46,18 @@
         )
     )
 
-    <h2>@messages("protectorsInfo.subheading2")</h2>
+    <h2 class="govuk-heading-m">@messages("protectorsInfo.subheading2")</h2>
 
-    <p>@messages("protectorsInfo.paragraph2")</p>
+    <p class="govuk-body">@messages("protectorsInfo.paragraph2")</p>
 
-    @components.bullet_list("protectorsInfo",
+    @bulletList("protectorsInfo",
         List(
             "bulletpoint4",
             "bulletpoint5"
         )
     )
 
-    @components.button_link(messages("site.continue"), IndividualOrBusinessController.onPageLoad(draftId).url)
-
+    @formHelper(action = InfoController.onSubmit(draftId), 'autoComplete -> "off") {
+        @submitButton(Some(messages("site.continue")))
+    }
 }

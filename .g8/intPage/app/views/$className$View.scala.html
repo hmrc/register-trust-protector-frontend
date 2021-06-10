@@ -1,5 +1,9 @@
+@import views.html.components.{ErrorSummary, SubmitButton}
+
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
@@ -13,14 +17,14 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("$className;format="decap"$.heading"),
             headingIsLabel = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

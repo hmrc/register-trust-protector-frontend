@@ -48,4 +48,9 @@ class InfoController @Inject()(
           Ok(view(draftId))
       }
   }
+
+  def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
+    implicit request =>
+      Redirect(controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId))
+  }
 }

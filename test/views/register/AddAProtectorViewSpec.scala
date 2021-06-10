@@ -17,7 +17,7 @@
 package views.register
 
 import forms.AddAProtectorFormProvider
-import models.register.pages.AddAProtector
+import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.AddRow
@@ -26,29 +26,20 @@ import views.html.register.AddAProtectorView
 
 class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
-  val featureUnavalible = "/trusts-registration/feature-not-available"
+  val fakeRow: AddRow = AddRow("Name", "Type", "#", "#")
 
-  val completeProtectors = Seq(
-    AddRow("Business 1", "Business protector", featureUnavalible, featureUnavalible),
-    AddRow("Business 2", "Business protector", featureUnavalible, featureUnavalible)
-  )
-
-  val inProgressProtectors = Seq(
-    AddRow("Business 3", "Business protector", featureUnavalible, featureUnavalible),
-    AddRow("Business 4", "Business protector", featureUnavalible, featureUnavalible)
-  )
   val messageKeyPrefix = "addAProtector"
 
   val form = new AddAProtectorFormProvider()()
 
-  val view = viewFor[AddAProtectorView](Some(emptyUserAnswers))
+  val view: AddAProtectorView = viewFor[AddAProtectorView](Some(emptyUserAnswers))
 
   def applyView(form: Form[_]): HtmlFormat.Appendable =
     view.apply(form, fakeDraftId, Nil, Nil, "Add a protector", Nil)(fakeRequest, messages)
 
-  def applyView(form: Form[_], inProgressProtectros: Seq[AddRow], completeProtectros: Seq[AddRow], count : Int, maxedOut: List[String]): HtmlFormat.Appendable = {
+  def applyView(form: Form[_], inProgressProtectors: Seq[AddRow], completeProtectors: Seq[AddRow], count: Int, maxedOut: List[String]): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count protectors" else "You have added 1 protector"
-    view.apply(form, fakeDraftId, inProgressProtectros, completeProtectros, title, maxedOut)(fakeRequest, messages)
+    view.apply(form, fakeDraftId, inProgressProtectors, completeProtectors, title, maxedOut)(fakeRequest, messages)
   }
 
   "AddAProtectorView" when {
@@ -66,6 +57,8 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
 
     "there is data in progress" must {
 
+      val inProgressProtectors = List.fill(2)(fakeRow)
+
       val viewWithData = applyView(form, inProgressProtectors, Nil, 2, Nil)
 
       behave like dynamicTitlePage(viewWithData, "addAProtector.count", "2")
@@ -78,6 +71,8 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
     }
 
     "there is complete data" must {
+
+      val completeProtectors = List.fill(2)(fakeRow)
 
       val viewWithData = applyView(form, Nil, completeProtectors, 2, Nil)
 
@@ -92,6 +87,9 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
 
     "there is both in progress and complete data" must {
 
+      val inProgressProtectors = List.fill(2)(fakeRow)
+      val completeProtectors = List.fill(2)(fakeRow)
+
       val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 4, Nil)
 
       behave like dynamicTitlePage(viewWithData, "addAProtector.count", "4")
@@ -103,22 +101,84 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
       behave like pageWithOptions(form, applyView, AddAProtector.options)
     }
 
-    "there is one maxed out protector" must {
-      val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 4, List("Protectors"))
+    "all protectors are maxed out" must {
 
-      behave like dynamicTitlePage(viewWithData, "addAProtector.count", "4")
+      val inProgressProtectors = List.fill(25)(fakeRow)
+      val completeProtectors = List.fill(25)(fakeRow)
+
+      val viewWithData = applyView(
+        form = form,
+        inProgressProtectors = inProgressProtectors,
+        completeProtectors = completeProtectors,
+        count = 50,
+        maxedOut = List(IndividualOrBusinessToAdd.Individual.toString, IndividualOrBusinessToAdd.Business.toString)
+      )
+
+      behave like dynamicTitlePage(viewWithData, "addAProtector.count", "50")
 
       behave like pageWithBackLink(viewWithData)
 
       behave like pageWithTabularData(viewWithData, inProgressProtectors, completeProtectors)
 
-      behave like pageWithOptions(form, applyView, AddAProtector.options)
-
       "shows no radios and shows content for maxed protectors" in {
         val doc = asDocument(viewWithData)
-        assertNotRenderedById(doc, "value")
-        assertContainsText(doc, "You cannot add another protector as you have entered a maximum of 25.")
-        assertContainsText(doc, "Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.")
+        AddAProtector.options.foreach(x => assertNotRenderedById(doc, x.id))
+        assertContainsText(doc, messages("addAProtector.maxedOut.all"))
+        assertContainsText(doc, messages("addAProtector.maxedOut.all.paragraph"))
+      }
+    }
+
+    "individual protectors are maxed out" must {
+
+      val inProgressProtectors = Nil
+      val completeProtectors = List.fill(25)(fakeRow)
+
+      val viewWithData = applyView(
+        form = form,
+        inProgressProtectors = inProgressProtectors,
+        completeProtectors = completeProtectors,
+        count = 25,
+        maxedOut = List(IndividualOrBusinessToAdd.Individual.toString)
+      )
+
+      behave like dynamicTitlePage(viewWithData, "addAProtector.count", "25")
+
+      behave like pageWithBackLink(viewWithData)
+
+      behave like pageWithTabularData(viewWithData, inProgressProtectors, completeProtectors)
+
+      "shows radios and shows content for maxed individual protectors" in {
+        val doc = asDocument(viewWithData)
+        AddAProtector.options.foreach(x => assertRenderedById(doc, x.id))
+        assertContainsText(doc, messages("addAProtector.maxedOut", "individual"))
+        assertContainsText(doc, messages("addAProtector.maxedOut.paragraph"))
+      }
+    }
+
+    "business protectors are maxed out" must {
+
+      val inProgressProtectors = Nil
+      val completeProtectors = List.fill(25)(fakeRow)
+
+      val viewWithData = applyView(
+        form = form,
+        inProgressProtectors = inProgressProtectors,
+        completeProtectors = completeProtectors,
+        count = 25,
+        maxedOut = List(IndividualOrBusinessToAdd.Business.toString)
+      )
+
+      behave like dynamicTitlePage(viewWithData, "addAProtector.count", "25")
+
+      behave like pageWithBackLink(viewWithData)
+
+      behave like pageWithTabularData(viewWithData, inProgressProtectors, completeProtectors)
+
+      "shows radios and shows content for maxed business protectors" in {
+        val doc = asDocument(viewWithData)
+        AddAProtector.options.foreach(x => assertRenderedById(doc, x.id))
+        assertContainsText(doc, messages("addAProtector.maxedOut", "business"))
+        assertContainsText(doc, messages("addAProtector.maxedOut.paragraph"))
       }
     }
   }

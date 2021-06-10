@@ -1,8 +1,12 @@
 @import controllers.routes._
 @import models.Mode
 
+@import views.html.components.{ErrorSummary, SubmitButton}
+
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
@@ -16,20 +20,20 @@
 
         @components.back_link()
         
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.heading("$className;format="decap"$.heading")
 
-        @components.input_text(
+        @inputText(
             field = form("$field1Name$"),
             label = messages("$className;format="decap"$.$field1Name$")
         )
 
-        @components.input_text(
+        @inputText(
             field = form("$field2Name$"),
             label = messages("$className;format="decap"$.$field2Name$")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

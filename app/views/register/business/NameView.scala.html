@@ -15,32 +15,36 @@
  *@
 
 @import controllers.register.business.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+        inputText: InputText,
+    submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], index : Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("businessProtector.name.title")}"
+    title = s"${errorPrefix(form)}${messages("businessProtector.name.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = NameController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("businessProtector.name.heading"),
-            labelClass = Some("heading-large"),
+            labelClass = Some("govuk-label--l"),
             labelAsHeading = true,
-            inputClass = Some("form-control-3-4")
+            inputClass = Some("govuk-!-width-one-half"),
+            autocomplete = Some("business-name")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -320,8 +320,6 @@ individualProtector.checkDetails.heading = Check individual protector details
 
 addAProtector.heading = Add a protector
 addAProtector.title = Add a protector
-addAProtector.singular.heading = Add a protector
-addAProtector.singular.title = Add a protector
 addAProtector.count.heading = You have added {0} protectors
 addAProtector.count.title = You have added {0} protectors
 addAProtector.additional-content = Do you need to add another protector?
@@ -330,8 +328,6 @@ addAProtector.add-them-later = Yes, I want to add them later
 addAProtector.no-complete = No, I have added all of the protectors
 addAProtector.error.required = Select yes if you want to add another protector
 
-addAProtector.maxedOut = You cannot add another protector as you have entered a maximum of 25.
-addAProtector.maxedOut.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
 addAProtector.maxedOut.all = You cannot enter another protector as you have entered a maximum of 50.
 addAProtector.maxedOut.all.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
 

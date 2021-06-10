@@ -22,9 +22,9 @@
 @this(
     main_template: MainTemplate,
     errorSummary: ErrorSummary,
-        headingI: Heading,
-        inputRadio: InputRadio,
-        addToList: AddToList,
+    headingI: Heading,
+    inputRadio: InputRadio,
+    addToList: AddToList,
     submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
@@ -34,15 +34,15 @@
     inProgress: Seq[AddRow],
     complete: Seq[AddRow],
     heading: String,
-    maxedOut: List[String]
+    allOptionsMaxedOut: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}$heading",
     showBackLink = true
-    ) {
+) {
 
-        @formHelper(action = if(maxedOut.size == 1) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, 'autoComplete -> "off") {
+        @formHelper(action = if(allOptionsMaxedOut) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, 'autoComplete -> "off") {
 
         @errorSummary(form.errors, AddAProtector.options)
 
@@ -52,13 +52,13 @@
 
         @addToList(complete, "complete", "protector")
 
-        @if(maxedOut.size == 1) {
-        <div class="govuk-inset-text">
-            <ul class="govuk-list">
-                <li>@messages("addAProtector.maxedOut")</li>
-                <li>@messages("addAProtector.maxedOut.paragraph")</li>
-            </ul>
-        </div>
+        @if(allOptionsMaxedOut) {
+            <div class="govuk-inset-text">
+                <ul class="govuk-list">
+                    <li>@messages("addAProtector.maxedOut.all")</li>
+                    <li>@messages("addAProtector.maxedOut.all.paragraph")</li>
+                </ul>
+            </div>
         } else {
             @inputRadio(
                 field = form("value"),

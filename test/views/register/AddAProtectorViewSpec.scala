@@ -26,29 +26,20 @@ import views.html.register.AddAProtectorView
 
 class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
-  val featureUnavalible = "/trusts-registration/feature-not-available"
+  val fakeRow: AddRow = AddRow("Name", "Type", "#", "#")
 
-  val completeProtectors = Seq(
-    AddRow("Business 1", "Business protector", featureUnavalible, featureUnavalible),
-    AddRow("Business 2", "Business protector", featureUnavalible, featureUnavalible)
-  )
-
-  val inProgressProtectors = Seq(
-    AddRow("Business 3", "Business protector", featureUnavalible, featureUnavalible),
-    AddRow("Business 4", "Business protector", featureUnavalible, featureUnavalible)
-  )
   val messageKeyPrefix = "addAProtector"
 
   val form = new AddAProtectorFormProvider()()
 
-  val view = viewFor[AddAProtectorView](Some(emptyUserAnswers))
+  val view: AddAProtectorView = viewFor[AddAProtectorView](Some(emptyUserAnswers))
 
   def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, fakeDraftId, Nil, Nil, "Add a protector", Nil)(fakeRequest, messages)
+    view.apply(form, fakeDraftId, Nil, Nil, "Add a protector", allOptionsMaxedOut = false)(fakeRequest, messages)
 
-  def applyView(form: Form[_], inProgressProtectros: Seq[AddRow], completeProtectros: Seq[AddRow], count : Int, maxedOut: List[String]): HtmlFormat.Appendable = {
+  def applyView(form: Form[_], inProgressProtectors: Seq[AddRow], completeProtectors: Seq[AddRow], count: Int, allOptionsMaxedOut: Boolean): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count protectors" else "You have added 1 protector"
-    view.apply(form, fakeDraftId, inProgressProtectros, completeProtectros, title, maxedOut)(fakeRequest, messages)
+    view.apply(form, fakeDraftId, inProgressProtectors, completeProtectors, title, allOptionsMaxedOut)(fakeRequest, messages)
   }
 
   "AddAProtectorView" when {
@@ -66,7 +57,9 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
 
     "there is data in progress" must {
 
-      val viewWithData = applyView(form, inProgressProtectors, Nil, 2, Nil)
+      val inProgressProtectors = List.fill(2)(fakeRow)
+
+      val viewWithData = applyView(form, inProgressProtectors, Nil, 2, allOptionsMaxedOut = false)
 
       behave like dynamicTitlePage(viewWithData, "addAProtector.count", "2")
 
@@ -79,7 +72,9 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
 
     "there is complete data" must {
 
-      val viewWithData = applyView(form, Nil, completeProtectors, 2, Nil)
+      val completeProtectors = List.fill(2)(fakeRow)
+
+      val viewWithData = applyView(form, Nil, completeProtectors, 2, allOptionsMaxedOut = false)
 
       behave like dynamicTitlePage(viewWithData, "addAProtector.count", "2")
 
@@ -92,7 +87,10 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
 
     "there is both in progress and complete data" must {
 
-      val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 4, Nil)
+      val inProgressProtectors = List.fill(2)(fakeRow)
+      val completeProtectors = List.fill(2)(fakeRow)
+
+      val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 4, allOptionsMaxedOut = false)
 
       behave like dynamicTitlePage(viewWithData, "addAProtector.count", "4")
 
@@ -103,10 +101,14 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
       behave like pageWithOptions(form, applyView, AddAProtector.options)
     }
 
-    "there is one maxed out protector" must {
-      val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 4, List("Protectors"))
+    "protectors are maxed out" must {
 
-      behave like dynamicTitlePage(viewWithData, "addAProtector.count", "4")
+      val inProgressProtectors = List.fill(25)(fakeRow)
+      val completeProtectors = List.fill(25)(fakeRow)
+
+      val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 50, allOptionsMaxedOut = true)
+
+      behave like dynamicTitlePage(viewWithData, "addAProtector.count", "50")
 
       behave like pageWithBackLink(viewWithData)
 
@@ -117,8 +119,8 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
       "shows no radios and shows content for maxed protectors" in {
         val doc = asDocument(viewWithData)
         assertNotRenderedById(doc, "value")
-        assertContainsText(doc, "You cannot add another protector as you have entered a maximum of 25.")
-        assertContainsText(doc, "Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.")
+        assertContainsText(doc, messages("addAProtector.maxedOut.all"))
+        assertContainsText(doc, messages("addAProtector.maxedOut.all.paragraph"))
       }
     }
   }

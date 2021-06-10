@@ -86,10 +86,13 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
   }
 
   private def addProtectorRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {
-    val addAnother = answers.get(AddAProtectorPage)
-    addAnother match {
+    answers.get(AddAProtectorPage) match {
       case Some(AddAProtector.YesNow) =>
-        controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
+        (answers.get(IndividualProtectors).getOrElse(Nil).size, answers.get(BusinessProtectors).getOrElse(Nil).size) match {
+          case (x, y) if x >= 25 => controllers.register.business.routes.NameController.onPageLoad(y, draftId)
+          case (x, y) if y >= 25 => controllers.register.individual.routes.NameController.onPageLoad(x, draftId)
+          case _ => controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
+        }
       case Some(AddAProtector.YesLater) => protectorsCompletedRoute(draftId, config)
       case Some(AddAProtector.NoComplete) => protectorsCompletedRoute(draftId, config)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
@@ -97,9 +100,7 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
   }
 
   private def addAProtectorYesNoRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {
-    val add = answers.get(AddAProtectorYesNoPage)
-
-    add match {
+    answers.get(AddAProtectorYesNoPage) match {
       case Some(true) =>
         controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
       case Some(false) => protectorsCompletedRoute(draftId, config)

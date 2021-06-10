@@ -89,7 +89,36 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
           navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
             .mustBe(controllers.register.routes.IndividualOrBusinessController.onPageLoad(fakeDraftId))
       }
+    }
 
+    "go to Individual name page from AddAProtectorPage when selected add them now and 25 business protectors" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+
+          val answers = (0 until 25).foldLeft(userAnswers)((acc, index) => {
+            acc
+              .set(bus.NamePage(index), "Business Name").success.value
+              .set(BusinessProtectorStatus(index), Completed).success.value
+          }).set(AddAProtectorPage, AddAProtector.YesNow).success.value
+
+          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
+            .mustBe(controllers.register.individual.routes.NameController.onPageLoad(0, fakeDraftId))
+      }
+    }
+
+    "go to Business name page from AddAProtectorPage when selected add them now and 25 individual protectors" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+
+          val answers = (0 until 25).foldLeft(userAnswers)((acc, index) => {
+            acc
+              .set(ind.NamePage(index), FullName("First", None, "Last")).success.value
+              .set(IndividualProtectorStatus(index), Completed).success.value
+          }).set(AddAProtectorPage, AddAProtector.YesNow).success.value
+
+          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
+            .mustBe(controllers.register.business.routes.NameController.onPageLoad(0, fakeDraftId))
+      }
     }
   }
 

@@ -37,4 +37,10 @@ case class Protectors(individuals: List[IndividualProtectorViewModel] = Nil,
     }
   }
 
+  val nonMaxedOutOptions: List[RadioOption] = {
+    options.filter(_._1 < 25).map {
+      x => RadioOption(IndividualOrBusinessToAdd.prefix, x._2.toString)
+    }
+  }
+
 }

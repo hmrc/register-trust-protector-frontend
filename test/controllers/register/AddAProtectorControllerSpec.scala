@@ -19,11 +19,11 @@ package controllers.register
 import base.SpecBase
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import models.Status.Completed
-import models.UserAnswers
 import models.register.pages.AddAProtector
+import models.{FullName, UserAnswers}
 import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
-import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
+import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -79,7 +79,14 @@ class AddAProtectorControllerSpec extends SpecBase {
   private def genBusinessProtectors(range: Int): UserAnswers = {
     (0 until range)
       .foldLeft(emptyUserAnswers)((ua,index) =>
-        ua.set(NamePage(index), "Business Name").success.value
+        ua.set(bus.NamePage(index), "Business Name").success.value
+      )
+  }
+
+  private def genIndividualProtectors(range: Int): UserAnswers = {
+    (0 until range)
+      .foldLeft(emptyUserAnswers)((ua,index) =>
+        ua.set(ind.NamePage(index), FullName("First", None, "Last")).success.value
       )
   }
 
@@ -195,7 +202,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", allOptionsMaxedOut = false)(request, messages).toString
 
         application.stop()
       }
@@ -216,7 +223,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", allOptionsMaxedOut = false)(request, messages).toString
 
         application.stop()
       }
@@ -256,7 +263,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", Nil)(request, messages).toString
+          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", allOptionsMaxedOut = false)(request, messages).toString
 
         application.stop()
       }
@@ -268,7 +275,9 @@ class AddAProtectorControllerSpec extends SpecBase {
       "return correct view when protectors is maxed out" in {
 
         val protectors = List(
-          genBusinessProtectors(max)        )
+          genBusinessProtectors(max),
+          genIndividualProtectors(max)
+        )
 
         val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
 
@@ -278,8 +287,8 @@ class AddAProtectorControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        contentAsString(result) must include("You cannot add another protector as you have entered a maximum of 25.")
-        contentAsString(result) must include("If you have further protectors to add, write to HMRC with their details.")
+        contentAsString(result) must include(messages("addAProtector.maxedOut.all"))
+        contentAsString(result) must include(messages("addAProtector.maxedOut.all.paragraph"))
 
         application.stop()
       }

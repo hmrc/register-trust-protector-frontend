@@ -122,20 +122,20 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
 
       "render a h2" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list-heading--inprogress")
-        assertRenderedById(doc, "data-list-heading--complete")
+        if (inProgressData.nonEmpty) assertRenderedById(doc, "data-list-heading--inprogress")
+        if (completeData.nonEmpty) assertRenderedById(doc, "data-list-heading--complete")
       }
 
       "render an add to list" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list--inprogress")
-        assertRenderedById(doc, "data-list--complete")
+        if (inProgressData.nonEmpty) assertRenderedById(doc, "data-list--inprogress")
+        if (completeData.nonEmpty) assertRenderedById(doc, "data-list--complete")
       }
 
       "render a row for each data item" in {
         val doc = asDocument(view)
-        assertDataList(doc, "data-list--inprogress", inProgressData)
-        assertDataList(doc, "data-list--complete", completeData)
+        if (inProgressData.nonEmpty) assertDataList(doc, "data-list--inprogress", inProgressData)
+        if (completeData.nonEmpty) assertDataList(doc, "data-list--complete", completeData)
       }
     }
   }

@@ -202,7 +202,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", allOptionsMaxedOut = false)(request, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
 
         application.stop()
       }
@@ -223,7 +223,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", allOptionsMaxedOut = false)(request, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
 
         application.stop()
       }
@@ -263,7 +263,7 @@ class AddAProtectorControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", allOptionsMaxedOut = false)(request, messages).toString
+          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", Nil)(request, messages).toString
 
         application.stop()
       }
@@ -272,10 +272,9 @@ class AddAProtectorControllerSpec extends SpecBase {
 
     "maxed out protectors" must {
 
-      "return correct view when protectors is maxed out" in {
+      "return correct view when individual protectors are maxed out" in {
 
         val protectors = List(
-          genBusinessProtectors(max),
           genIndividualProtectors(max)
         )
 
@@ -287,7 +286,48 @@ class AddAProtectorControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        contentAsString(result) must include(messages("addAProtector.maxedOut.all"))
+        contentAsString(result) must include("You cannot add another individual as you have entered a maximum of 25.")
+        contentAsString(result) must include(messages("addAProtector.maxedOut.all.paragraph"))
+
+        application.stop()
+      }
+
+      "return correct view when business protectors are maxed out" in {
+
+        val protectors = List(
+          genBusinessProtectors(max)
+        )
+
+        val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+
+        val request = FakeRequest(GET, addAProtectorRoute)
+
+        val result = route(application, request).value
+
+        contentAsString(result) must include("You cannot add another business as you have entered a maximum of 25.")
+        contentAsString(result) must include(messages("addAProtector.maxedOut.paragraph"))
+
+        application.stop()
+      }
+
+      "return correct view when all protectors are maxed out" in {
+
+        val protectors = List(
+          genIndividualProtectors(max),
+          genBusinessProtectors(max)
+        )
+
+        val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+
+        val request = FakeRequest(GET, addAProtectorRoute)
+
+        val result = route(application, request).value
+
+        contentAsString(result) must include("You cannot enter another protector as you have entered a maximum of 50.")
         contentAsString(result) must include(messages("addAProtector.maxedOut.all.paragraph"))
 
         application.stop()

@@ -34,7 +34,7 @@
     inProgress: Seq[AddRow],
     complete: Seq[AddRow],
     heading: String,
-    allOptionsMaxedOut: Boolean
+    maxedOut: List[String]
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -42,7 +42,7 @@
     showBackLink = true
 ) {
 
-        @formHelper(action = if(allOptionsMaxedOut) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, 'autoComplete -> "off") {
+        @formHelper(action = if(maxedOut.size == 2) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, 'autoComplete -> "off") {
 
         @errorSummary(form.errors, AddAProtector.options)
 
@@ -52,7 +52,7 @@
 
         @addToList(complete, "complete", "protector")
 
-        @if(allOptionsMaxedOut) {
+        @if(maxedOut.size == 2) {
             <div class="govuk-inset-text">
                 <ul class="govuk-list">
                     <li>@messages("addAProtector.maxedOut.all")</li>
@@ -60,6 +60,15 @@
                 </ul>
             </div>
         } else {
+            @if(maxedOut.size == 1) {
+                <div class="govuk-inset-text">
+                    <ul class="govuk-list">
+                        <li>@messages("addAProtector.maxedOut", messages(maxedOut.head).toLowerCase)</li>
+                        <li>@messages("addAProtector.maxedOut.paragraph")</li>
+                    </ul>
+                </div>
+            }
+
             @inputRadio(
                 field = form("value"),
                 legend = messages("addAProtector.additional-content"),

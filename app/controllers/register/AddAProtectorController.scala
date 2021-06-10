@@ -19,8 +19,6 @@ package controllers.register
 import config.FrontendAppConfig
 import controllers.actions.{RequiredAnswer, RequiredAnswerAction, RequiredAnswerActionProvider, StandardActionSets}
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
-
-import javax.inject.Inject
 import models.Enumerable
 import models.register.pages.AddAProtector.NoComplete
 import navigation.Navigator
@@ -34,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAProtectorViewHelper
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAProtectorController @Inject()(
@@ -72,11 +71,11 @@ class AddAProtectorController @Inject()(
       val allProtectors = protectors(request.userAnswers)
 
       if (rows.count > 0) {
-        val allOptionsMaxedOut = allProtectors.nonMaxedOutOptions.isEmpty
+        val maxedOut = allProtectors.maxedOutOptions.map(_.messageKey)
 
-        if (allOptionsMaxedOut) {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")}
+        if (maxedOut.size == 2) {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")}
         else {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has not maxed out protectors")}
-        Ok(addAnotherView(addAnotherForm, draftId, rows.inProgress, rows.complete, heading(rows.count), allOptionsMaxedOut))
+        Ok(addAnotherView(addAnotherForm, draftId, rows.inProgress, rows.complete, heading(rows.count), maxedOut))
       } else {
         logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has added no protectors")
         Ok(yesNoView(yesNoForm, draftId))
@@ -116,7 +115,7 @@ class AddAProtectorController @Inject()(
               rows.inProgress,
               rows.complete,
               heading(rows.count),
-              allProtectors.nonMaxedOutOptions.isEmpty
+              allProtectors.maxedOutOptions.map(_.messageKey)
             )
           ))
         },

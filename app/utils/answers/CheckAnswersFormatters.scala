@@ -17,7 +17,6 @@
 package utils.answers
 
 import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers}
-import org.joda.time.{LocalDate => JodaDate}
 import pages.register.business.NamePage
 import play.api.i18n.Messages
 import play.twirl.api.Html

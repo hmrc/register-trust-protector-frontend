@@ -19,6 +19,7 @@ package models
 import play.api.Logger
 import play.api.libs.json._
 import queries.{Gettable, Settable}
+import sections.{BusinessProtectors, IndividualProtectors}
 
 import scala.util.{Failure, Success, Try}
 
@@ -35,6 +36,14 @@ trait ReadableUserAnswers {
       case JsError(_) => None
     }
   }
+
+  val protectors: Protectors = Protectors(
+    this.get(IndividualProtectors).getOrElse(List.empty),
+    this.get(BusinessProtectors).getOrElse(List.empty)
+  )
+
+  val isAnyProtectorAdded: Boolean = protectors.individuals.nonEmpty || protectors.businesses.nonEmpty
+
 }
 
 case class ReadOnlyUserAnswers(data: JsObject) extends ReadableUserAnswers

@@ -20,63 +20,99 @@ import config.FrontendAppConfig
 import controllers.register.business.{routes => brts}
 import controllers.register.individual.{routes => irts}
 import controllers.register.{routes => rts}
-import models.ReadableUserAnswers
-import models.register.pages.AddAProtector
 import models.register.pages.IndividualOrBusinessToAdd.{Business, Individual}
+import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
+import models.{Protectors, ReadableUserAnswers}
+import pages.Page
 import pages.register._
-import pages.{Page, QuestionPage}
-import play.api.libs.json.Reads
 import play.api.mvc.Call
-import sections.{BusinessProtectors, IndividualProtectors}
-import viewmodels.addAnother.ProtectorViewModel
+import uk.gov.hmrc.http.HttpVerbs.GET
+import utils.Constants.MAX
+import viewmodels.addAnother.{BusinessProtectorViewModel, IndividualProtectorViewModel, ProtectorViewModel}
 
 import javax.inject.Inject
 
 class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
-    route(draftId, config)(page)(userAnswers)
+    route(draftId)(page)(userAnswers)
 
-  private def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, ReadableUserAnswers => Call] = {
+  private def route(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case AnswersPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
-    case AddAProtectorPage => addProtectorRoute(draftId, config)
-    case AddAProtectorYesNoPage => addAProtectorYesNoRoute(draftId, config)
+    case AddAProtectorPage => addProtectorRoute(draftId)
+    case AddAProtectorYesNoPage => addAProtectorYesNoRoute(draftId)
     case IndividualOrBusinessPage => individualOrBusinessRoute(draftId)
     case TrustHasProtectorYesNoPage => trustHasProtectorRoute(draftId)
   }
 
-  private def protectorsCompletedRoute(draftId: String, config: FrontendAppConfig): Call = {
-    Call("GET", config.registrationProgressUrl(draftId))
+  private def protectorsCompletedRoute(draftId: String): Call = {
+    Call(GET, config.registrationProgressUrl(draftId))
   }
 
-  private def trustHasProtectorRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
+  private def trustHasProtectorRoute(draftId: String)(userAnswers: ReadableUserAnswers): Call =
     userAnswers.get(TrustHasProtectorYesNoPage) match {
       case Some(true) => controllers.register.routes.InfoController.onPageLoad(draftId)
-      case Some(false) => protectorsCompletedRoute(draftId, config)
+      case Some(false) => protectorsCompletedRoute(draftId)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
 
-  private def individualOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers) : Call =
+  private def individualOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers): Call =
     userAnswers.get(IndividualOrBusinessPage) match {
-      case Some(Individual) => routeToIndividualProtectorIndex(userAnswers, draftId)
-      case Some(Business) => routeToBusinessProtectorIndex(userAnswers, draftId)
+      case Some(individualOrBusiness) => ProtectorNavigator.addProtectorNowRoute(individualOrBusiness, userAnswers.protectors, draftId)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
 
-  private def routeToIndividualProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
-    routeToProtectorIndex(userAnswers, IndividualProtectors, irts.NameController.onPageLoad, draftId)
+  private def addProtectorRoute(draftId: String)(answers: ReadableUserAnswers): Call = {
+    answers.get(AddAProtectorPage) match {
+      case Some(AddAProtector.YesNow) => ProtectorNavigator.addProtectorRoute(answers.protectors, draftId)
+      case Some(_) => protectorsCompletedRoute(draftId)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
   }
 
-  private def routeToBusinessProtectorIndex(userAnswers: ReadableUserAnswers, draftId: String): Call = {
-    routeToProtectorIndex(userAnswers, BusinessProtectors, brts.NameController.onPageLoad, draftId)
+  private def addAProtectorYesNoRoute(draftId: String)(answers: ReadableUserAnswers): Call = {
+    answers.get(AddAProtectorYesNoPage) match {
+      case Some(true) =>
+        controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
+      case Some(false) => protectorsCompletedRoute(draftId)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
   }
 
-  private def routeToProtectorIndex[T <: ProtectorViewModel](userAnswers: ReadableUserAnswers,
-                                                             page: QuestionPage[List[T]],
+}
+
+object ProtectorNavigator {
+
+  def addProtectorRoute(protectors: Protectors, draftId: String): Call = {
+    val routes: List[(List[ProtectorViewModel], Call)] = List(
+      (protectors.individuals, addProtectorNowRoute(Individual, protectors, draftId)),
+      (protectors.businesses, addProtectorNowRoute(Business, protectors, draftId))
+    )
+
+    routes.filter(_._1.size < MAX) match {
+      case (_, x) :: Nil => x
+      case _ => controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
+    }
+  }
+
+  def addProtectorNowRoute(`type`: IndividualOrBusinessToAdd, protectors: Protectors, draftId: String): Call = {
+    `type` match {
+      case Individual => routeToIndividualProtectorIndex(protectors.individuals, draftId)
+      case Business => routeToBusinessProtectorIndex(protectors.businesses, draftId)
+    }
+  }
+
+  private def routeToIndividualProtectorIndex(protectors: List[IndividualProtectorViewModel], draftId: String): Call = {
+    routeToProtectorIndex(protectors, irts.NameController.onPageLoad, draftId)
+  }
+
+  private def routeToBusinessProtectorIndex(protectors: List[BusinessProtectorViewModel], draftId: String): Call = {
+    routeToProtectorIndex(protectors, brts.NameController.onPageLoad, draftId)
+  }
+
+  private def routeToProtectorIndex[T <: ProtectorViewModel](protectors: List[T],
                                                              route: (Int, String) => Call,
-                                                             draftId: String)
-                                                            (implicit rds: Reads[T]): Call = {
-    val protectors = userAnswers.get(page).getOrElse(List.empty)
+                                                             draftId: String): Call = {
     val index = protectors match {
       case Nil => 0
       case x if !x.last.isComplete => x.size - 1
@@ -84,28 +120,4 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
     }
     route(index, draftId)
   }
-
-  private def addProtectorRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {
-    answers.get(AddAProtectorPage) match {
-      case Some(AddAProtector.YesNow) =>
-        (answers.get(IndividualProtectors).getOrElse(Nil).size, answers.get(BusinessProtectors).getOrElse(Nil).size) match {
-          case (x, y) if x >= 25 => controllers.register.business.routes.NameController.onPageLoad(y, draftId)
-          case (x, y) if y >= 25 => controllers.register.individual.routes.NameController.onPageLoad(x, draftId)
-          case _ => controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
-        }
-      case Some(AddAProtector.YesLater) => protectorsCompletedRoute(draftId, config)
-      case Some(AddAProtector.NoComplete) => protectorsCompletedRoute(draftId, config)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
-    }
-  }
-
-  private def addAProtectorYesNoRoute(draftId: String, config: FrontendAppConfig)(answers: ReadableUserAnswers): Call = {
-    answers.get(AddAProtectorYesNoPage) match {
-      case Some(true) =>
-        controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
-      case Some(false) => protectorsCompletedRoute(draftId, config)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
-    }
-  }
-
 }

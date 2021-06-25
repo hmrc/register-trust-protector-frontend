@@ -19,7 +19,6 @@ package controllers.register
 import config.FrontendAppConfig
 import controllers.actions.{RequiredAnswer, RequiredAnswerAction, RequiredAnswerActionProvider, StandardActionSets}
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
-import models.Enumerable
 import models.register.pages.AddAProtector.NoComplete
 import navigation.Navigator
 import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, TrustHasProtectorYesNoPage}
@@ -28,6 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.RegistrationsRepository
+import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAProtectorViewHelper
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
@@ -47,8 +47,7 @@ class AddAProtectorController @Inject()(
                                          addAnotherView: AddAProtectorView,
                                          yesNoView: TrustHasProtectorYesNoView,
                                          config: FrontendAppConfig
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController
-  with I18nSupport with Enumerable.Implicits with AnyProtectors with Logging {
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val addAnotherForm = addAnotherFormProvider()
   private val yesNoForm = yesNoFormProvider.withPrefix("trustHasProtectorYesNo")
@@ -68,10 +67,8 @@ class AddAProtectorController @Inject()(
 
       val rows = new AddAProtectorViewHelper(request.userAnswers, draftId).rows
 
-      val allProtectors = protectors(request.userAnswers)
-
       if (rows.count > 0) {
-        val maxedOut = allProtectors.maxedOutOptions.map(_.messageKey)
+        val maxedOut = request.userAnswers.protectors.maxedOutOptions.map(_.messageKey)
 
         if (maxedOut.size == 2) {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")}
         else {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has not maxed out protectors")}
@@ -106,7 +103,6 @@ class AddAProtectorController @Inject()(
         (formWithErrors: Form[_]) => {
 
           val rows = new AddAProtectorViewHelper(request.userAnswers, draftId).rows
-          val allProtectors = protectors(request.userAnswers)
 
           Future.successful(BadRequest(
             addAnotherView(
@@ -115,7 +111,7 @@ class AddAProtectorController @Inject()(
               rows.inProgress,
               rows.complete,
               heading(rows.count),
-              allProtectors.maxedOutOptions.map(_.messageKey)
+              request.userAnswers.protectors.maxedOutOptions.map(_.messageKey)
             )
           ))
         },
@@ -133,7 +129,7 @@ class AddAProtectorController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, NoComplete))
         _              <- registrationsRepository.set(updatedAnswers)
-      } yield Redirect(Call("GET", config.registrationProgressUrl(draftId)))
+      } yield Redirect(Call(GET, config.registrationProgressUrl(draftId)))
   }
 
 }

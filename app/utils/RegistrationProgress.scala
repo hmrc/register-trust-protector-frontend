@@ -16,7 +16,6 @@
 
 package utils
 
-import controllers.register.AnyProtectors
 import models.register.pages.AddAProtector
 import models.{ReadableUserAnswers, Status}
 import pages.QuestionPage
@@ -25,11 +24,11 @@ import play.api.libs.json.Reads
 import sections.{BusinessProtectors, IndividualProtectors}
 import viewmodels.addAnother._
 
-class RegistrationProgress extends AnyProtectors {
+class RegistrationProgress {
 
   def protectorsStatus(userAnswers: ReadableUserAnswers): Option[Status] = {
 
-    if (!isAnyProtectorAdded(userAnswers)) {
+    if (!userAnswers.isAnyProtectorAdded) {
       userAnswers.get(TrustHasProtectorYesNoPage) match {
         case Some(true) => Some(Status.InProgress)
         case Some(false) => Some(Status.Completed)

@@ -18,7 +18,7 @@ package controllers
 
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
-import controllers.register.{AnyProtectors, routes => rts}
+import controllers.register.{routes => rts}
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -36,13 +36,13 @@ class IndexController @Inject()(
                                  identify: RegistrationIdentifierAction,
                                  featureFlagService: FeatureFlagService,
                                  submissionDraftConnector: SubmissionDraftConnector
-                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with AnyProtectors {
+                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
 
     def redirect(userAnswers: UserAnswers): Future[Result] = {
       repository.set(userAnswers) map { _ =>
-        if (isAnyProtectorAdded(userAnswers)) {
+        if (userAnswers.isAnyProtectorAdded) {
           Redirect(rts.AddAProtectorController.onPageLoad(draftId))
         } else {
           Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))

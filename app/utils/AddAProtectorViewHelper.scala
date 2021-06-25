@@ -39,7 +39,7 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
     val index = businessProtector._2
 
     AddRow(
-      name = parseName(vm.name.map(_.toString)),
+      name = parseName(vm.name),
       typeLabel = messages("entities.protector.business"),
       changeUrl = if (vm.isComplete) {
         businessRts.CheckDetailsController.onPageLoad(index, draftId).url

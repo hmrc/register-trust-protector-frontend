@@ -17,6 +17,7 @@
 package models
 
 import models.register.pages.IndividualOrBusinessToAdd
+import utils.Constants.MAX
 import viewmodels.RadioOption
 import viewmodels.addAnother.{BusinessProtectorViewModel, IndividualProtectorViewModel}
 
@@ -32,7 +33,7 @@ case class Protectors(individuals: List[IndividualProtectorViewModel] = Nil,
   )
 
   val maxedOutOptions: List[RadioOption] = {
-    options.filter(_._1 >= 25).map {
+    options.filter(_._1 >= MAX).map {
       x => RadioOption(IndividualOrBusinessToAdd.prefix, x._2.toString)
     }
   }

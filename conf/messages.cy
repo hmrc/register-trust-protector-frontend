@@ -1,5 +1,5 @@
-addAProtector.add-them-later=Iawn
-addAProtector.add-them-now=Iawn
+addAProtector.add-them-later=Iawn, rwyf am ei ychwanegu yn nes ymlaen
+addAProtector.add-them-now=Iawn, rwyf am ei ychwanegu nawr
 addAProtector.additional-content=A oes angen i chi ychwanegu amddiffynnydd arall?
 addAProtector.count.heading=Rydych wedi ychwanegu {0} o amddiffynyddion
 addAProtector.count.title=Rydych wedi ychwanegu {0} o amddiffynyddion
@@ -9,7 +9,7 @@ addAProtector.maxedOut=Ni allwch ychwanegu {0} arall gan eich bod wedi nodi ucha
 addAProtector.maxedOut.all=Ni allwch nodi amddiffynnydd arall gan eich bod wedi nodi uchafswm o 50.
 addAProtector.maxedOut.all.paragraph=Gwiriwch yr amddiffynyddion yr ydych wedi’u hychwanegu. Os oes gennych ragor o amddiffynyddion i’w hychwanegu
 addAProtector.maxedOut.paragraph=Gwiriwch yr amddiffynyddion yr ydych wedi’u hychwanegu. Os oes gennych ragor o amddiffynyddion i’w hychwanegu
-addAProtector.no-complete=Na
+addAProtector.no-complete=Na, rwyf wedi ychwanegu’r holl amddiffynyddion
 addAProtector.title=Ychwanegu amddiffynnydd
 addAProtectorYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu amddiffynnydd
 addAProtectorYesNo.heading=A ydych am ychwanegu amddiffynnydd?

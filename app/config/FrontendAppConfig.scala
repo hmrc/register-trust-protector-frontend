@@ -26,8 +26,9 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import java.time.LocalDate
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration,
-                                     contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject()(configuration: Configuration,
+                                  contactFrontendConfig: ContactFrontendConfig) {
+
   val repositoryKey: String = "protectors"
 
   final val ENGLISH = "en"

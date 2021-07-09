@@ -19,7 +19,7 @@ package utils.print
 import base.SpecBase
 import models.{InternationalAddress, UkAddress}
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
-import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NamePage, NonUkAddressPage, UkAddressPage, UtrPage, UtrYesNoPage}
+import pages.register.business._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 
@@ -42,7 +42,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
         val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
-          headingKey = Some("Business protector 1"),
+          headingKey = Some("answerPage.section.businessProtector.subheading"),
           rows = Seq(
             AnswerRow("businessProtector.name.checkYourAnswersLabel", Html("Business Name"),
               changeUrl = Some(controllers.register.business.routes.NameController.onPageLoad(index, draftId).url),
@@ -56,7 +56,8 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UtrController.onPageLoad(index, draftId).url),
               labelArg = name
             )
-          )
+          ),
+          headingArgs = Seq("1")
         )
       }
 
@@ -70,7 +71,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
         val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
-          headingKey = Some("Business protector 1"),
+          headingKey = Some("answerPage.section.businessProtector.subheading"),
           rows = Seq(
             AnswerRow("businessProtector.name.checkYourAnswersLabel", Html("Business Name"),
               changeUrl = Some(controllers.register.business.routes.NameController.onPageLoad(index, draftId).url),
@@ -92,7 +93,8 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.mld5.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             )
-          )
+          ),
+          headingArgs = Seq("1")
         )
       }
 
@@ -107,7 +109,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
         val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
-          headingKey = Some("Business protector 1"),
+          headingKey = Some("answerPage.section.businessProtector.subheading"),
           rows = Seq(
             AnswerRow("businessProtector.name.checkYourAnswersLabel", Html("Business Name"),
               changeUrl = Some(controllers.register.business.routes.NameController.onPageLoad(index, draftId).url),
@@ -133,7 +135,8 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.mld5.routes.CountryOfResidenceController.onPageLoad(index, draftId).url),
               labelArg = name
             )
-          )
+          ),
+          headingArgs = Seq("1")
         )
       }
 
@@ -151,7 +154,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
         val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
-          headingKey = Some("Business protector 1"),
+          headingKey = Some("answerPage.section.businessProtector.subheading"),
           rows = Seq(
             AnswerRow("businessProtector.name.checkYourAnswersLabel", Html("Business Name"),
               changeUrl = Some(controllers.register.business.routes.NameController.onPageLoad(index, draftId).url),
@@ -189,7 +192,8 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.UkAddressController.onPageLoad(index, draftId).url),
               labelArg = name
             )
-          )
+          ),
+          headingArgs = Seq("1")
         )
       }
 
@@ -207,7 +211,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
         val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
-          headingKey = Some("Business protector 1"),
+          headingKey = Some("answerPage.section.businessProtector.subheading"),
           rows = Seq(
             AnswerRow("businessProtector.name.checkYourAnswersLabel", Html("Business Name"),
               changeUrl = Some(controllers.register.business.routes.NameController.onPageLoad(index, draftId).url),
@@ -245,7 +249,8 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.NonUkAddressController.onPageLoad(index, draftId).url),
               labelArg = name
             )
-          )
+          ),
+          headingArgs = Seq("1")
         )
       }
 
@@ -261,7 +266,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
         val result = helper.printSection(userAnswers, Some(name), index, draftId)
         result mustBe AnswerSection(
-          headingKey = Some("Business protector 1"),
+          headingKey = Some("answerPage.section.businessProtector.subheading"),
           rows = Seq(
             AnswerRow("businessProtector.name.checkYourAnswersLabel", Html("Business Name"),
               changeUrl = Some(controllers.register.business.routes.NameController.onPageLoad(index, draftId).url),
@@ -291,7 +296,8 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               changeUrl = Some(controllers.register.business.routes.AddressYesNoController.onPageLoad(index, draftId).url),
               labelArg = name
             )
-          )
+          ),
+          headingArgs = Seq("1")
         )
       }
 

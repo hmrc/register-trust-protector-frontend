@@ -16,7 +16,6 @@
 
 package repositories
 
-import javax.inject.Inject
 import mapping.register.ProtectorsMapper
 import models._
 import pages.register.TrustHasProtectorYesNoPage
@@ -25,6 +24,8 @@ import play.api.libs.json.{JsNull, JsValue, Json}
 import utils.RegistrationProgress
 import utils.answers.{BusinessProtectorAnswersHelper, IndividualProtectorAnswersHelper}
 import viewmodels.{AnswerRow, AnswerSection}
+
+import javax.inject.Inject
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      protectorsMapper: ProtectorsMapper,
@@ -35,17 +36,17 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     val status = registrationProgress.protectorsStatus(userAnswers)
 
     RegistrationSubmission.DataSet(
-      Json.toJson(userAnswers),
-      status,
-      mappedDataIfCompleted(userAnswers, status),
-      answerSectionsIfCompleted(userAnswers, status)
+      data = Json.toJson(userAnswers),
+      status = status,
+      registrationPieces = mappedDataIfCompleted(userAnswers, status),
+      answerSections = answerSectionsIfCompleted(userAnswers, status)
     )
   }
 
   private def mappedPieces(protectorsJson: JsValue) =
     List(RegistrationSubmission.MappedPiece("trust/entities/protectors", protectorsJson))
 
-  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
+  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]): List[RegistrationSubmission.MappedPiece] = {
     if (status.contains(Status.Completed)) {
       protectorsMapper.build(userAnswers) match {
         case Some(protectors) => mappedPieces(Json.toJson(protectors))
@@ -68,11 +69,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
         businessProtectorAnswerHelper.protectors(userAnswers)
       ).flatten.flatten
 
-      val updatedFirstSection = AnswerSection(
-        entitySections.head.headingKey,
-        entitySections.head.rows,
-        Some(Messages("answerPage.section.protectors.heading"))
-      )
+      val updatedFirstSection = entitySections.head.copy(sectionKey = Some("answerPage.section.protectors.heading"))
 
       val updatedSections = updatedFirstSection :: entitySections.tail
 
@@ -84,10 +81,19 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   }
 
   private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {
-    RegistrationSubmission.AnswerRow(row.label, row.answer.toString, row.labelArg)
+    RegistrationSubmission.AnswerRow(
+      label = row.label,
+      answer = row.answer.toString,
+      labelArg = row.labelArg
+    )
   }
 
   private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
-    RegistrationSubmission.AnswerSection(section.headingKey, section.rows.map(convertForSubmission), section.sectionKey)
+    RegistrationSubmission.AnswerSection(
+      headingKey = section.headingKey,
+      rows = section.rows.map(convertForSubmission),
+      sectionKey = section.sectionKey,
+      headingArgs = section.headingArgs.map(_.toString)
+    )
   }
 }

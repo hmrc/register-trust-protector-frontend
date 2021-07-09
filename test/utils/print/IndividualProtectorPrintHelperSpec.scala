@@ -70,8 +70,8 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
 
       val result = helper.printSection(userAnswers, Some(name.toString), index, fakeDraftId)
 
-      result mustBe AnswerSection(
-        headingKey = Some(messages("answerPage.section.individualProtector.subheading", index + 1)),
+      result mustEqual AnswerSection(
+        headingKey = Some("answerPage.section.individualProtector.subheading"),
         rows = Seq(
           AnswerRow("individualProtector.name.checkYourAnswersLabel", Html(name.displayFullName), Some(NameController.onPageLoad(index, fakeDraftId).url), "", canEdit),
           AnswerRow("individualProtector.dateOfBirthYesNo.checkYourAnswersLabel", Html("Yes"), Some(DateOfBirthYesNoController.onPageLoad(index, fakeDraftId).url), arg, canEdit),
@@ -93,7 +93,8 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
           AnswerRow("individualProtector.idCardDetailsYesNo.checkYourAnswersLabel", Html("Yes"), Some(IDCardDetailsYesNoController.onPageLoad(index, fakeDraftId).url), arg, canEdit),
           AnswerRow("individualProtector.idCardDetails.checkYourAnswersLabel", Html("France<br />12345<br />3 February 1996"), Some(IDCardDetailsController.onPageLoad(index, fakeDraftId).url), arg, canEdit),
           AnswerRow("individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel", Html("Yes"), Some(LegallyCapableYesNoController.onPageLoad(index, fakeDraftId).url), arg, canEdit)
-        )
+        ),
+        headingArgs = Seq("1")
       )
     }
   }

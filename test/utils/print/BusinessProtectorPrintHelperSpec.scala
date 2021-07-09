@@ -57,7 +57,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               labelArg = name
             )
           ),
-          headingArgs = Seq("1")
+          headingArgs = Seq(1)
         )
       }
 
@@ -94,7 +94,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               labelArg = name
             )
           ),
-          headingArgs = Seq("1")
+          headingArgs = Seq(1)
         )
       }
 
@@ -136,7 +136,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               labelArg = name
             )
           ),
-          headingArgs = Seq("1")
+          headingArgs = Seq(1)
         )
       }
 
@@ -193,7 +193,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               labelArg = name
             )
           ),
-          headingArgs = Seq("1")
+          headingArgs = Seq(1)
         )
       }
 
@@ -250,7 +250,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               labelArg = name
             )
           ),
-          headingArgs = Seq("1")
+          headingArgs = Seq(1)
         )
       }
 
@@ -297,7 +297,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
               labelArg = name
             )
           ),
-          headingArgs = Seq("1")
+          headingArgs = Seq(1)
         )
       }
 

@@ -94,7 +94,7 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
           AnswerRow("individualProtector.idCardDetails.checkYourAnswersLabel", Html("France<br />12345<br />3 February 1996"), Some(IDCardDetailsController.onPageLoad(index, fakeDraftId).url), arg, canEdit),
           AnswerRow("individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel", Html("Yes"), Some(LegallyCapableYesNoController.onPageLoad(index, fakeDraftId).url), arg, canEdit)
         ),
-        headingArgs = Seq("1")
+        headingArgs = Seq(1)
       )
     }
   }

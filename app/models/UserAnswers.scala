@@ -17,6 +17,7 @@
 package models
 
 import play.api.Logger
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import sections.{BusinessProtectors, IndividualProtectors}
@@ -108,31 +109,21 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  implicit lazy val reads: Reads[UserAnswers] = (
+    (__ \ "_id").read[String] and
+      (__ \ "data").read[JsObject] and
+      (__ \ "internalId").read[String] and
+      (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
+      (__ \ "isTaxable").readWithDefault[Boolean](true) and
+      (__ \ "utr").readNullable[String]
+    ) (UserAnswers.apply _)
 
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").read[String] and
-        (__ \ "data").read[JsObject] and
-        (__ \ "internalId").read[String] and
-        (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
-        (__ \ "isTaxable").readWithDefault[Boolean](true) and
-        (__ \ "utr").readNullable[String]
-      ) (UserAnswers.apply _)
-  }
-
-  implicit lazy val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").write[String] and
-        (__ \ "data").write[JsObject] and
-        (__ \ "internalId").write[String] and
-        (__ \ "is5mldEnabled").write[Boolean] and
-        (__ \ "isTaxable").write[Boolean] and
-        (__ \ "utr").writeNullable[String]
-      ) (unlift(UserAnswers.unapply))
-  }
+  implicit lazy val writes: OWrites[UserAnswers] = (
+    (__ \ "_id").write[String] and
+      (__ \ "data").write[JsObject] and
+      (__ \ "internalId").write[String] and
+      (__ \ "is5mldEnabled").write[Boolean] and
+      (__ \ "isTaxable").write[Boolean] and
+      (__ \ "utr").writeNullable[String]
+    ) (unlift(UserAnswers.unapply))
 }

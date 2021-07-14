@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionDraftConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
-  val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
+  private val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
   def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {

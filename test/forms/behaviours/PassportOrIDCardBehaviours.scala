@@ -44,7 +44,7 @@ trait PassportOrIDCardBehaviours extends FormSpec
 
           val result = form.bind(data).apply("expiryDate")
 
-          result.errors shouldBe empty
+          result.errors mustBe empty
       }
     }
   }
@@ -59,7 +59,7 @@ trait PassportOrIDCardBehaviours extends FormSpec
         string =>
           whenever(!string.matches(Validation.passportOrIdCardNumberRegEx)) {
             val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-            result.errors shouldEqual Seq(invalidError)
+            result.errors mustEqual Seq(invalidError)
           }
       }
     }
@@ -71,7 +71,7 @@ trait PassportOrIDCardBehaviours extends FormSpec
 
       val result = form.bind(Map.empty[String, String]).apply(key)
 
-      result.errors should contain(FormError(key, requiredAllKey, List.empty))
+      result.errors must contain(FormError(key, requiredAllKey, List.empty))
     }
   }
 
@@ -88,7 +88,7 @@ trait PassportOrIDCardBehaviours extends FormSpec
 
       val result = form.bind(data).apply("expiryDate")
 
-      result.errors should contain(FormError(key, requiredAllKey, List.empty))
+      result.errors must contain(FormError(key, requiredAllKey, List.empty))
     }
   }
 

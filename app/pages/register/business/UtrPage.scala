@@ -17,6 +17,7 @@
 package pages.register.business
 
 import pages.QuestionPage
+import pages.register.business.UtrPage.key
 import play.api.libs.json.JsPath
 import sections.BusinessProtectors
 
@@ -24,5 +25,9 @@ final case class UtrPage(index : Int) extends QuestionPage[String] {
 
   override def path: JsPath = BusinessProtectors.path \ index \ toString
 
-  override def toString: String = "utr"
+  override def toString: String = key
+}
+
+object UtrPage {
+  val key: String = "utr"
 }

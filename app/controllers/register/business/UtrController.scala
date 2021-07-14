@@ -17,10 +17,9 @@
 package controllers.register.business
 
 import config.annotations.BusinessProtector
-import controllers.actions.StandardActionSets
 import controllers.actions.register.business.NameRequiredAction
+import controllers.actions.{ProtectorNameRequest, StandardActionSets}
 import forms.UtrFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.UtrPage
 import play.api.data.Form
@@ -30,6 +29,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.business.UtrView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UtrController @Inject()(
@@ -40,9 +40,10 @@ class UtrController @Inject()(
                                repository: RegistrationsRepository,
                                view: UtrView,
                                @BusinessProtector navigator: Navigator
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withPrefix("businessProtector.utr")
+  private def form(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
+    formProvider.withPrefix("businessProtector.utr", request.userAnswers)
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
     implicit request =>

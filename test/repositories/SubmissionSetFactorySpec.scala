@@ -37,27 +37,27 @@ class SubmissionSetFactorySpec extends SpecBase {
     "return no answer sections if no completed protectors" in {
 
       factory.createFrom(emptyUserAnswers) mustBe RegistrationSubmission.DataSet(
-        Json.toJson(emptyUserAnswers),
-        None,
-        List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
-        List.empty
+        data = Json.toJson(emptyUserAnswers),
+        status = None,
+        registrationPieces = List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
+        answerSections = List.empty
       )
     }
 
     "return completed answer sections" when {
 
       "trust has protectors is set to 'false'" must {
-          "return a completed empty set" in {
-            val userAnswers: UserAnswers = emptyUserAnswers
-              .set(TrustHasProtectorYesNoPage, false).success.value
+        "return a completed empty set" in {
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(TrustHasProtectorYesNoPage, false).success.value
 
-            factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
-              Json.toJson(userAnswers),
-              Some(Status.Completed),
-              List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
-              List.empty
-            )
-          }
+          factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
+            data = Json.toJson(userAnswers),
+            status = Some(Status.Completed),
+            registrationPieces = List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
+            answerSections = List.empty
+          )
+        }
       }
 
       "only one protector" must {
@@ -80,15 +80,16 @@ class SubmissionSetFactorySpec extends SpecBase {
               List(RegistrationSubmission.MappedPiece("trust/entities/protectors", mappedJson)),
               List(
                 AnswerSection(
-                  Some("Business protector 1"),
-                  List(
+                  headingKey = Some("answerPage.section.businessProtector.subheading"),
+                  rows = List(
                     AnswerRow(
-                      "businessProtector.name.checkYourAnswersLabel",
-                      "None of Your Business",
-                      "None of Your Business"
+                      label = "businessProtector.name.checkYourAnswersLabel",
+                      answer = "None of Your Business",
+                      labelArg = "None of Your Business"
                     )
                   ),
-                  Some("Protectors")
+                  sectionKey = Some("answerPage.section.protectors.heading"),
+                  headingArgs = Seq("1")
                 )
               )
             )
@@ -102,9 +103,10 @@ class SubmissionSetFactorySpec extends SpecBase {
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
                 AnswerSection(
-                  Some("Individual protector 1"),
-                  Nil,
-                  Some("Protectors")
+                  headingKey = Some("answerPage.section.individualProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = Some("answerPage.section.protectors.heading"),
+                  headingArgs = Seq("1")
                 )
               )
           }
@@ -122,14 +124,16 @@ class SubmissionSetFactorySpec extends SpecBase {
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
                 AnswerSection(
-                  Some("Business protector 1"),
-                  Nil,
-                  Some("Protectors")
+                  headingKey = Some("answerPage.section.businessProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = Some("answerPage.section.protectors.heading"),
+                  headingArgs = Seq("1")
                 ),
                 AnswerSection(
-                  Some("Business protector 2"),
-                  Nil,
-                  None
+                  headingKey = Some("answerPage.section.businessProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = None,
+                  headingArgs = Seq("2")
                 )
               )
           }
@@ -143,14 +147,16 @@ class SubmissionSetFactorySpec extends SpecBase {
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
                 AnswerSection(
-                  Some("Individual protector 1"),
-                  Nil,
-                  Some("Protectors")
+                  headingKey = Some("answerPage.section.individualProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = Some("answerPage.section.protectors.heading"),
+                  headingArgs = Seq("1")
                 ),
                 AnswerSection(
-                  Some("Individual protector 2"),
-                  Nil,
-                  None
+                  headingKey = Some("answerPage.section.individualProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = None,
+                  headingArgs = Seq("2")
                 )
               )
           }
@@ -164,14 +170,16 @@ class SubmissionSetFactorySpec extends SpecBase {
             factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
               List(
                 AnswerSection(
-                  Some("Individual protector 1"),
-                  Nil,
-                  Some("Protectors")
+                  headingKey = Some("answerPage.section.individualProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = Some("answerPage.section.protectors.heading"),
+                  headingArgs = Seq("1")
                 ),
                 AnswerSection(
-                  Some("Business protector 1"),
-                  Nil,
-                  None
+                  headingKey = Some("answerPage.section.businessProtector.subheading"),
+                  rows = Nil,
+                  sectionKey = None,
+                  headingArgs = Seq("1")
                 )
               )
           }

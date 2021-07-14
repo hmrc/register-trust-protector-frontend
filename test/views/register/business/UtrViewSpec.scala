@@ -28,7 +28,7 @@ class UtrViewSpec extends StringViewBehaviours {
   val messageKeyPrefix = "businessProtector.utr"
   val name = "Name"
 
-  override val form: Form[String] = new UtrFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[String] = new UtrFormProvider().withPrefix(messageKeyPrefix, emptyUserAnswers)
 
   "Utr view" must {
 

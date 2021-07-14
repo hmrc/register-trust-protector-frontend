@@ -16,10 +16,14 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import models.UserAnswers
+import pages.register.business.UtrPage
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.libs.json.{JsString, JsSuccess}
+import sections.BusinessProtectors
 import uk.gov.hmrc.domain.Nino
+
+import java.time.LocalDate
 
 trait Constraints {
 
@@ -129,10 +133,19 @@ trait Constraints {
 
   protected def isNinoValid(value: String, errorKey: String): Constraint[String] =
     Constraint {
-      case str if Nino.isValid(str)=>
+      case str if Nino.isValid(str) =>
         Valid
       case _ =>
         Invalid(errorKey, value)
+    }
+
+  protected def uniqueUtr(userAnswers: UserAnswers, errorKey: String): Constraint[String] =
+    Constraint {
+      utr =>
+        userAnswers.data.transform(BusinessProtectors.path.json.pick) match {
+          case JsSuccess(businesses, _) => if ((businesses \\ UtrPage.key).contains(JsString(utr))) Invalid(errorKey) else Valid
+          case _ => Valid
+        }
     }
 
 }

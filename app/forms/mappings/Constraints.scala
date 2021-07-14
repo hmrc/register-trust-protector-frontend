@@ -139,12 +139,16 @@ trait Constraints {
         Invalid(errorKey, value)
     }
 
-  protected def uniqueUtr(userAnswers: UserAnswers, errorKey: String): Constraint[String] =
+  protected def uniqueUtr(userAnswers: UserAnswers, notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =
     Constraint {
       utr =>
-        userAnswers.data.transform(BusinessProtectors.path.json.pick) match {
-          case JsSuccess(businesses, _) => if ((businesses \\ UtrPage.key).contains(JsString(utr))) Invalid(errorKey) else Valid
-          case _ => Valid
+        if (userAnswers.utr.contains(utr)) {
+          Invalid(sameAsTrustUtrKey)
+        } else {
+          userAnswers.data.transform(BusinessProtectors.path.json.pick) match {
+            case JsSuccess(businesses, _) => if ((businesses \\ UtrPage.key).contains(JsString(utr))) Invalid(notUniqueKey) else Valid
+            case _ => Valid
+          }
         }
     }
 

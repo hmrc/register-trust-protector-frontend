@@ -106,7 +106,8 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
                prefix: String,
                fieldName: String,
                length: Int,
-               notUniqueError: FormError): Unit = {
+               notUniqueError: FormError,
+               sameAsTrustUtrError: FormError): Unit = {
 
     "not bind UTRs that have been used for other businesses" in {
       val regex = Validation.utrRegex.replace("*", s"{$length}")
@@ -117,6 +118,16 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
           val updatedUserAnswers = (0 until size).foldLeft(emptyUserAnswers)((acc, i) => acc.set(UtrPage(i), utr).success.value)
           val result = form.withPrefix(prefix, updatedUserAnswers).bind(Map(fieldName -> utr)).apply(fieldName)
           result.errors mustEqual Seq(notUniqueError)
+      }
+    }
+
+    "not bind UTR if it is the same as the trust UTR" in {
+      val regex = Validation.utrRegex.replace("*", s"{$length}")
+      val utrGenerator = RegexpGen.from(regex)
+      forAll(utrGenerator) {
+        utr =>
+          val result = form.withPrefix(prefix, emptyUserAnswers.copy(utr = Some(utr))).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Seq(sameAsTrustUtrError)
       }
     }
   }

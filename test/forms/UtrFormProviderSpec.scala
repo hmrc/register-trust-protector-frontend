@@ -26,6 +26,7 @@ class UtrFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = s"$prefix.error.required"
   val lengthKey = s"$prefix.error.length"
   val notUniqueKey = s"$prefix.error.notUnique"
+  val sameAsTrustUtrKey = s"$prefix.error.sameAsTrustUtr"
   val utrLength = 10
 
   val form: Form[String] = new UtrFormProvider().withPrefix(prefix, emptyUserAnswers)
@@ -65,7 +66,8 @@ class UtrFormProviderSpec extends StringFieldBehaviours {
       prefix = prefix,
       fieldName = fieldName,
       length = utrLength,
-      notUniqueError = FormError(fieldName, notUniqueKey)
+      notUniqueError = FormError(fieldName, notUniqueKey),
+      sameAsTrustUtrError = FormError(fieldName, sameAsTrustUtrKey)
     )
 
   }

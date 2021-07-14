@@ -118,7 +118,7 @@ class IndexControllerSpec extends SpecBase {
 
           uaCaptor.getValue.is5mldEnabled mustBe true
           uaCaptor.getValue.isTaxable mustBe true
-          uaCaptor.getValue.utr.get mustBe utr
+          uaCaptor.getValue.existingTrustUtr.get mustBe utr
 
           application.stop()
         }

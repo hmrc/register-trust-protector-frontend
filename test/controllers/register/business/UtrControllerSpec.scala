@@ -29,9 +29,9 @@ import views.html.register.business.UtrView
 
 class UtrControllerSpec extends SpecBase {
 
-  val formProvider = new UtrFormProvider()
-  val form: Form[String] = formProvider.withPrefix("businessProtector.utr", emptyUserAnswers)
   val index: Int = 0
+  val formProvider = new UtrFormProvider()
+  val form: Form[String] = formProvider.withConfig("businessProtector.utr", emptyUserAnswers, index)
 
   val name = "Business"
   val fakeUtr = "1234567890"

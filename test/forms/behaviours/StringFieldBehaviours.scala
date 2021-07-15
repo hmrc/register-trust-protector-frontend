@@ -117,7 +117,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
       forAll(utrGenerator, intGenerator) {
         (utr, size) =>
           val updatedUserAnswers = (0 until size).foldLeft(emptyUserAnswers)((acc, i) => acc.set(UtrPage(i), utr).success.value)
-          val result = form.withPrefix(prefix, updatedUserAnswers).bind(Map(fieldName -> utr)).apply(fieldName)
+          val result = form.withConfig(prefix, updatedUserAnswers, size).bind(Map(fieldName -> utr)).apply(fieldName)
           result.errors mustEqual Seq(notUniqueError)
       }
     }
@@ -125,7 +125,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     "not bind UTR if it is the same as the trust UTR" in {
       forAll(utrGenerator) {
         utr =>
-          val result = form.withPrefix(prefix, emptyUserAnswers.copy(existingTrustUtr = Some(utr))).bind(Map(fieldName -> utr)).apply(fieldName)
+          val result = form.withConfig(prefix, emptyUserAnswers.copy(existingTrustUtr = Some(utr)), 0).bind(Map(fieldName -> utr)).apply(fieldName)
           result.errors mustEqual Seq(sameAsTrustUtrError)
       }
     }
@@ -133,7 +133,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     "bind valid UTRs when no businesses" in {
       forAll(utrGenerator) {
         utr =>
-          val result = form.withPrefix(prefix, emptyUserAnswers).bind(Map(fieldName -> utr)).apply(fieldName)
+          val result = form.withConfig(prefix, emptyUserAnswers, 0).bind(Map(fieldName -> utr)).apply(fieldName)
           result.errors mustEqual Nil
           result.value.value mustBe utr
       }
@@ -144,7 +144,17 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
       val updatedUserAnswers = emptyUserAnswers.set(UtrPage(0), value).success.value
       forAll(utrGenerator.suchThat(_ != value)) {
         utr =>
-          val result = form.withPrefix(prefix, updatedUserAnswers).bind(Map(fieldName -> utr)).apply(fieldName)
+          val result = form.withConfig(prefix, updatedUserAnswers, 0).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Nil
+          result.value.value mustBe utr
+      }
+    }
+
+    "bind valid UTR when business at current index has that UTR" in {
+      forAll(utrGenerator) {
+        utr =>
+          val updatedUserAnswers = emptyUserAnswers.set(UtrPage(0), utr).success.value
+          val result = form.withConfig(prefix, updatedUserAnswers, 0).bind(Map(fieldName -> utr)).apply(fieldName)
           result.errors mustEqual Nil
           result.value.value mustBe utr
       }

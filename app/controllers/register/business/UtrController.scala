@@ -42,15 +42,15 @@ class UtrController @Inject()(
                                @BusinessProtector navigator: Navigator
                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
-    formProvider.withPrefix("businessProtector.utr", request.userAnswers)
+  private def form(index: Int)(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
+    formProvider.withConfig("businessProtector.utr", request.userAnswers, index)
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UtrPage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None => form(index)
+        case Some(value) => form(index).fill(value)
       }
 
       Ok(view(preparedForm, request.protectorName, index, draftId))
@@ -58,7 +58,7 @@ class UtrController @Inject()(
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      form(index).bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
         value => {

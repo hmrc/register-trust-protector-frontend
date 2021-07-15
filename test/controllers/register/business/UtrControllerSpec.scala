@@ -21,6 +21,7 @@ import config.annotations.BusinessProtector
 import forms.UtrFormProvider
 import navigation.{FakeNavigator, Navigator}
 import pages.register.business.{NamePage, UtrPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,9 +29,9 @@ import views.html.register.business.UtrView
 
 class UtrControllerSpec extends SpecBase {
 
-  val formProvider = new UtrFormProvider()
-  val form = formProvider.withPrefix("businessProtector.utr")
   val index: Int = 0
+  val formProvider = new UtrFormProvider()
+  val form: Form[String] = formProvider.withConfig("businessProtector.utr", emptyUserAnswers, index)
 
   val name = "Business"
   val fakeUtr = "1234567890"

@@ -16,7 +16,6 @@
 
 package views.register
 
-import controllers.register.routes
 import views.behaviours.ViewBehaviours
 import views.html.register.InfoView5MLD
 

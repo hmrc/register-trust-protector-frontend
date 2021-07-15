@@ -16,18 +16,20 @@
 
 package forms.behaviours
 
-import forms.Validation
+import forms.{UtrFormProvider, Validation}
 import org.scalacheck.Gen
+import pages.register.business.UtrPage
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Nino
+import utils.Constants.MAX
 import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
-  def fieldWithMinLength(form : Form[_],
-                         fieldName : String,
-                         minLength : Int,
-                         lengthError : FormError) : Unit = {
+  def fieldWithMinLength(form: Form[_],
+                         fieldName: String,
+                         minLength: Int,
+                         lengthError: FormError): Unit = {
 
     s"not bind strings shorter than $minLength characters" in {
 
@@ -36,24 +38,22 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
       forAll(stringsWithMaxLength(length) -> "shortString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors shouldEqual Seq(lengthError)
+          result.errors mustEqual Seq(lengthError)
       }
     }
-
   }
 
   def fieldWithMaxLength(form: Form[_],
                          fieldName: String,
                          maxLength: Int,
-                         lengthError: FormError
-                        ): Unit = {
+                         lengthError: FormError): Unit = {
 
     s"not bind strings longer than $maxLength characters" in {
 
       forAll(stringsLongerThan(maxLength) -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors shouldEqual Seq(lengthError)
+          result.errors mustEqual Seq(lengthError)
       }
     }
   }
@@ -69,7 +69,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
         string =>
           whenever(!string.matches(regexp) && string.nonEmpty) {
             val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-            result.errors shouldEqual Seq(error)
+            result.errors mustEqual Seq(error)
           }
       }
     }
@@ -82,7 +82,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     "not bind spaces" in {
 
       val result = form.bind(Map(fieldName -> "    ")).apply(fieldName)
-      result.errors shouldBe Seq(requiredError)
+      result.errors mustBe Seq(requiredError)
     }
   }
 
@@ -96,8 +96,67 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
         string =>
           whenever(!Nino.isValid(string)) {
             val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-            result.errors shouldEqual Seq(requiredError)
+            result.errors mustEqual Seq(requiredError)
           }
+      }
+    }
+  }
+
+  def utrField(form: UtrFormProvider,
+               prefix: String,
+               fieldName: String,
+               length: Int,
+               notUniqueError: FormError,
+               sameAsTrustUtrError: FormError): Unit = {
+
+    val regex = Validation.utrRegex.replace("*", s"{$length}")
+    val utrGenerator = RegexpGen.from(regex)
+
+    "not bind UTRs that have been used for other businesses" in {
+      val intGenerator = Gen.choose(1, MAX)
+      forAll(utrGenerator, intGenerator) {
+        (utr, size) =>
+          val updatedUserAnswers = (0 until size).foldLeft(emptyUserAnswers)((acc, i) => acc.set(UtrPage(i), utr).success.value)
+          val result = form.withConfig(prefix, updatedUserAnswers, size).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Seq(notUniqueError)
+      }
+    }
+
+    "not bind UTR if it is the same as the trust UTR" in {
+      forAll(utrGenerator) {
+        utr =>
+          val result = form.withConfig(prefix, emptyUserAnswers.copy(existingTrustUtr = Some(utr)), 0).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Seq(sameAsTrustUtrError)
+      }
+    }
+
+    "bind valid UTRs when no businesses" in {
+      forAll(utrGenerator) {
+        utr =>
+          val result = form.withConfig(prefix, emptyUserAnswers, 0).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Nil
+          result.value.value mustBe utr
+      }
+    }
+
+    "bind valid UTRs when no other businesses have that UTR" in {
+      val value: String = "1234567890"
+      val updatedUserAnswers = emptyUserAnswers.set(UtrPage(0), value).success.value
+      forAll(utrGenerator.suchThat(_ != value)) {
+        utr =>
+          val result = form.withConfig(prefix, updatedUserAnswers, 0).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Nil
+          result.value.value mustBe utr
+      }
+    }
+
+    "bind valid UTR when business at current index has that UTR" in {
+      forAll(utrGenerator) {
+        utr =>
+          val updatedUserAnswers = emptyUserAnswers.set(UtrPage(0), utr).success.value
+          val result = form.withConfig(prefix, updatedUserAnswers, 0).bind(Map(fieldName -> utr)).apply(fieldName)
+          result.errors mustEqual Nil
+          result.value.value mustBe utr
       }
     }
   }

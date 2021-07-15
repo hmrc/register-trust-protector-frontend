@@ -17,6 +17,7 @@
 package models
 
 import play.api.Logger
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import sections.{BusinessProtectors, IndividualProtectors}
@@ -29,6 +30,7 @@ trait ReadableUserAnswers {
 
   val is5mldEnabled: Boolean = false
   val isTaxable: Boolean = true
+  val existingTrustUtr: Option[String] = None
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
@@ -57,7 +59,8 @@ final case class UserAnswers(
                               data: JsObject = Json.obj(),
                               internalAuthId: String,
                               override val is5mldEnabled: Boolean = false,
-                              override val isTaxable: Boolean = true
+                              override val isTaxable: Boolean = true,
+                              override val existingTrustUtr: Option[String] = None
                             ) extends ReadableUserAnswers {
 
   private val logger = Logger(getClass)
@@ -106,29 +109,21 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  implicit lazy val reads: Reads[UserAnswers] = (
+    (__ \ "_id").read[String] and
+      (__ \ "data").read[JsObject] and
+      (__ \ "internalId").read[String] and
+      (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
+      (__ \ "isTaxable").readWithDefault[Boolean](true) and
+      (__ \ "existingTrustUtr").readNullable[String]
+    ) (UserAnswers.apply _)
 
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").read[String] and
-        (__ \ "data").read[JsObject] and
-        (__ \ "internalId").read[String] and
-        (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
-        (__ \ "isTaxable").readWithDefault[Boolean](true)
-      ) (UserAnswers.apply _)
-  }
-
-  implicit lazy val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").write[String] and
-        (__ \ "data").write[JsObject] and
-        (__ \ "internalId").write[String] and
-        (__ \ "is5mldEnabled").write[Boolean] and
-        (__ \ "isTaxable").write[Boolean]
-      ) (unlift(UserAnswers.unapply))
-  }
+  implicit lazy val writes: OWrites[UserAnswers] = (
+    (__ \ "_id").write[String] and
+      (__ \ "data").write[JsObject] and
+      (__ \ "internalId").write[String] and
+      (__ \ "is5mldEnabled").write[Boolean] and
+      (__ \ "isTaxable").write[Boolean] and
+      (__ \ "existingTrustUtr").writeNullable[String]
+    ) (unlift(UserAnswers.unapply))
 }

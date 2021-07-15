@@ -16,10 +16,14 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import models.UserAnswers
+import pages.register.business.UtrPage
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.libs.json.{JsArray, JsString, JsSuccess}
+import sections.BusinessProtectors
 import uk.gov.hmrc.domain.Nino
+
+import java.time.LocalDate
 
 trait Constraints {
 
@@ -129,10 +133,33 @@ trait Constraints {
 
   protected def isNinoValid(value: String, errorKey: String): Constraint[String] =
     Constraint {
-      case str if Nino.isValid(str)=>
+      case str if Nino.isValid(str) =>
         Valid
       case _ =>
         Invalid(errorKey, value)
+    }
+
+  protected def uniqueUtr(userAnswers: UserAnswers, index: Int, notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =
+    Constraint {
+      utr =>
+        if (userAnswers.existingTrustUtr.contains(utr)) {
+          Invalid(sameAsTrustUtrKey)
+        } else {
+          userAnswers.data.transform(BusinessProtectors.path.json.pick[JsArray]) match {
+            case JsSuccess(businesses, _) =>
+              val utrIsUnique = businesses.value.zipWithIndex.forall(business =>
+                !((business._1 \\ UtrPage.key).contains(JsString(utr)) && business._2 != index)
+              )
+
+              if (utrIsUnique) {
+                Valid
+              } else {
+                Invalid(notUniqueKey)
+              }
+            case _ =>
+              Valid
+          }
+        }
     }
 
 }

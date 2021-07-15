@@ -17,31 +17,41 @@
 package connectors
 
 import config.FrontendAppConfig
-import javax.inject.Inject
+import controllers.Assets.NOT_FOUND
 import models.{RegistrationSubmission, SubmissionDraftResponse}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
+class SubmissionDraftConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
-  val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
+  private val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
   def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
-                        (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
   }
 
-  def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
+  def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionDraftResponse] = {
     http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
   }
 
   // TODO - once the trust matching journey has been fixed to set a value for trustTaxable the recover can be removed
-  def getIsTrustTaxable(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
+  def getIsTrustTaxable(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-trust-taxable").recover {
       case _ => true
     }
   }
+
+  def getTrustUtr(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+    http.GET[String](s"$submissionsBaseUrl/$draftId/trust-utr")
+      .map(Some(_))
+      .recover {
+        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
+      }
+  }
+  
 }

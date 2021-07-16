@@ -17,38 +17,28 @@
 package views.register
 
 import views.behaviours.ViewBehaviours
-import views.html.register.InfoViewNonTaxable
+import views.html.register.InfoView
 
-class InfoViewNonTaxableSpec extends ViewBehaviours {
+class InfoViewSpec extends ViewBehaviours {
 
-  "NonTaxableInfo view" must {
+  "Info view" must {
 
-    val view = viewFor[InfoViewNonTaxable](Some(emptyUserAnswers))
+    val view = viewFor[InfoView](Some(emptyUserAnswers))
 
     val applyView = view.apply(fakeDraftId)(fakeRequest, messages)
 
-    behave like normalPageTitleWithSectionSubheading(applyView, "protectorsInfo.5mld.nonTaxable",
+    behave like normalPageTitleWithSectionSubheading(applyView, "protectorsInfo",
       "caption",
       "subheading1",
       "paragraph1",
-      "individual.bulletpoint1",
-      "individual.bulletpoint2",
-      "individual.bulletpoint3",
-      "individual.mental.capacity.p1",
-      "individual.mental.capacity.p2",
-      "individual.mental.capacity.bulletpoint1",
-      "individual.mental.capacity.bulletpoint2",
-      "individual.mental.capacity.bulletpoint3",
-      "individual.mental.capacity.bulletpoint4",
+      "bulletpoint1",
+      "bulletpoint2",
+      "bulletpoint3",
       "subheading2",
-      "paragraph3",
-      "details.what.we.mean",
-      "details.individual.heading",
-      "details.individual.paragraph1",
-      "details.business.heading",
-      "details.business.paragraph1"
+      "paragraph2",
+      "bulletpoint4",
+      "bulletpoint5"
     )
-
     behave like pageWithBackLink(applyView)
 
   }

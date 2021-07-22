@@ -18,9 +18,10 @@ package forms.mappings
 
 import models.UserAnswers
 import pages.register.business.UtrPage
+import pages.register.individual.NationalInsuranceNumberPage
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.libs.json.{JsArray, JsString, JsSuccess}
-import sections.BusinessProtectors
+import sections.{BusinessProtectors, IndividualProtector, IndividualProtectors}
 import uk.gov.hmrc.domain.Nino
 
 import java.time.LocalDate
@@ -137,6 +138,27 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey, value)
+    }
+
+
+  protected def isNinoDuplicated(userAnswers: UserAnswers, index: Int, errorKey: String): Constraint[String] =
+    Constraint {
+      nino =>
+        userAnswers.data.transform(IndividualProtectors.path.json.pick[JsArray]) match {
+          case JsSuccess(protectors, _) =>
+
+            val uniqueNino = protectors.value.zipWithIndex.forall( protector =>
+              !((protector._1 \\ NationalInsuranceNumberPage.key).contains(JsString(nino)) && protector._2 != index)
+            )
+
+            if (uniqueNino) {
+              Valid
+            } else {
+              Invalid(errorKey)
+            }
+          case _ =>
+            Valid
+        }
     }
 
   protected def uniqueUtr(userAnswers: UserAnswers, index: Int, notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =

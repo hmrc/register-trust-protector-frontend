@@ -21,7 +21,7 @@ import pages.register.business.UtrPage
 import pages.register.individual.NationalInsuranceNumberPage
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.libs.json.{JsArray, JsString, JsSuccess}
-import sections.{BusinessProtectors, IndividualProtector, IndividualProtectors}
+import sections.{BusinessProtectors, IndividualProtectors}
 import uk.gov.hmrc.domain.Nino
 
 import java.time.LocalDate

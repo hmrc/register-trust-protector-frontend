@@ -195,6 +195,7 @@ individualProtector.name.title=Beth yw enw’r amddiffynnydd?
 individualProtector.nationalInsuranceNumber.checkYourAnswersLabel=Beth yw rhif Yswiriant Gwladol {0}?
 individualProtector.nationalInsuranceNumber.error.invalid=Nodwch rif Yswiriant Gwladol yr amddiffynnydd yn y fformat cywir
 individualProtector.nationalInsuranceNumber.error.required=Nodwch rif Yswiriant Gwladol yr amddiffynnydd
+individualProtector.nationalInsuranceNumber.error.duplicate = Nodwch rif Yswiriant Gwladol nad yw wedi’i ddefnyddio eisoes i ychwanegu amddiffynnydd
 individualProtector.nationalInsuranceNumber.heading=Beth yw rhif Yswiriant Gwladol {0}?
 individualProtector.nationalInsuranceNumber.hint=Mae hwn ar ei gerdyn Yswiriant Gwladol, llythyr ynghylch budd-daliadau, slip cyflog neu P60. Er enghraifft, ‘QQ 12 34 56 C’.
 individualProtector.nationalInsuranceNumber.title=Beth yw rhif Yswiriant Gwladol yr amddiffynnydd?

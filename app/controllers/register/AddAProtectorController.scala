@@ -129,7 +129,7 @@ class AddAProtectorController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, value))
             _ <- registrationsRepository.set(updatedAnswers)
-            _ <- setTaskStatus(request.userAnswers, draftId, value)
+            _ <- setTaskStatus(updatedAnswers, draftId, value)
           } yield Redirect(navigator.nextPage(AddAProtectorPage, draftId, updatedAnswers))
         }
       )
@@ -138,10 +138,12 @@ class AddAProtectorController @Inject()(
   def submitComplete(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
 
+      val status = NoComplete
+
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, NoComplete))
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, status))
         _ <- registrationsRepository.set(updatedAnswers)
-        _ <- setTaskStatus(request.userAnswers, draftId, NoComplete)
+        _ <- setTaskStatus(updatedAnswers, draftId, status)
       } yield Redirect(Call(GET, config.registrationProgressUrl(draftId)))
   }
 

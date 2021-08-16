@@ -26,7 +26,7 @@ import pages.register.business.NamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.FeatureFlagService
+import services.TrustsStoreService
 
 import scala.concurrent.Future
 
@@ -35,7 +35,7 @@ class IndexControllerSpec extends SpecBase {
   private val name: String = "Company"
   private val utr: String = "1234567890"
 
-  private val featureFlagService: FeatureFlagService = mock[FeatureFlagService]
+  private val featureFlagService: TrustsStoreService = mock[TrustsStoreService]
   private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
 
   "Index Controller" when {
@@ -48,7 +48,7 @@ class IndexControllerSpec extends SpecBase {
           .set(NamePage(0), name).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
           .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
           .build()
 
@@ -73,7 +73,7 @@ class IndexControllerSpec extends SpecBase {
         val userAnswers: UserAnswers = emptyUserAnswers
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
           .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
           .build()
 
@@ -100,7 +100,7 @@ class IndexControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
           .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
           .build()
 
@@ -138,7 +138,7 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
@@ -171,7 +171,7 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
@@ -207,7 +207,7 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
@@ -240,7 +240,7 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 

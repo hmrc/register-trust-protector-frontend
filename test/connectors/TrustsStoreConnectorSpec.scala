@@ -19,6 +19,7 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FeatureResponse
+import models.TaskStatus.Completed
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
@@ -27,24 +28,54 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-
 class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionValues with WireMockHelper {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
+    .configure(
+      Seq(
+        "microservice.services.trusts-store.port" -> server.port(),
+        "auditing.enabled" -> false
+      ): _*
     ).build()
 
   private lazy val connector = injector.instanceOf[TrustsStoreConnector]
 
-  private val url = s"/trusts-store/features/5mld"
+  "TrustsStoreConnector" when {
 
-  "TrustsStoreConnector" must {
+    ".updateTaskStatus" must {
+
+      val url = s"/trusts-store/register/tasks/update-protectors/$draftId"
+
+      "return OK with the current task status" in {
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(ok())
+        )
+
+        whenReady(connector.updateTaskStatus(draftId, Completed)) {
+          _.status mustBe 200
+        }
+      }
+
+      "return default tasks when a failure occurs" in {
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(serverError())
+        )
+
+        whenReady(connector.updateTaskStatus(draftId, Completed)) {
+          _.status mustBe 500
+        }
+      }
+    }
+
+    ".getFeature" must {
+
+      val url = s"/trusts-store/features/5mld"
 
       "return a feature flag of true if 5mld is enabled" in {
 
@@ -55,33 +86,36 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
                 .withStatus(Status.OK)
                 .withBody(
                   Json.stringify(
-                  Json.toJson(FeatureResponse("5mld", isEnabled = true))
+                    Json.toJson(FeatureResponse("5mld", isEnabled = true))
                   )
                 )
             )
         )
 
-        val result = Await.result(connector.getFeature("5mld"), Duration.Inf)
-        result mustBe FeatureResponse("5mld", isEnabled = true)
+        whenReady(connector.getFeature("5mld")) {
+          _ mustBe FeatureResponse("5mld", isEnabled = true)
+        }
       }
 
-    "return a feature flag of false if 5mld is not enabled" in {
+      "return a feature flag of false if 5mld is not enabled" in {
 
-      server.stubFor(
-        get(urlEqualTo(url))
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(
-                Json.stringify(
-                  Json.toJson(FeatureResponse("5mld", isEnabled = false))
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(
+                  Json.stringify(
+                    Json.toJson(FeatureResponse("5mld", isEnabled = false))
+                  )
                 )
-              )
-          )
-      )
+            )
+        )
 
-      val result = Await.result(connector.getFeature("5mld"), Duration.Inf)
-      result mustBe FeatureResponse("5mld", isEnabled = false)
+        whenReady(connector.getFeature("5mld")) {
+          _ mustBe FeatureResponse("5mld", isEnabled = false)
+        }
+      }
     }
   }
 }

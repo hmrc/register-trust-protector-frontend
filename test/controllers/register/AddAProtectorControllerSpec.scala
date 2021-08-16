@@ -18,27 +18,31 @@ package controllers.register
 
 import base.SpecBase
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
+import generators.ModelGenerators
 import models.Status.Completed
 import models.register.pages.AddAProtector
-import models.{FullName, TaskStatus, UserAnswers}
+import models.{FullName, Status, TaskStatus, UserAnswers}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
 import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{status, _}
 import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpResponse
+import utils.RegistrationProgress
 import viewmodels.AddRow
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
 import scala.concurrent.Future
 
-class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach {
+class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with ScalaCheckPropertyChecks with ModelGenerators {
 
   private def onwardRoute: Call = Call("GET", "/foo")
 
@@ -99,9 +103,10 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   private val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+  private val mockRegistrationProgress: RegistrationProgress = mock[RegistrationProgress]
 
   override def beforeEach(): Unit = {
-    reset(mockTrustsStoreService)
+    reset(mockTrustsStoreService, mockRegistrationProgress)
 
     when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -320,24 +325,57 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach {
           application.stop()
         }
 
-        "NoComplete selected" in {
+        "NoComplete selected" when {
 
-          val application = applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete))
-            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
-            .build()
+          "registration progress is completed" in {
 
-          val request = FakeRequest(POST, addAnotherPostRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
+            when(mockRegistrationProgress.protectorsStatus(any())).thenReturn(Some(Completed))
 
-          val result = route(application, request).value
+            val application = applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete))
+              .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+              .overrides(bind[RegistrationProgress].toInstance(mockRegistrationProgress))
+              .build()
 
-          status(result) mustEqual SEE_OTHER
+            val request = FakeRequest(POST, addAnotherPostRoute)
+              .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
 
-          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+            val result = route(application, request).value
 
-          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+            status(result) mustEqual SEE_OTHER
 
-          application.stop()
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+
+            application.stop()
+          }
+
+          "registration progress is not completed" in {
+
+            forAll(arbitrary[Option[Status]].suchThat(!_.contains(Completed))) { regProgressStatus =>
+              beforeEach()
+
+              when(mockRegistrationProgress.protectorsStatus(any())).thenReturn(regProgressStatus)
+
+              val application = applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete))
+                .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+                .overrides(bind[RegistrationProgress].toInstance(mockRegistrationProgress))
+                .build()
+
+              val request = FakeRequest(POST, addAnotherPostRoute)
+                .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
+
+              val result = route(application, request).value
+
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+              verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+
+              application.stop()
+            }
+          }
         }
       }
 
@@ -432,26 +470,59 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach {
         application.stop()
       }
 
-      "redirect to registration progress when user clicks continue" in {
+      "redirect to registration progress when user clicks continue" when {
 
-        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value
+        "registration progress is completed" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
-          .build()
+          when(mockRegistrationProgress.protectorsStatus(any())).thenReturn(Some(Completed))
 
-        val request = FakeRequest(POST, submitCompleteRoute)
+          val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
 
-        val result = route(application, request).value
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+            .overrides(bind[RegistrationProgress].toInstance(mockRegistrationProgress))
+            .build()
 
-        status(result) mustEqual SEE_OTHER
+          val request = FakeRequest(POST, submitCompleteRoute)
 
-        redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
+          val result = route(application, request).value
 
-        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+          status(result) mustEqual SEE_OTHER
 
-        application.stop()
+          redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+
+          application.stop()
+        }
+
+        "registration progress is not completed" in {
+
+          forAll(arbitrary[Option[Status]].suchThat(!_.contains(Completed))) { regProgressStatus =>
+            beforeEach()
+
+            when(mockRegistrationProgress.protectorsStatus(any())).thenReturn(regProgressStatus)
+
+            val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+              .overrides(bind[RegistrationProgress].toInstance(mockRegistrationProgress))
+              .build()
+
+            val request = FakeRequest(POST, submitCompleteRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
+
+            verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+
+            application.stop()
+          }
+        }
       }
     }
   }

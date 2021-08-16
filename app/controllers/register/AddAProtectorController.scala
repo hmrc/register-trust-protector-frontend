@@ -19,9 +19,11 @@ package controllers.register
 import config.FrontendAppConfig
 import controllers.actions.{RequiredAnswer, RequiredAnswerAction, RequiredAnswerActionProvider, StandardActionSets}
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
-import models.TaskStatus._
+import models.Status.Completed
+import models.TaskStatus.TaskStatus
 import models.register.pages.AddAProtector
 import models.register.pages.AddAProtector._
+import models.{TaskStatus, UserAnswers}
 import navigation.Navigator
 import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, TrustHasProtectorYesNoPage}
 import play.api.Logging
@@ -33,7 +35,7 @@ import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AddAProtectorViewHelper
+import utils.{AddAProtectorViewHelper, RegistrationProgress}
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
 import javax.inject.Inject
@@ -51,7 +53,8 @@ class AddAProtectorController @Inject()(
                                          addAnotherView: AddAProtectorView,
                                          yesNoView: TrustHasProtectorYesNoView,
                                          config: FrontendAppConfig,
-                                         trustsStoreService: TrustsStoreService
+                                         trustsStoreService: TrustsStoreService,
+                                         registrationProgress: RegistrationProgress
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val addAnotherForm = addAnotherFormProvider()
@@ -97,7 +100,7 @@ class AddAProtectorController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorYesNoPage, value))
             _ <- registrationsRepository.set(updatedAnswers)
-            _ <- setTaskStatus(draftId, if (value) InProgress else Completed)
+            _ <- setTaskStatus(draftId, if (value) TaskStatus.InProgress else TaskStatus.Completed)
           } yield Redirect(navigator.nextPage(AddAProtectorYesNoPage, draftId, updatedAnswers))
         }
       )
@@ -126,7 +129,7 @@ class AddAProtectorController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, value))
             _ <- registrationsRepository.set(updatedAnswers)
-            _ <- setTaskStatus(draftId, value)
+            _ <- setTaskStatus(request.userAnswers, draftId, value)
           } yield Redirect(navigator.nextPage(AddAProtectorPage, draftId, updatedAnswers))
         }
       )
@@ -138,13 +141,17 @@ class AddAProtectorController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, NoComplete))
         _ <- registrationsRepository.set(updatedAnswers)
-        _ <- setTaskStatus(draftId, Completed)
+        _ <- setTaskStatus(request.userAnswers, draftId, NoComplete)
       } yield Redirect(Call(GET, config.registrationProgressUrl(draftId)))
   }
 
-  private def setTaskStatus(draftId: String, selection: AddAProtector)
+  private def setTaskStatus(userAnswers: UserAnswers, draftId: String, selection: AddAProtector)
                            (implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    val status = if (selection == NoComplete) Completed else InProgress
+    val status = (selection, registrationProgress.protectorsStatus(userAnswers)) match {
+      case (NoComplete, Some(Completed)) => TaskStatus.Completed
+      case _ => TaskStatus.InProgress
+    }
+
     setTaskStatus(draftId, status)
   }
 

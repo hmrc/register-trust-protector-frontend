@@ -22,7 +22,7 @@ import models.TaskStatus.InProgress
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.register.business.NamePage
 import play.api.inject.bind
@@ -75,7 +75,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         redirectLocation(result).get mustBe controllers.register.routes.AddAProtectorController.onPageLoad(fakeDraftId).url
 
-        verify(trustsStoreService, never()).updateTaskStatus(eqTo(draftId), any())(any(), any())
+        verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
         application.stop()
       }

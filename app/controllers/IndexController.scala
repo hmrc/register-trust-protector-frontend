@@ -23,13 +23,13 @@ import models.TaskStatus.InProgress
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
@@ -41,18 +41,6 @@ class IndexController @Inject()(
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
 
-    def redirect(userAnswers: UserAnswers): Future[Result] = {
-      repository.set(userAnswers) flatMap { _ =>
-        if (userAnswers.isAnyProtectorAdded) {
-          Future.successful(Redirect(rts.AddAProtectorController.onPageLoad(draftId)))
-        } else {
-          trustsStoreService.updateTaskStatus(draftId, InProgress) map { _ =>
-            Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
-          }
-        }
-      }
-    }
-
     for {
       is5mldEnabled <- trustsStoreService.is5mldEnabled()
       isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
@@ -62,7 +50,14 @@ class IndexController @Inject()(
         case Some(value) => value.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, existingTrustUtr = utr)
         case _ => UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable, utr)
       }
-      result <- redirect(ua)
-    } yield result
+      _ <- repository.set(ua)
+      _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
+    } yield {
+      if (ua.isAnyProtectorAdded) {
+        Redirect(rts.AddAProtectorController.onPageLoad(draftId))
+      } else {
+        Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
+      }
+    }
   }
 }

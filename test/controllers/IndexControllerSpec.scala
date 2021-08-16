@@ -18,25 +18,35 @@ package controllers
 
 import base.SpecBase
 import connectors.SubmissionDraftConnector
+import models.TaskStatus.InProgress
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import pages.register.business.NamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustsStoreService
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val name: String = "Company"
   private val utr: String = "1234567890"
 
-  private val featureFlagService: TrustsStoreService = mock[TrustsStoreService]
+  private val trustsStoreService: TrustsStoreService = mock[TrustsStoreService]
   private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
+
+  override def beforeEach(): Unit = {
+    reset(trustsStoreService)
+
+    when(trustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
 
   "Index Controller" when {
 
@@ -48,12 +58,12 @@ class IndexControllerSpec extends SpecBase {
           .set(NamePage(0), name).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -65,6 +75,8 @@ class IndexControllerSpec extends SpecBase {
 
         redirectLocation(result).get mustBe controllers.register.routes.AddAProtectorController.onPageLoad(fakeDraftId).url
 
+        verify(trustsStoreService, never()).updateTaskStatus(eqTo(draftId), any())(any(), any())
+
         application.stop()
       }
 
@@ -73,12 +85,12 @@ class IndexControllerSpec extends SpecBase {
         val userAnswers: UserAnswers = emptyUserAnswers
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -90,6 +102,8 @@ class IndexControllerSpec extends SpecBase {
 
         redirectLocation(result).get mustBe controllers.register.routes.TrustHasProtectorYesNoController.onPageLoad(fakeDraftId).url
 
+        verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+
         application.stop()
       }
 
@@ -100,13 +114,13 @@ class IndexControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
         when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
         when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(Some(utr)))
 
@@ -138,13 +152,13 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
               when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
               when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
               when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
               when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -171,13 +185,13 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
               when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
               when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
               when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
               when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -207,13 +221,13 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
               when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
               when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
               when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
               when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -240,13 +254,13 @@ class IndexControllerSpec extends SpecBase {
               reset(registrationsRepository)
 
               val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
                 .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
                 .build()
 
               when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
               when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
               when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
               when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 

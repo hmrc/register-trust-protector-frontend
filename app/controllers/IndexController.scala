@@ -19,6 +19,7 @@ package controllers
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
 import controllers.register.{routes => rts}
+import models.TaskStatus.InProgress
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -41,11 +42,13 @@ class IndexController @Inject()(
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
 
     def redirect(userAnswers: UserAnswers): Future[Result] = {
-      repository.set(userAnswers) map { _ =>
+      repository.set(userAnswers) flatMap { _ =>
         if (userAnswers.isAnyProtectorAdded) {
-          Redirect(rts.AddAProtectorController.onPageLoad(draftId))
+          Future.successful(Redirect(rts.AddAProtectorController.onPageLoad(draftId)))
         } else {
-          Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
+          trustsStoreService.updateTaskStatus(draftId, InProgress) map { _ =>
+            Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
+          }
         }
       }
     }

@@ -20,17 +20,25 @@ import base.SpecBase
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import models.Status.Completed
 import models.register.pages.AddAProtector
-import models.{FullName, UserAnswers}
+import models.{FullName, TaskStatus, UserAnswers}
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
 import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
+import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustsStoreService
+import uk.gov.hmrc.http.HttpResponse
 import viewmodels.AddRow
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
-class AddAProtectorControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private def onwardRoute: Call = Call("GET", "/foo")
 
@@ -90,11 +98,21 @@ class AddAProtectorControllerSpec extends SpecBase {
       )
   }
 
+  private val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+
+  override def beforeEach(): Unit = {
+    reset(mockTrustsStoreService)
+
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
+
   "AddAProtector Controller" when {
 
     "no data" must {
 
       "redirect to Session Expired for a GET if no existing data is found" in {
+
         val application = applicationBuilder(userAnswers = None).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
@@ -111,9 +129,8 @@ class AddAProtectorControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val request =
-          FakeRequest(POST, addAnotherPostRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.values.head.toString))
+        val request = FakeRequest(POST, addAnotherPostRoute)
+          .withFormUrlEncodedBody(("value", AddAProtector.values.head.toString))
 
         val result = route(application, request).value
 
@@ -129,7 +146,9 @@ class AddAProtectorControllerSpec extends SpecBase {
 
       "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
 
@@ -145,31 +164,61 @@ class AddAProtectorControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the next page when valid data is submitted" in {
+      "redirect to the next page when valid data is submitted" when {
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value)).build()
+        "yes selected" in {
 
-        val request =
-          FakeRequest(POST, addOnePostRoute)
+          val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+            .build()
+
+          val request = FakeRequest(POST, addOnePostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual onwardRoute.url
 
-        application.stop()
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+
+          application.stop()
+        }
+
+        "no selected" in {
+
+          val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+            .build()
+
+          val request = FakeRequest(POST, addOnePostRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+
+          application.stop()
+        }
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
 
-        val request =
-          FakeRequest(POST, addOnePostRoute)
-            .withFormUrlEncodedBody(("value", ""))
+        val application = applicationBuilder(Some(userAnswers)).build()
+
+        val request = FakeRequest(POST, addOnePostRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = yesNoForm.bind(Map("value" -> ""))
 
@@ -208,6 +257,7 @@ class AddAProtectorControllerSpec extends SpecBase {
       }
 
       "populate the view without value on a GET when the question has previously been answered" in {
+
         val userAnswers = userAnswersWithProtectorsComplete
           .set(AddAProtectorPage, AddAProtector.YesNow).success.value
           .set(TrustHasProtectorYesNoPage, true).success.value
@@ -228,31 +278,77 @@ class AddAProtectorControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the next page when valid data is submitted" in {
+      "redirect to the next page when valid data is submitted" when {
 
-        val application =
-          applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete)).build()
+        "YesNow selected" in {
 
-        val request =
-          FakeRequest(POST, addAnotherPostRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.options.head.value))
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete))
+            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+            .build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(POST, addAnotherPostRoute)
+            .withFormUrlEncodedBody(("value", AddAProtector.YesNow.toString))
 
-        status(result) mustEqual SEE_OTHER
+          val result = route(application, request).value
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+          status(result) mustEqual SEE_OTHER
 
-        application.stop()
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+
+          application.stop()
+        }
+
+        "YesLater selected" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete))
+            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+            .build()
+
+          val request = FakeRequest(POST, addAnotherPostRoute)
+            .withFormUrlEncodedBody(("value", AddAProtector.YesLater.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+
+          application.stop()
+        }
+
+        "NoComplete selected" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithProtectorsComplete))
+            .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+            .build()
+
+          val request = FakeRequest(POST, addAnotherPostRoute)
+            .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+
+          application.stop()
+        }
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value)).build()
+        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value
 
-        val request =
-          FakeRequest(POST, addAnotherPostRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        val request = FakeRequest(POST, addAnotherPostRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
@@ -279,8 +375,9 @@ class AddAProtectorControllerSpec extends SpecBase {
         )
 
         val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+          .set(TrustHasProtectorYesNoPage, true).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
 
@@ -299,8 +396,9 @@ class AddAProtectorControllerSpec extends SpecBase {
         )
 
         val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+          .set(TrustHasProtectorYesNoPage, true).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
 
@@ -320,8 +418,9 @@ class AddAProtectorControllerSpec extends SpecBase {
         )
 
         val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+          .set(TrustHasProtectorYesNoPage, true).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers.set(TrustHasProtectorYesNoPage, true).success.value)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
         val request = FakeRequest(GET, addAProtectorRoute)
 
@@ -335,7 +434,11 @@ class AddAProtectorControllerSpec extends SpecBase {
 
       "redirect to registration progress when user clicks continue" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value)).build()
+        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+          .build()
 
         val request = FakeRequest(POST, submitCompleteRoute)
 
@@ -345,11 +448,11 @@ class AddAProtectorControllerSpec extends SpecBase {
 
         redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
+        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+
         application.stop()
 
       }
-
     }
-
   }
 }

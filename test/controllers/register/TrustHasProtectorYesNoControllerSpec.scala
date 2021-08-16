@@ -18,21 +18,39 @@ package controllers.register
 
 import base.SpecBase
 import forms.YesNoFormProvider
+import models.TaskStatus.{Completed, InProgress}
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustsStoreService
+import uk.gov.hmrc.http.HttpResponse
 import views.html.register.TrustHasProtectorYesNoView
 
-class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar {
+import scala.concurrent.Future
+
+class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustHasProtectorYesNo")
-  lazy val trustHasProtectorYesNoRoute = routes.TrustHasProtectorYesNoController.onPageLoad(draftId).url
+  lazy val trustHasProtectorYesNoRoute: String = routes.TrustHasProtectorYesNoController.onPageLoad(draftId).url
   private val onwardRoute = Call("GET", "/foo")
 
+  private val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+
   private val baseAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
+
+  override def beforeEach(): Unit = {
+    reset(mockTrustsStoreService)
+
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
 
   "TrustHasProtectorYesNo Controller" must {
 
@@ -74,23 +92,47 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted" when {
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      "yes selected" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
           .build()
 
-      val request =
-        FakeRequest(POST, trustHasProtectorYesNoRoute)
+        val request = FakeRequest(POST, trustHasProtectorYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(application, request).value
+        val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-      application.stop()
+        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+
+        application.stop()
+      }
+
+      "no selected" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustsStoreService].toInstance(mockTrustsStoreService))
+          .build()
+
+        val request = FakeRequest(POST, trustHasProtectorYesNoRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+
+        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
+
+        application.stop()
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -131,9 +173,8 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, trustHasProtectorYesNoRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, trustHasProtectorYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

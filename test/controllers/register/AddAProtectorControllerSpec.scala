@@ -21,7 +21,6 @@ import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import generators.ModelGenerators
 import models.Status.{Completed, InProgress}
 import models.register.pages.AddAProtector
-import models.register.pages.AddAProtector.NoComplete
 import models.{FullName, Status, TaskStatus, UserAnswers}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -340,9 +339,9 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         "NoComplete selected" when {
 
-          "registration progress is completed" in {
+          val selection = AddAProtector.NoComplete
 
-            val selection = AddAProtector.NoComplete
+          "registration progress is completed" in {
 
             when(mockRegistrationProgress.protectorsStatus(any())).thenReturn(Some(Completed))
 
@@ -379,7 +378,7 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
                 .build()
 
               val request = FakeRequest(POST, addAnotherPostRoute)
-                .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
+                .withFormUrlEncodedBody(("value", selection.toString))
 
               val result = route(application, request).value
 
@@ -388,7 +387,7 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
               redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
               verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
-              verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, NoComplete).success.value))
+              verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value))
 
               application.stop()
             }
@@ -509,7 +508,7 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
           redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
           verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
-          verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswers.set(AddAProtectorPage, NoComplete).success.value))
+          verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value))
 
           application.stop()
         }
@@ -537,7 +536,7 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
             redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
             verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
-            verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswers.set(AddAProtectorPage, NoComplete).success.value))
+            verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value))
 
             application.stop()
           }

@@ -19,39 +19,30 @@ package controllers
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
 import controllers.register.{routes => rts}
+import models.TaskStatus.InProgress
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
-import services.FeatureFlagService
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction,
-                                 featureFlagService: FeatureFlagService,
+                                 trustsStoreService: TrustsStoreService,
                                  submissionDraftConnector: SubmissionDraftConnector
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
 
-    def redirect(userAnswers: UserAnswers): Future[Result] = {
-      repository.set(userAnswers) map { _ =>
-        if (userAnswers.isAnyProtectorAdded) {
-          Redirect(rts.AddAProtectorController.onPageLoad(draftId))
-        } else {
-          Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
-        }
-      }
-    }
-
     for {
-      is5mldEnabled <- featureFlagService.is5mldEnabled()
+      is5mldEnabled <- trustsStoreService.is5mldEnabled()
       isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
       utr <- submissionDraftConnector.getTrustUtr(draftId)
       userAnswers <- repository.get(draftId)
@@ -59,7 +50,14 @@ class IndexController @Inject()(
         case Some(value) => value.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, existingTrustUtr = utr)
         case _ => UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable, utr)
       }
-      result <- redirect(ua)
-    } yield result
+      _ <- repository.set(ua)
+      _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
+    } yield {
+      if (ua.isAnyProtectorAdded) {
+        Redirect(rts.AddAProtectorController.onPageLoad(draftId))
+      } else {
+        Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
+      }
+    }
   }
 }

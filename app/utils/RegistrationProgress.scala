@@ -16,6 +16,7 @@
 
 package utils
 
+import models.Status._
 import models.register.pages.AddAProtector
 import models.{ReadableUserAnswers, Status}
 import pages.QuestionPage
@@ -29,31 +30,19 @@ class RegistrationProgress {
   def protectorsStatus(userAnswers: ReadableUserAnswers): Option[Status] = {
 
     if (!userAnswers.isAnyProtectorAdded) {
-      userAnswers.get(TrustHasProtectorYesNoPage) match {
-        case Some(true) => Some(Status.InProgress)
-        case Some(false) => Some(Status.Completed)
-        case _ => None
+      userAnswers.get(TrustHasProtectorYesNoPage) map {
+        case true => InProgress
+        case false => Completed
       }
     } else {
-
       val statusList: List[IsComplete] = List(
         AddingProtectorsIsComplete,
         BusinessProtectorsAreComplete,
         IndividualProtectorsAreComplete
       )
 
-      statusList match {
-        case Nil => None
-        case list =>
-
-          val complete = list.forall(isComplete => isComplete(userAnswers))
-
-          Some(if (complete) {
-            Status.Completed
-          } else {
-            Status.InProgress
-          })
-      }
+      val isComplete = statusList.forall(_.apply(userAnswers))
+      Some(if (isComplete) Completed else InProgress)
     }
   }
 
@@ -66,7 +55,7 @@ class RegistrationProgress {
 
     override def apply(userAnswers: ReadableUserAnswers): Boolean = {
       userAnswers.get(section) match {
-        case Some(protectors) => !protectors.exists(_.status == Status.InProgress)
+        case Some(protectors) => !protectors.exists(_.status == InProgress)
         case _ => true
       }
     }

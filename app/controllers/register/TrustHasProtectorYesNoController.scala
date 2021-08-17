@@ -16,32 +16,34 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import javax.inject.Inject
+import models.TaskStatus._
 import navigation.Navigator
 import pages.register.TrustHasProtectorYesNoPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.TrustHasProtectorYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustHasProtectorYesNoController @Inject()(
-                                    override val messagesApi: MessagesApi,
-                                    repository: RegistrationsRepository,
-                                    navigator: Navigator,
-                                    standardActionSets: StandardActionSets,
-                                    formProvider: YesNoFormProvider,
-                                    val controllerComponents: MessagesControllerComponents,
-                                    view: TrustHasProtectorYesNoView,
-                                    config: FrontendAppConfig
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  repository: RegistrationsRepository,
+                                                  navigator: Navigator,
+                                                  standardActionSets: StandardActionSets,
+                                                  formProvider: YesNoFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: TrustHasProtectorYesNoView,
+                                                  trustsStoreService: TrustsStoreService
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustHasProtectorYesNo")
+  private val form: Form[Boolean] = formProvider.withPrefix("trustHasProtectorYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
@@ -50,6 +52,7 @@ class TrustHasProtectorYesNoController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
+
       Ok(view(preparedForm, draftId))
   }
 
@@ -63,7 +66,8 @@ class TrustHasProtectorYesNoController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustHasProtectorYesNoPage, value))
-            _              <- repository.set(updatedAnswers)
+            _ <- repository.set(updatedAnswers)
+            _ <- trustsStoreService.updateTaskStatus(draftId, if (value) InProgress else Completed)
           } yield Redirect(navigator.nextPage(TrustHasProtectorYesNoPage, draftId, updatedAnswers))
       )
   }

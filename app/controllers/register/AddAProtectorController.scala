@@ -19,7 +19,11 @@ package controllers.register
 import config.FrontendAppConfig
 import controllers.actions.{RequiredAnswer, RequiredAnswerAction, RequiredAnswerActionProvider, StandardActionSets}
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
-import models.register.pages.AddAProtector.NoComplete
+import models.Status.Completed
+import models.TaskStatus.TaskStatus
+import models.register.pages.AddAProtector
+import models.register.pages.AddAProtector._
+import models.{TaskStatus, UserAnswers}
 import navigation.Navigator
 import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, TrustHasProtectorYesNoPage}
 import play.api.Logging
@@ -27,9 +31,11 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.RegistrationsRepository
+import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpVerbs.GET
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AddAProtectorViewHelper
+import utils.{AddAProtectorViewHelper, RegistrationProgress}
 import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
 import javax.inject.Inject
@@ -46,16 +52,18 @@ class AddAProtectorController @Inject()(
                                          val controllerComponents: MessagesControllerComponents,
                                          addAnotherView: AddAProtectorView,
                                          yesNoView: TrustHasProtectorYesNoView,
-                                         config: FrontendAppConfig
+                                         config: FrontendAppConfig,
+                                         trustsStoreService: TrustsStoreService,
+                                         registrationProgress: RegistrationProgress
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val addAnotherForm = addAnotherFormProvider()
   private val yesNoForm = yesNoFormProvider.withPrefix("trustHasProtectorYesNo")
 
-  def trustHasProtectorAnswer(draftId: String): RequiredAnswerAction[Boolean] =
+  private def trustHasProtectorAnswer(draftId: String): RequiredAnswerAction[Boolean] =
     requiredAnswer(RequiredAnswer(TrustHasProtectorYesNoPage, routes.TrustHasProtectorYesNoController.onPageLoad(draftId)))
 
-  private def heading(count: Int)(implicit mp : MessagesProvider): String = {
+  private def heading(count: Int)(implicit mp: MessagesProvider): String = {
     count match {
       case x if x <= 1 => Messages("addAProtector.heading")
       case _ => Messages("addAProtector.count.heading", count)
@@ -79,8 +87,9 @@ class AddAProtectorController @Inject()(
       }
   }
 
-  def submitOne(draftId : String) : Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
+  def submitOne(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
+
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(
@@ -90,7 +99,8 @@ class AddAProtectorController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorYesNoPage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _ <- registrationsRepository.set(updatedAnswers)
+            _ <- setTaskStatus(draftId, if (value) TaskStatus.InProgress else TaskStatus.Completed)
           } yield Redirect(navigator.nextPage(AddAProtectorYesNoPage, draftId, updatedAnswers))
         }
       )
@@ -118,7 +128,8 @@ class AddAProtectorController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _ <- registrationsRepository.set(updatedAnswers)
+            _ <- setTaskStatus(updatedAnswers, draftId, value)
           } yield Redirect(navigator.nextPage(AddAProtectorPage, draftId, updatedAnswers))
         }
       )
@@ -126,10 +137,29 @@ class AddAProtectorController @Inject()(
 
   def submitComplete(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
+
+      val status = NoComplete
+
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, NoComplete))
-        _              <- registrationsRepository.set(updatedAnswers)
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAProtectorPage, status))
+        _ <- registrationsRepository.set(updatedAnswers)
+        _ <- setTaskStatus(updatedAnswers, draftId, status)
       } yield Redirect(Call(GET, config.registrationProgressUrl(draftId)))
+  }
+
+  private def setTaskStatus(userAnswers: UserAnswers, draftId: String, selection: AddAProtector)
+                           (implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    val status = (selection, registrationProgress.protectorsStatus(userAnswers)) match {
+      case (NoComplete, Some(Completed)) => TaskStatus.Completed
+      case _ => TaskStatus.InProgress
+    }
+
+    setTaskStatus(draftId, status)
+  }
+
+  private def setTaskStatus(draftId: String, taskStatus: TaskStatus)
+                           (implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    trustsStoreService.updateTaskStatus(draftId, taskStatus)
   }
 
 }

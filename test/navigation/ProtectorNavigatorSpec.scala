@@ -22,7 +22,7 @@ import controllers.register.business.{routes => brts}
 import controllers.register.individual.{routes => irts}
 import controllers.register.{routes => rts}
 import generators.Generators
-import models.Status.{Completed, InProgress}
+import models.Status.Completed
 import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
 import models.{FullName, Status, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -171,7 +171,7 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "go to NamePage at index n when the last business is completed" in {
+      "go to NamePage at next index when there are businesses" in {
         forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
           (userAnswers, status, n) =>
 
@@ -186,24 +186,6 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
               .mustBe(brts.NameController.onPageLoad(n, fakeDraftId))
-        }
-      }
-
-      "go to NamePage at index (n-1) when the last business is in progress" in {
-        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
-          (userAnswers, status, n) =>
-
-            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
-              val statusAtIndex = if (index == n - 1) InProgress else status
-              acc
-                .set(bus.NamePage(index), name).success.value
-                .set(BusinessProtectorStatus(index), statusAtIndex).success.value
-            })
-
-            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
-
-            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
-              .mustBe(brts.NameController.onPageLoad(n - 1, fakeDraftId))
         }
       }
     }
@@ -223,7 +205,7 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "go to NamePage at index n when the last individual is completed" in {
+      "go to NamePage at next index when there are individuals" in {
         forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
           (userAnswers, status, n) =>
 
@@ -238,24 +220,6 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
               .mustBe(irts.NameController.onPageLoad(n, fakeDraftId))
-        }
-      }
-
-      "go to NamePage at index (n-1) when the last individual is in progress" in {
-        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
-          (userAnswers, status, n) =>
-
-            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
-              val statusAtIndex = if (index == n - 1) InProgress else status
-              acc
-                .set(ind.NamePage(index), name).success.value
-                .set(IndividualProtectorStatus(index), statusAtIndex).success.value
-            })
-
-            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
-
-            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
-              .mustBe(irts.NameController.onPageLoad(n - 1, fakeDraftId))
         }
       }
     }

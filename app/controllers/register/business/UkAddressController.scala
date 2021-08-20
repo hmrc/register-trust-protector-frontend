@@ -20,9 +20,12 @@ import config.annotations.BusinessProtector
 import controllers.actions.StandardActionSets
 import controllers.actions.register.business.NameRequiredAction
 import forms.UkAddressFormProvider
+import models.UkAddress
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.UkAddressPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
@@ -42,7 +45,7 @@ class UkAddressController @Inject()(
                                      view: UkAddressView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form: Form[UkAddress] = formProvider()
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
     implicit request =>

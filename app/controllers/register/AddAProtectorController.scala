@@ -84,8 +84,7 @@ class AddAProtectorController @Inject()(
 
           if (maxedOut.size == 2) {
             logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")
-          }
-          else {
+          } else {
             logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has not maxed out protectors")
           }
           Ok(addAnotherView(addAnotherForm, draftId, rows.inProgress, rows.complete, heading(rows.count), maxedOut))

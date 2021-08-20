@@ -21,7 +21,9 @@ import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import generators.ModelGenerators
 import models.Status.{Completed, InProgress}
 import models.register.pages.AddAProtector
+import models.register.pages.IndividualOrBusinessToAdd.Individual
 import models.{FullName, Status, TaskStatus, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +31,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
-import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
+import pages.register.{AddAProtectorPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -151,7 +153,9 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       "return OK and the correct view for a GET" in {
 
-        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
+        val userAnswers = emptyUserAnswers
+          .set(TrustHasProtectorYesNoPage, true).success.value
+          .set(IndividualOrBusinessPage, Individual).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -165,6 +169,10 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         contentAsString(result) mustEqual
           view(form, fakeDraftId)(request, messages).toString
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+        uaCaptor.getValue.get(IndividualOrBusinessPage) mustNot be(defined)
 
         application.stop()
       }

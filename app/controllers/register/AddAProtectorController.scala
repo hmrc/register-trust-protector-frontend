@@ -25,7 +25,7 @@ import models.register.pages.AddAProtector
 import models.register.pages.AddAProtector._
 import models.{TaskStatus, UserAnswers}
 import navigation.Navigator
-import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, TrustHasProtectorYesNoPage}
+import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
@@ -70,20 +70,29 @@ class AddAProtectorController @Inject()(
     }
   }
 
-  def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)) {
+  def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(trustHasProtectorAnswer(draftId)).async {
     implicit request =>
 
-      val rows = new AddAProtectorViewHelper(request.userAnswers, draftId).rows
+      for {
+        updatedAnswers <- Future.fromTry(request.userAnswers.remove(IndividualOrBusinessPage))
+        _ <- registrationsRepository.set(updatedAnswers)
+      } yield {
+        val rows = new AddAProtectorViewHelper(updatedAnswers, draftId).rows
 
-      if (rows.count > 0) {
-        val maxedOut = request.userAnswers.protectors.maxedOutOptions.map(_.messageKey)
+        if (rows.count > 0) {
+          val maxedOut = updatedAnswers.protectors.maxedOutOptions.map(_.messageKey)
 
-        if (maxedOut.size == 2) {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")}
-        else {logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has not maxed out protectors")}
-        Ok(addAnotherView(addAnotherForm, draftId, rows.inProgress, rows.complete, heading(rows.count), maxedOut))
-      } else {
-        logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has added no protectors")
-        Ok(yesNoView(yesNoForm, draftId))
+          if (maxedOut.size == 2) {
+            logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has maxed out protectors")
+          }
+          else {
+            logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has not maxed out protectors")
+          }
+          Ok(addAnotherView(addAnotherForm, draftId, rows.inProgress, rows.complete, heading(rows.count), maxedOut))
+        } else {
+          logger.info(s"[Session ID: ${request.sessionId}] ${request.internalId} has added no protectors")
+          Ok(yesNoView(yesNoForm, draftId))
+        }
       }
   }
 

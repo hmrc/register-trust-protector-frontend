@@ -22,7 +22,7 @@ import controllers.actions.register.business.NameRequiredAction
 import models.Status.Completed
 import navigation.Navigator
 import pages.entitystatus.BusinessProtectorStatus
-import pages.register.{AnswersPage, IndividualOrBusinessPage}
+import pages.register.AnswersPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
@@ -57,7 +57,6 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       val answers = request.userAnswers.set(BusinessProtectorStatus(index), Completed)
-        .flatMap(_.remove(IndividualOrBusinessPage))
 
       for {
         updatedAnswers <- Future.fromTry(answers)

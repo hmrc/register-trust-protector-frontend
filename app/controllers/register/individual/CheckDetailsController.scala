@@ -23,7 +23,6 @@ import controllers.actions.register.individual.NameRequiredAction
 import models.Status.Completed
 import navigation.Navigator
 import pages.entitystatus.IndividualProtectorStatus
-import pages.register.IndividualOrBusinessPage
 import pages.register.individual.CheckDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -59,7 +58,6 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       val answers = request.userAnswers.set(IndividualProtectorStatus(index), Completed)
-        .flatMap(_.remove(IndividualOrBusinessPage))
 
       for {
         updatedAnswers <- Future.fromTry(answers)

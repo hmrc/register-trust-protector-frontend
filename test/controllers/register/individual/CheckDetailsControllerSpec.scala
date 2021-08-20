@@ -86,7 +86,6 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
       uaCaptor.getValue.get(IndividualProtectorStatus(index)).get mustBe Completed
-      uaCaptor.getValue.get(IndividualOrBusinessPage) mustNot be(defined)
 
       application.stop()
     }

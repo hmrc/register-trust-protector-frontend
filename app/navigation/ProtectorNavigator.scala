@@ -113,11 +113,6 @@ object ProtectorNavigator {
   private def routeToProtectorIndex[T <: ProtectorViewModel](protectors: List[T],
                                                              route: (Int, String) => Call,
                                                              draftId: String): Call = {
-    val index = protectors match {
-      case Nil => 0
-      case x if !x.last.isComplete => x.size - 1
-      case x => x.size
-    }
-    route(index, draftId)
+    route(protectors.size, draftId)
   }
 }

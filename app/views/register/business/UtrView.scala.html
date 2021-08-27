@@ -18,11 +18,11 @@
 @import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        errorSummary: ErrorSummary,
-        inputText: InputText,
-        submitButton: SubmitButton,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton,
+    formHelper: FormWithCSRF
 )
 
 @(form: Form[_], name: String, index : Int, draftId: String)(implicit request: Request[_], messages: Messages)
@@ -45,7 +45,7 @@
             inputMode = Some("numeric")
         )
 
-        <p>@messages("businessProtector.utr.p1") <a target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("businessProtector.utr.link")</a>.</p>
+        <p>@messages("businessProtector.utr.p1") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/find-lost-utr-number">@messages("businessProtector.utr.link")</a>.</p>
 
         @submitButton()
     }

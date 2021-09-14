@@ -19,7 +19,7 @@ package utils.print
 import base.SpecBase
 import controllers.register.individual.mld5.routes._
 import controllers.register.individual.routes._
-import models.{FullName, InternationalAddress, PassportOrIdCardDetails, UkAddress}
+import models.{FullName, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers, YesNoDontKnow}
 import pages.register.individual._
 import pages.register.individual.mld5._
 import play.twirl.api.Html
@@ -42,8 +42,39 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
 
   private val helper: IndividualProtectorPrintHelper = injector.instanceOf[IndividualProtectorPrintHelper]
 
-  "Individual protector print helper" must {
+  "Individual protector print helper" when {
 
+    "trustee has mentalCapacity No" in {
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .set(NamePage(index), name).success.value
+        .set(LegallyCapableYesNoPage(index), YesNoDontKnow.No).success.value
+
+      val result = helper.checkDetailsSection(userAnswers, name.displayFullName, index, fakeDraftId)
+
+      result mustBe AnswerSection(
+        None,
+        Seq(
+          AnswerRow("individualProtector.name.checkYourAnswersLabel", Html(name.displayFullName), Some(NameController.onPageLoad(index, fakeDraftId).url), "", canEdit),
+          AnswerRow("individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel", Html("No"), Some(LegallyCapableYesNoController.onPageLoad(index, fakeDraftId).url), arg, canEdit)
+        )
+      )
+    }
+
+    "trustee has mentalCapacity Don't know" in {
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .set(NamePage(index), name).success.value
+        .set(LegallyCapableYesNoPage(index), YesNoDontKnow.DontKnow).success.value
+
+      val result = helper.checkDetailsSection(userAnswers, name.displayFullName, index, fakeDraftId)
+
+      result mustBe AnswerSection(
+        None,
+        Seq(
+          AnswerRow("individualProtector.name.checkYourAnswersLabel", Html(name.displayFullName), Some(NameController.onPageLoad(index, fakeDraftId).url), "", canEdit),
+          AnswerRow("individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel", Html("I don’t know"), Some(LegallyCapableYesNoController.onPageLoad(index, fakeDraftId).url), arg, canEdit)
+        )
+      )
+    }
     "return an individual protector answer section" in {
 
       val userAnswers = emptyUserAnswers
@@ -66,7 +97,7 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
         .set(PassportDetailsPage(index), passportOrIdCard).success.value
         .set(IDCardDetailsYesNoPage(index), true).success.value
         .set(IDCardDetailsPage(index), passportOrIdCard).success.value
-        .set(LegallyCapableYesNoPage(index), true).success.value
+        .set(LegallyCapableYesNoPage(index), YesNoDontKnow.Yes).success.value
 
       val result = helper.printSection(userAnswers, Some(name.toString), index, fakeDraftId)
 

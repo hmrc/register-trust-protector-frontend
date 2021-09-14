@@ -18,7 +18,7 @@ package mapping.register
 
 import base.SpecBase
 import generators.Generators
-import models.FullName
+import models.{FullName, YesNoDontKnow}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register._
 
@@ -64,7 +64,7 @@ class ProtectorsMapperSpec extends SpecBase with MustMatchers
           .set(individual.DateOfBirthYesNoPage(index), false).success.value
           .set(individual.NationalInsuranceYesNoPage(index), true).success.value
           .set(individual.NationalInsuranceNumberPage(index), "AB123456C").success.value
-
+          .set(individual.mld5.LegallyCapableYesNoPage(index), YesNoDontKnow.DontKnow).success.value
         val result = protectorsMapper.build(userAnswers).value
 
         result.protector mustBe defined
@@ -79,6 +79,7 @@ class ProtectorsMapperSpec extends SpecBase with MustMatchers
           .set(individual.DateOfBirthYesNoPage(index), false).success.value
           .set(individual.NationalInsuranceYesNoPage(index), true).success.value
           .set(individual.NationalInsuranceNumberPage(index), "AB123456C").success.value
+          .set(individual.mld5.LegallyCapableYesNoPage(index), YesNoDontKnow.Yes).success.value
 
           .set(business.NamePage(index), "Business").success.value
           .set(business.UtrYesNoPage(index), true).success.value

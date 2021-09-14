@@ -53,7 +53,7 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
       bound.passportDetailsQuestion(PassportDetailsPage(index), "individualProtector.passportDetails", PassportDetailsController.onPageLoad(index, draftId).url),
       bound.yesNoQuestion(IDCardDetailsYesNoPage(index), "individualProtector.idCardDetailsYesNo", IDCardDetailsYesNoController.onPageLoad(index, draftId).url),
       bound.passportDetailsQuestion(IDCardDetailsPage(index), "individualProtector.idCardDetails", IDCardDetailsController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(LegallyCapableYesNoPage(index), "individualProtector.5mld.legallyCapableYesNo", LegallyCapableYesNoController.onPageLoad(index, draftId).url)
+      bound.enumQuestion(LegallyCapableYesNoPage(index), "individualProtector.5mld.legallyCapableYesNo", LegallyCapableYesNoController.onPageLoad(index, draftId).url, "site")
     ).flatten
   }
 }

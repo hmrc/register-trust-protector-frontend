@@ -15,13 +15,13 @@
  *@
 
 @import controllers.register.individual.mld5.routes._
-@import views.html.components.{ErrorSummary, Heading, InputYesNo, SubmitButton}
+@import views.html.components.{ErrorSummary, Heading, InputYesNoDontKnow, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     errorSummary: ErrorSummary,
     heading: Heading,
-    inputYesNo: InputYesNo,
+    inputYesNoDontKnow: InputYesNoDontKnow,
     submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
@@ -31,12 +31,24 @@
 @content = {
 <p>@messages("individualProtector.5mld.legallyCapableYesNo.p1")</p>
 
+<p>@messages("individualProtector.5mld.legallyCapableYesNo.p2")</p>
+
 <ul class="govuk-list govuk-list--bullet">
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint1")</li>
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint2")</li>
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint3")</li>
     <li class="inside">@messages("individualProtector.5mld.legallyCapableYesNo.bulletpoint4")</li>
 </ul>
+
+<p>@messages("individualProtector.5mld.legallyCapableYesNo.p3")</p>
+
+<p>@messages("individualProtector.5mld.legallyCapableYesNo.p4")</p>
+
+<h2>@messages("individualProtector.5mld.legallyCapableYesNo.subheading")</h2>
+
+<p>@messages("individualProtector.5mld.legallyCapableYesNo.p5")</p>
+
+<p>@messages("individualProtector.5mld.legallyCapableYesNo.p6")</p>
 }
 
 @main_template(
@@ -52,7 +64,7 @@
 
         @content
 
-        @inputYesNo(
+        @inputYesNoDontKnow(
             field = form("value"),
             label = messages("individualProtector.5mld.legallyCapableYesNo.heading", trustName),
             legendAsHeading = false,

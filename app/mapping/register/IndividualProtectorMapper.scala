@@ -18,6 +18,7 @@ package mapping.register
 
 import mapping.reads.IndividualProtector
 import models.Protector
+import models.YesNoDontKnow.{DontKnow, No, Yes}
 import play.api.libs.json.JsPath
 import sections.IndividualProtectors
 
@@ -31,6 +32,12 @@ class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
     identification = protector.identification,
     countryOfResidence = protector.countryOfResidence,
     nationality = protector.nationality,
-    legallyIncapable = protector.legallyCapable.map(!_)
+    legallyIncapable = {
+      protector.legallyCapable.flatMap {
+        case Yes => Some(false)
+        case No => Some(true)
+        case DontKnow => None
+      }
+    }
   )
 }

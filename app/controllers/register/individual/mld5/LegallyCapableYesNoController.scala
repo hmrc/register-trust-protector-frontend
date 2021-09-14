@@ -19,7 +19,8 @@ package controllers.register.individual.mld5
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
-import forms.YesNoFormProvider
+import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import models.YesNoDontKnow
 import navigation.Navigator
 import pages.register.individual.mld5.LegallyCapableYesNoPage
 import play.api.data.Form
@@ -38,11 +39,11 @@ class LegallyCapableYesNoController @Inject()(
                                                    @IndividualProtector navigator: Navigator,
                                                    standardActionSets: StandardActionSets,
                                                    nameAction: NameRequiredAction,
-                                                   formProvider: YesNoFormProvider,
+                                                   formProvider: YesNoDontKnowFormProvider,
                                                    view: LegallyCapableYesNoView
                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider.withPrefix("individualProtector.5mld.legallyCapableYesNo")
+  private val form: Form[YesNoDontKnow] = formProvider.withPrefix("individualProtector.5mld.legallyCapableYesNo")
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
     standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {

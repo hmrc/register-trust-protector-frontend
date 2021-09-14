@@ -19,10 +19,12 @@ package mapping.register
 import java.time.LocalDate
 import base.SpecBase
 import generators.Generators
-import models.{AddressType, FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, PassportType, Protector, UkAddress}
+import mapping.reads.IndividualProtector
+import models.{AddressType, FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, PassportType, Protector, UkAddress, YesNoDontKnow}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.register.individual._
 import pages.register.individual.mld5._
+import play.api.libs.json.Json
 
 class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
@@ -49,6 +51,63 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
     }
 
     "when user answers is not empty" must {
+
+      "IndividualProtector reads" must {
+
+        "parse the old mental capacity question" in {
+
+          val json = Json.parse(
+            """
+              |{
+              | "name": {
+              |   "firstName": "John",
+              |   "lastName": "Smith"
+              | },
+              | "legallyCapable": true
+              |}
+              |""".stripMargin)
+
+          json.as[IndividualProtector] mustBe IndividualProtector(
+            name = FullName("John", None, "Smith"),
+            dateOfBirth = None,
+            nationalInsuranceNumber = None,
+            ukAddress = None,
+            internationalAddress = None,
+            passportDetails = None,
+            idCardDetails = None,
+            countryOfResidence = None,
+            nationality = None,
+            legallyCapable = Some(YesNoDontKnow.Yes)
+          )
+        }
+
+        "parse the new mental capacity question" in {
+          val json = Json.parse(
+            """
+              |{
+              | "name": {
+              |   "firstName": "John",
+              |   "lastName": "Smith"
+              | },
+              | "legallyCapable": "dontKnow"
+              |}
+              |""".stripMargin)
+
+          json.as[IndividualProtector] mustBe IndividualProtector(
+            name = FullName("John", None, "Smith"),
+            dateOfBirth = None,
+            nationalInsuranceNumber = None,
+            ukAddress = None,
+            internationalAddress = None,
+            passportDetails = None,
+            idCardDetails = None,
+            countryOfResidence = None,
+            nationality = None,
+            legallyCapable = Some(YesNoDontKnow.DontKnow)
+          )
+        }
+
+      }
 
       "return mapped data" when {
 
@@ -251,7 +310,7 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
                 .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
                 .set(NationalityYesNoPage(index0), false).success.value
                 .set(CountryOfResidenceYesNoPage(index0), false).success.value
-                .set(LegallyCapableYesNoPage(index0), true).success.value
+                .set(LegallyCapableYesNoPage(index0), YesNoDontKnow.Yes).success.value
 
             val individualProtectors = mapper.build(userAnswers)
 

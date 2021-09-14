@@ -17,8 +17,9 @@
 package mapping.reads
 
 import mapping.register.IdentificationMapper.buildPassport
-import models.{FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, UkAddress}
-import play.api.libs.json.{Format, Json}
+import models.{FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, UkAddress, YesNoDontKnow}
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 import java.time.LocalDate
 
@@ -31,7 +32,7 @@ final case class IndividualProtector(name: FullName,
                                      idCardDetails: Option[PassportOrIdCardDetails],
                                      countryOfResidence: Option[String],
                                      nationality: Option[String],
-                                     legallyCapable: Option[Boolean]) extends Protector {
+                                     legallyCapable: Option[YesNoDontKnow]) extends Protector {
 
   val identification: Option[IdentificationType] = (nationalInsuranceNumber, address, passportDetails, idCardDetails) match {
     case (None, None, None, None) => None
@@ -41,5 +42,25 @@ final case class IndividualProtector(name: FullName,
 }
 
 object IndividualProtector {
-  implicit val formats: Format[IndividualProtector] = Json.format[IndividualProtector]
+  implicit val reads: Reads[IndividualProtector] = (
+    (__ \ "name").read[FullName] and
+      (__ \ "dateOfBirth").readNullable[LocalDate] and
+      (__ \ "nationalInsuranceNumber").readNullable[String] and
+      (__ \ "ukAddress").readNullable[UkAddress] and
+      (__ \ "internationalAddress").readNullable[InternationalAddress] and
+      (__ \ "passportDetails").readNullable[PassportOrIdCardDetails] and
+      (__ \ "idCardDetails").readNullable[PassportOrIdCardDetails] and
+      (__ \ "countryOfResidence").readNullable[String] and
+      (__ \ "nationality").readNullable[String] and
+      readMentalCapacity
+    )(IndividualProtector.apply _)
+
+
+def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
+  (__ \ 'legallyCapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+  Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
+  }.orElse {
+  (__ \ 'legallyCapable).readNullable[YesNoDontKnow]
+  }
+
 }

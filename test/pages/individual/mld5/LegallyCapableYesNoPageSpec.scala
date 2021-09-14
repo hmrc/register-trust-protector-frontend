@@ -16,6 +16,7 @@
 
 package pages.individual.mld5
 
+import models.YesNoDontKnow
 import pages.behaviours.PageBehaviours
 import pages.register.individual.mld5.LegallyCapableYesNoPage
 
@@ -23,11 +24,11 @@ class LegallyCapableYesNoPageSpec extends PageBehaviours {
 
   "LegallyCapableYesNoPage" must {
 
-    beRetrievable[Boolean](LegallyCapableYesNoPage(0))
+    beRetrievable[YesNoDontKnow](LegallyCapableYesNoPage(0))
 
-    beSettable[Boolean](LegallyCapableYesNoPage(0))
+    beSettable[YesNoDontKnow](LegallyCapableYesNoPage(0))
 
-    beRemovable[Boolean](LegallyCapableYesNoPage(0))
+    beRemovable[YesNoDontKnow](LegallyCapableYesNoPage(0))
   }
 
 }

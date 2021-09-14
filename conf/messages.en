@@ -40,6 +40,8 @@ site.hidden-delete = Remove {0}
 site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
+site.dontKnow = I don’t know
+site.or = or
 site.continue = Continue
 site.textarea.char_limit = (Limit is {0} characters)
 site.save.continue = Save and continue
@@ -311,13 +313,17 @@ individualProtector.5mld.legallyCapableYesNo.checkYourAnswersLabel = Does {0} ha
 individualProtector.5mld.legallyCapableYesNo.title = Does the protector have mental capacity at the time of registration?
 individualProtector.5mld.legallyCapableYesNo.heading = Does {0} have mental capacity at the time of registration?
 individualProtector.5mld.legallyCapableYesNo.error.required = Select yes if the protector has mental capacity at the time of registration
-individualProtector.5mld.legallyCapableYesNo.p1 = A protector does not have mental capacity if they cannot understand information about the trust due to any of the following:
+individualProtector.5mld.legallyCapableYesNo.p1 = A protector does not have mental capacity if they are legally incapable of understanding information about the trust.
+individualProtector.5mld.legallyCapableYesNo.p2 = For example, this can be due to:
 individualProtector.5mld.legallyCapableYesNo.bulletpoint1 = mental illness
 individualProtector.5mld.legallyCapableYesNo.bulletpoint2 = learning disability
 individualProtector.5mld.legallyCapableYesNo.bulletpoint3 = dementia or a related condition
 individualProtector.5mld.legallyCapableYesNo.bulletpoint4 = being unable to communicate
-
-
+individualProtector.5mld.legallyCapableYesNo.p3 = HMRC will assume that the protector does have mental capacity, unless you tell HMRC that they do not have mental capacity.
+individualProtector.5mld.legallyCapableYesNo.p4 = If you are not certain whether the protector has mental capacity, select ‘I don’t know’.
+individualProtector.5mld.legallyCapableYesNo.subheading = Why HMRC are asking this question
+individualProtector.5mld.legallyCapableYesNo.p5 = Normally, HMRC can share a person’s data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020.
+individualProtector.5mld.legallyCapableYesNo.p6 = Where a person does not have mental capacity, HMRC are required to not share their personal data.
 individualProtector.checkDetails.title = Check individual protector details
 individualProtector.checkDetails.heading = Check individual protector details
 

@@ -55,7 +55,8 @@ object IndividualProtector {
       readMentalCapacity
     )(IndividualProtector.apply _)
 
-
+  implicit val writes: Writes[IndividualProtector] = Json.writes[IndividualProtector]
+  
 def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
   (__ \ 'legallyCapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
   Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))

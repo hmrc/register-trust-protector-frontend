@@ -38,7 +38,7 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
       } else {
         CountryOfResidenceYesNoController.onPageLoad(index, draftId)
       }
-    case UtrPage(index) => ua => navigateAwayFromUtrPages(draftId, index, ua)
+    case UtrPage(index) => ua => CountryOfResidenceYesNoController.onPageLoad(index, draftId)
     case UkAddressPage(index) => _ => CheckDetailsController.onPageLoad(index, draftId)
     case NonUkAddressPage(index) => _ => CheckDetailsController.onPageLoad(index, draftId)
     case CountryOfResidencePage(index) => ua => addressOrCheckAnswersRoute(draftId, index, ua)
@@ -50,7 +50,7 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
         ua = ua,
         fromPage = UtrYesNoPage(index),
         yesCall = UtrController.onPageLoad(index, draftId),
-        noCall = navigateAwayFromUtrPages(draftId, index, ua)
+        noCall = CountryOfResidenceYesNoController.onPageLoad(index, draftId)
       )
     case AddressYesNoPage(index) => ua =>
       yesNoNav(
@@ -85,14 +85,6 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     simpleNavigation(draftId) orElse
       yesNoNavigation(draftId)
-  }
-
-  private def navigateAwayFromUtrPages(draftId: String, index: Int, userAnswers: ReadableUserAnswers): Call = {
-    if (userAnswers.is5mldEnabled) {
-      CountryOfResidenceYesNoController.onPageLoad(index, draftId)
-    } else {
-      addressOrCheckAnswersRoute(draftId, index, userAnswers)
-    }
   }
 
   private def addressOrCheckAnswersRoute(draftId: String, index: Int, userAnswers: ReadableUserAnswers): Call = {

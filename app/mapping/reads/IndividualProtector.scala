@@ -53,15 +53,15 @@ object IndividualProtector {
       (__ \ "countryOfResidence").readNullable[String] and
       (__ \ "nationality").readNullable[String] and
       readMentalCapacity
-    )(IndividualProtector.apply _)
+    ) (IndividualProtector.apply _)
 
   implicit val writes: Writes[IndividualProtector] = Json.writes[IndividualProtector]
-  
-def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
-  (__ \ 'legallyCapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
-  Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
-  }.orElse {
-  (__ \ 'legallyCapable).readNullable[YesNoDontKnow]
-  }
+
+  def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
+    (__ \ 'legallyCapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+      Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
+    }.orElse {
+      (__ \ 'legallyCapable).readNullable[YesNoDontKnow]
+    }
 
 }

@@ -18,13 +18,10 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.FeatureResponse
 import models.TaskStatus.Completed
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
-import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -69,51 +66,6 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
 
         whenReady(connector.updateTaskStatus(draftId, Completed)) {
           _.status mustBe 500
-        }
-      }
-    }
-
-    ".getFeature" must {
-
-      val url = s"/trusts-store/features/5mld"
-
-      "return a feature flag of true if 5mld is enabled" in {
-
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-                .withBody(
-                  Json.stringify(
-                    Json.toJson(FeatureResponse("5mld", isEnabled = true))
-                  )
-                )
-            )
-        )
-
-        whenReady(connector.getFeature("5mld")) {
-          _ mustBe FeatureResponse("5mld", isEnabled = true)
-        }
-      }
-
-      "return a feature flag of false if 5mld is not enabled" in {
-
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-                .withBody(
-                  Json.stringify(
-                    Json.toJson(FeatureResponse("5mld", isEnabled = false))
-                  )
-                )
-            )
-        )
-
-        whenReady(connector.getFeature("5mld")) {
-          _ mustBe FeatureResponse("5mld", isEnabled = false)
         }
       }
     }

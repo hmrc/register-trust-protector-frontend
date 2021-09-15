@@ -34,45 +34,45 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case NamePage(index) => _ => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
-    case DateOfBirthPage(index) => ua => navigateAwayFromDateOfBirthQuestions(index, draftId, ua.is5mldEnabled)
+    case DateOfBirthPage(index) => _ => mld5.NationalityYesNoController.onPageLoad(index, draftId)
     case NationalityPage(index) => ua => navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable)
-    case NationalInsuranceNumberPage(index) => ua => navigateAwayFromNinoQuestion(index, draftId, ua.is5mldEnabled)
+    case NationalInsuranceNumberPage(index) => _ => mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
     case CountryOfResidencePage(index) => ua => navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua)
     case UkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
     case NonUkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case PassportDetailsPage(index) => ua => navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled)
-    case IDCardDetailsPage(index) => ua =>navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled)
+    case PassportDetailsPage(index) => _ => mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+    case IDCardDetailsPage(index) => _ => mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
     case LegallyCapableYesNoPage(index) => _ => irts.CheckDetailsController.onPageLoad(index, draftId)
     case CheckDetailsPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
   }
 
-  private def yesNoNavigation(draftId: String) : PartialFunction[Page, ReadableUserAnswers => Call] = {
+  private def yesNoNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case DateOfBirthYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         DateOfBirthYesNoPage(index),
         irts.DateOfBirthController.onPageLoad(index, draftId),
-        navigateAwayFromDateOfBirthQuestions(index, draftId, ua.is5mldEnabled)
+        mld5.NationalityYesNoController.onPageLoad(index, draftId)
       )
     case NationalInsuranceYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         NationalInsuranceYesNoPage(index),
         irts.NationalInsuranceNumberController.onPageLoad(index, draftId),
-        navigateAwayFromNinoYesNoQuestion(index, draftId, ua.is5mldEnabled)
+        mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
       )
     case AddressYesNoPage(index) => ua =>
       yesNoNav(
         ua,
         AddressYesNoPage(index),
         irts.AddressUkYesNoController.onPageLoad(index, draftId),
-        navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled)
+        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
       )
     case CountryOfResidencePage(index) => ua =>
       yesNoNav(
         ua,
         NationalInsuranceYesNoPage(index),
-        navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled),
+        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId),
         irts.AddressYesNoController.onPageLoad(index, draftId)
       )
     case AddressUkYesNoPage(index) => ua =>
@@ -94,7 +94,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         ua,
         IDCardDetailsYesNoPage(index),
         irts.IDCardDetailsController.onPageLoad(index, draftId),
-        navigateAwayFromPassportOrIdQuestions(index, draftId, ua.is5mldEnabled)
+        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
       )
     case NationalityYesNoPage(index) => ua =>
       yesNoNav(
@@ -109,7 +109,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         CountryOfResidenceYesNoPage(index),
         mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId),
         navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua)
-        )
+      )
     case NationalityUkYesNoPage(index) => ua =>
       yesNoNav(
         ua,
@@ -124,38 +124,6 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua),
         mld5.CountryOfResidenceController.onPageLoad(index, draftId)
       )
-  }
-
-  private def navigateAwayFromDateOfBirthQuestions(index: Int, draftId: String, is5mldEnabled: Boolean): Call = {
-    if (is5mldEnabled) {
-      mld5.NationalityYesNoController.onPageLoad(index, draftId)
-    } else {
-      irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
-    }
-  }
-
-  private def navigateAwayFromNinoYesNoQuestion(index: Int, draftId: String, is5mldEnabled: Boolean): Call = {
-    if(is5mldEnabled) {
-      mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
-    } else {
-      irts.AddressYesNoController.onPageLoad(index, draftId)
-    }
-  }
-
-  private def navigateAwayFromNinoQuestion(index: Int, draftId: String, is5mldEnabled: Boolean): Call = {
-    if(is5mldEnabled) {
-      mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
-    } else {
-      irts.CheckDetailsController.onPageLoad(index, draftId)
-    }
-  }
-
-  private def navigateAwayFromPassportOrIdQuestions(index: Int, draftId: String, is5mldEnabled: Boolean): Call = {
-    if(is5mldEnabled){
-      mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
-    } else {
-      irts.CheckDetailsController.onPageLoad(index, draftId)
-    }
   }
 
   private def navigateAwayFromNationalityQuestions(index: Int, draftId: String, isTaxable: Boolean): Call = {
@@ -174,6 +142,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
         mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
     }
   }
+
   private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     simpleNavigation(draftId) orElse yesNoNavigation(draftId)
   }

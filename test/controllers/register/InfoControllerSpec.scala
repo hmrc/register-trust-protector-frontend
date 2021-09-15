@@ -20,37 +20,17 @@ import base.SpecBase
 import models.UserAnswers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.register.{InfoView, InfoView5MLD, InfoViewNonTaxable}
+import views.html.register.{InfoView, InfoViewNonTaxable}
 
 class InfoControllerSpec extends SpecBase {
 
   "Info Controller" must {
 
-    "return OK and the correct view for a GET with 5mld disabled" in {
-
-      val answers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true)
-
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
-
-      val request = FakeRequest(GET, routes.InfoController.onPageLoad(fakeDraftId).url)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[InfoView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(fakeDraftId)(request, messages).toString
-
-      application.stop()
-    }
-
-    "return OK and the correct view for a GET with 5mld enabled" when {
+    "return OK and the correct view for a GET" when {
 
       "taxable" in {
 
-        val answers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)
+        val answers: UserAnswers = emptyUserAnswers.copy(isTaxable = true)
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -58,7 +38,7 @@ class InfoControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[InfoView5MLD]
+        val view = application.injector.instanceOf[InfoView]
 
         status(result) mustEqual OK
 
@@ -70,7 +50,7 @@ class InfoControllerSpec extends SpecBase {
 
       "non taxable" in {
 
-        val answers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)
+        val answers: UserAnswers = emptyUserAnswers.copy(isTaxable = false)
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 

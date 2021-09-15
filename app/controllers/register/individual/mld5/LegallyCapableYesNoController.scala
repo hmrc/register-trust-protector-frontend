@@ -19,7 +19,7 @@ package controllers.register.individual.mld5
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
-import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import forms.YesNoDontKnowFormProvider
 import models.YesNoDontKnow
 import navigation.Navigator
 import pages.register.individual.mld5.LegallyCapableYesNoPage

@@ -17,11 +17,10 @@
 package controllers.register
 
 import controllers.actions.StandardActionSets
-import models.UserAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.register.{InfoView, InfoView5MLD, InfoViewNonTaxable}
+import views.html.register.{InfoView, InfoViewNonTaxable}
 
 import javax.inject.Inject
 
@@ -30,22 +29,16 @@ class InfoController @Inject()(
                                 standardActionSets: StandardActionSets,
                                 val controllerComponents: MessagesControllerComponents,
                                 view: InfoView,
-                                view5MLD: InfoView5MLD,
                                 viewNonTaxable: InfoViewNonTaxable
                               ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
-      
-      val userAnswers: UserAnswers = request.userAnswers
 
-      (userAnswers.is5mldEnabled, userAnswers.isTaxable) match {
-        case (true, true) =>
-          Ok(view5MLD(draftId))
-        case (true, false) =>
-          Ok(viewNonTaxable(draftId))
-        case _ =>
-          Ok(view(draftId))
+      if (request.userAnswers.isTaxable) {
+        Ok(view(draftId))
+      } else {
+        Ok(viewNonTaxable(draftId))
       }
   }
 

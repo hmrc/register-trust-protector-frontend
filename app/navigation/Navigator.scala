@@ -30,8 +30,4 @@ trait Navigator {
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  def is5mld(is5mld: Boolean, yesCall: => Call, noCall: => Call): Call = {
-    if (is5mld) yesCall else noCall
-  }
-
 }

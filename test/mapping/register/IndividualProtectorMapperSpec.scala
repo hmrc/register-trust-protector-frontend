@@ -16,7 +16,6 @@
 
 package mapping.register
 
-import java.time.LocalDate
 import base.SpecBase
 import generators.Generators
 import mapping.reads.IndividualProtector
@@ -25,6 +24,8 @@ import org.scalatest.{MustMatchers, OptionValues}
 import pages.register.individual._
 import pages.register.individual.mld5._
 import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
@@ -35,8 +36,8 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
   private val firstName = "first"
   private val lastName = "last"
   private val nino = "AB123456C"
-  private val dateOfBirth = LocalDate.of(2000,1,1)
-  private val passportExpiry = LocalDate.of(2025,1,1)
+  private val dateOfBirth = LocalDate.of(2000, 1, 1)
+  private val passportExpiry = LocalDate.of(2025, 1, 1)
 
   "IndividualProtectorMapper" when {
 
@@ -219,111 +220,109 @@ class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
           )
         }
 
-        "5mld" when {
-          "name, residency GB is set" in {
-            val userAnswers =
-              emptyUserAnswers
-                .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
-                .set(CountryOfResidenceYesNoPage(index0), true).success.value
-                .set(CountryOfResidenceInTheUkYesNoPage(index0), true).success.value
-                .set(CountryOfResidencePage(index0), "GB").success.value
+        "name, residency GB is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
+              .set(CountryOfResidenceYesNoPage(index0), true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), true).success.value
+              .set(CountryOfResidencePage(index0), "GB").success.value
 
-            val individualProtectors = mapper.build(userAnswers)
+          val individualProtectors = mapper.build(userAnswers)
 
-            individualProtectors mustBe defined
-            individualProtectors.value.head mustBe Protector(
-              name = FullName("Name", None, "Protector"),
-              dateOfBirth = None,
-              identification = None,
-              countryOfResidence = Some("GB"),
-              None,
-              None
-            )
-          }
+          individualProtectors mustBe defined
+          individualProtectors.value.head mustBe Protector(
+            name = FullName("Name", None, "Protector"),
+            dateOfBirth = None,
+            identification = None,
+            countryOfResidence = Some("GB"),
+            None,
+            None
+          )
+        }
 
-          "name, residency country is set" in {
-            val userAnswers =
-              emptyUserAnswers
-                .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
-                .set(CountryOfResidenceYesNoPage(index0), true).success.value
-                .set(CountryOfResidenceInTheUkYesNoPage(index0), false).success.value
-                .set(CountryOfResidencePage(index0), "FR").success.value
+        "name, residency country is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
+              .set(CountryOfResidenceYesNoPage(index0), true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), false).success.value
+              .set(CountryOfResidencePage(index0), "FR").success.value
 
-            val individualProtectors = mapper.build(userAnswers)
+          val individualProtectors = mapper.build(userAnswers)
 
-            individualProtectors mustBe defined
-            individualProtectors.value.head mustBe Protector(
-              name = FullName("Name", None, "Protector"),
-              dateOfBirth = None,
-              identification = None,
-              countryOfResidence = Some("FR"),
-              None,
-              None
-            )
-          }
+          individualProtectors mustBe defined
+          individualProtectors.value.head mustBe Protector(
+            name = FullName("Name", None, "Protector"),
+            dateOfBirth = None,
+            identification = None,
+            countryOfResidence = Some("FR"),
+            None,
+            None
+          )
+        }
 
-          "name, nationality GB is set" in {
-            val userAnswers =
-              emptyUserAnswers
-                .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
-                .set(NationalityYesNoPage(index0), true).success.value
-                .set(NationalityUkYesNoPage(index0), true).success.value
-                .set(NationalityPage(index0), "GB").success.value
+        "name, nationality GB is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
+              .set(NationalityYesNoPage(index0), true).success.value
+              .set(NationalityUkYesNoPage(index0), true).success.value
+              .set(NationalityPage(index0), "GB").success.value
 
-            val individualProtectors = mapper.build(userAnswers)
+          val individualProtectors = mapper.build(userAnswers)
 
-            individualProtectors mustBe defined
-            individualProtectors.value.head mustBe Protector(
-              name = FullName("Name", None, "Protector"),
-              dateOfBirth = None,
-              identification = None,
-              None,
-              nationality = Some("GB"),
-              None
-            )
-          }
+          individualProtectors mustBe defined
+          individualProtectors.value.head mustBe Protector(
+            name = FullName("Name", None, "Protector"),
+            dateOfBirth = None,
+            identification = None,
+            None,
+            nationality = Some("GB"),
+            None
+          )
+        }
 
-          "name, nationality country is set" in {
-            val userAnswers =
-              emptyUserAnswers
-                .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
-                .set(NationalityYesNoPage(index0), true).success.value
-                .set(NationalityUkYesNoPage(index0), false).success.value
-                .set(NationalityPage(index0), "FR").success.value
+        "name, nationality country is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
+              .set(NationalityYesNoPage(index0), true).success.value
+              .set(NationalityUkYesNoPage(index0), false).success.value
+              .set(NationalityPage(index0), "FR").success.value
 
-            val individualProtectors = mapper.build(userAnswers)
+          val individualProtectors = mapper.build(userAnswers)
 
-            individualProtectors mustBe defined
-            individualProtectors.value.head mustBe Protector(
-              name = FullName("Name", None, "Protector"),
-              dateOfBirth = None,
-              identification = None,
-              None,
-              nationality = Some("FR"),
-              None
-            )
-          }
+          individualProtectors mustBe defined
+          individualProtectors.value.head mustBe Protector(
+            name = FullName("Name", None, "Protector"),
+            dateOfBirth = None,
+            identification = None,
+            None,
+            nationality = Some("FR"),
+            None
+          )
+        }
 
-          "name, legally capable is set" in {
-            val userAnswers =
-              emptyUserAnswers
-                .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
-                .set(NationalityYesNoPage(index0), false).success.value
-                .set(CountryOfResidenceYesNoPage(index0), false).success.value
-                .set(LegallyCapableYesNoPage(index0), YesNoDontKnow.Yes).success.value
+        "name, legally capable is set" in {
+          val userAnswers =
+            emptyUserAnswers
+              .set(NamePage(index0), FullName("Name", None, "Protector")).success.value
+              .set(NationalityYesNoPage(index0), false).success.value
+              .set(CountryOfResidenceYesNoPage(index0), false).success.value
+              .set(LegallyCapableYesNoPage(index0), YesNoDontKnow.Yes).success.value
 
-            val individualProtectors = mapper.build(userAnswers)
+          val individualProtectors = mapper.build(userAnswers)
 
-            individualProtectors mustBe defined
-            individualProtectors.value.head mustBe Protector(
-              name = FullName("Name", None, "Protector"),
-              dateOfBirth = None,
-              identification = None,
-              None,
-              None,
-              Some(false)
-            )
-          }
+          individualProtectors mustBe defined
+          individualProtectors.value.head mustBe Protector(
+            name = FullName("Name", None, "Protector"),
+            dateOfBirth = None,
+            identification = None,
+            None,
+            None,
+            Some(false)
+          )
         }
       }
 

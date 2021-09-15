@@ -63,7 +63,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
-        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -90,7 +89,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
-        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -107,11 +105,11 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         application.stop()
       }
 
-      "update value of is5mldEnabled, isTaxable and utr in user answers" in {
+      "update value of isTaxable and utr in user answers" in {
 
         reset(registrationsRepository)
 
-        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = false)
+        val userAnswers = emptyUserAnswers.copy(isTaxable = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
@@ -120,7 +118,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
         when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
         when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(Some(utr)))
 
@@ -130,7 +127,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-          uaCaptor.getValue.is5mldEnabled mustBe true
           uaCaptor.getValue.isTaxable mustBe true
           uaCaptor.getValue.existingTrustUtr.get mustBe utr
 
@@ -143,140 +139,64 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       "instantiate new set of user answers" when {
 
-        "5mld enabled" when {
+        "taxable" must {
 
-          "taxable" must {
+          "add isTaxable = true value to user answers" in {
 
-            "add is5mldEnabled = true and isTaxable = true value to user answers" in {
+            reset(registrationsRepository)
 
-              reset(registrationsRepository)
+            val application = applicationBuilder(userAnswers = None)
+              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
+              .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
+              .build()
 
-              val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
-                .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
-                .build()
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
+            when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
-              when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-              when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
-              val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+            route(application, request).value.map { _ =>
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-              route(application, request).value.map { _ =>
-                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-                verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+              uaCaptor.getValue.isTaxable mustBe true
+              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.internalAuthId mustBe "id"
 
-                uaCaptor.getValue.is5mldEnabled mustBe true
-                uaCaptor.getValue.isTaxable mustBe true
-                uaCaptor.getValue.draftId mustBe fakeDraftId
-                uaCaptor.getValue.internalAuthId mustBe "id"
-
-                application.stop()
-              }
-            }
-          }
-
-          "non-taxable" must {
-
-            "add is5mldEnabled = true and isTaxable = false value to user answers" in {
-
-              reset(registrationsRepository)
-
-              val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
-                .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
-                .build()
-
-              when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-              when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
-              when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
-
-              val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
-
-              route(application, request).value.map { _ =>
-                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-                verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-                uaCaptor.getValue.is5mldEnabled mustBe true
-                uaCaptor.getValue.isTaxable mustBe false
-                uaCaptor.getValue.draftId mustBe fakeDraftId
-                uaCaptor.getValue.internalAuthId mustBe "id"
-
-                application.stop()
-              }
+              application.stop()
             }
           }
         }
 
-        "5mld not enabled" when {
+        "non-taxable" must {
 
-          "taxable" must {
+          "add isTaxable = false value to user answers" in {
 
-            "add is5mldEnabled = false and isTaxable = true value to user answers" in {
+            reset(registrationsRepository)
 
-              reset(registrationsRepository)
+            val application = applicationBuilder(userAnswers = None)
+              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
+              .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
+              .build()
 
-              val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
-                .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
-                .build()
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+            when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
 
-              when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-              when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-              when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
-              val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+            route(application, request).value.map { _ =>
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-              route(application, request).value.map { _ =>
-                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-                verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+              uaCaptor.getValue.isTaxable mustBe false
+              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.internalAuthId mustBe "id"
 
-                uaCaptor.getValue.is5mldEnabled mustBe false
-                uaCaptor.getValue.isTaxable mustBe true
-                uaCaptor.getValue.draftId mustBe fakeDraftId
-                uaCaptor.getValue.internalAuthId mustBe "id"
-
-                application.stop()
-              }
-            }
-          }
-
-          "non-taxable" must {
-
-            "add is5mldEnabled = false and isTaxable = false value to user answers" in {
-
-              reset(registrationsRepository)
-
-              val application = applicationBuilder(userAnswers = None)
-                .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
-                .overrides(bind[SubmissionDraftConnector].toInstance(submissionDraftConnector))
-                .build()
-
-              when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-              when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-              when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
-              when(submissionDraftConnector.getTrustUtr(any())(any(), any())).thenReturn(Future.successful(None))
-
-              val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
-
-              route(application, request).value.map { _ =>
-                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-                verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-                uaCaptor.getValue.is5mldEnabled mustBe false
-                uaCaptor.getValue.isTaxable mustBe false
-                uaCaptor.getValue.draftId mustBe fakeDraftId
-                uaCaptor.getValue.internalAuthId mustBe "id"
-
-                application.stop()
-              }
+              application.stop()
             }
           }
         }

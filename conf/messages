@@ -433,3 +433,10 @@ trustHasProtectorYesNo.title = Does the trust have a protector?
 trustHasProtectorYesNo.heading = Does the trust have a protector?
 trustHasProtectorYesNo.hint = This is an individual or business named in the deed that can affect the way the trust is managed.
 trustHasProtectorYesNo.error.required = Select yes if the trust has a protector
+
+pageNotFound.title = Page not found
+pageNotFound.heading = Page not found
+pageNotFound.p1 = If you typed the web address, check it is correct.
+pageNotFound.p2 = If you pasted the web address, check that you copied the entire address.
+pageNotFound.p3 = If the web address is correct or you selected a link or button, {0}.
+pageNotFound.link = contact the trust helpline to speak to someone about a trust (opens in a new tab)

@@ -55,13 +55,13 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
 
     val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage).contains(true)
 
-    if (trustHasProtectorYesNo) {
+    val entitySections = List(
+      individualProtectorAnswersHelper.protectors(userAnswers),
+      businessProtectorAnswerHelper.protectors(userAnswers)
+    ).flatten.flatten
 
-      val entitySections = List(
-        individualProtectorAnswersHelper.protectors(userAnswers),
-        businessProtectorAnswerHelper.protectors(userAnswers)
-      ).flatten.flatten
-
+    if (entitySections.nonEmpty && trustHasProtectorYesNo) {
+      
       val updatedFirstSection = entitySections.head.copy(sectionKey = Some("answerPage.section.protectors.heading"))
 
       val updatedSections = updatedFirstSection :: entitySections.tail

@@ -52,10 +52,7 @@ object RegistrationSubmission {
   }
 
   // Set of data sent by sub-frontend, with user answers, status, any mapped pieces and answer sections.
-  case class DataSet(data: JsValue,
-                     status: Option[Status],
-                     registrationPieces: List[MappedPiece],
-                     answerSections: List[AnswerSection])
+  case class DataSet(data: JsValue, registrationPieces: List[MappedPiece], answerSections: List[AnswerSection])
 
   object DataSet {
     implicit lazy val format: OFormat[DataSet] = Json.format[DataSet]

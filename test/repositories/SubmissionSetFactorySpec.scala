@@ -20,7 +20,7 @@ import base.SpecBase
 import models.RegistrationSubmission.{AnswerRow, AnswerSection}
 import models.Status.Completed
 import models.register.pages.AddAProtector.NoComplete
-import models.{RegistrationSubmission, Status, UserAnswers}
+import models.{RegistrationSubmission, UserAnswers}
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
 import pages.register.business.NamePage
 import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
@@ -34,11 +34,10 @@ class SubmissionSetFactorySpec extends SpecBase {
 
     val factory = injector.instanceOf[SubmissionSetFactory]
 
-    "return no answer sections if no completed protectors" in {
+    "return no answer sections if no protectors" in {
 
       factory.createFrom(emptyUserAnswers) mustBe RegistrationSubmission.DataSet(
         data = Json.toJson(emptyUserAnswers),
-        status = None,
         registrationPieces = List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
         answerSections = List.empty
       )
@@ -53,7 +52,6 @@ class SubmissionSetFactorySpec extends SpecBase {
 
           factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
             data = Json.toJson(userAnswers),
-            status = Some(Status.Completed),
             registrationPieces = List(RegistrationSubmission.MappedPiece("trust/entities/protectors", JsNull)),
             answerSections = List.empty
           )
@@ -76,7 +74,6 @@ class SubmissionSetFactorySpec extends SpecBase {
 
             factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
               Json.toJson(userAnswers),
-              Some(Status.Completed),
               List(RegistrationSubmission.MappedPiece("trust/entities/protectors", mappedJson)),
               List(
                 AnswerSection(
@@ -100,7 +97,7 @@ class SubmissionSetFactorySpec extends SpecBase {
               .set(IndividualProtectorStatus(0), Completed).success.value
               .set(TrustHasProtectorYesNoPage, true).success.value
 
-            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+            factory.answerSections(userAnswers) mustBe
               List(
                 AnswerSection(
                   headingKey = Some("answerPage.section.individualProtector.subheading"),
@@ -121,7 +118,7 @@ class SubmissionSetFactorySpec extends SpecBase {
               .set(BusinessProtectorStatus(1), Completed).success.value
               .set(TrustHasProtectorYesNoPage, true).success.value
 
-            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+            factory.answerSections(userAnswers) mustBe
               List(
                 AnswerSection(
                   headingKey = Some("answerPage.section.businessProtector.subheading"),
@@ -144,7 +141,7 @@ class SubmissionSetFactorySpec extends SpecBase {
               .set(IndividualProtectorStatus(1), Completed).success.value
               .set(TrustHasProtectorYesNoPage, true).success.value
 
-            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+            factory.answerSections(userAnswers) mustBe
               List(
                 AnswerSection(
                   headingKey = Some("answerPage.section.individualProtector.subheading"),
@@ -167,7 +164,7 @@ class SubmissionSetFactorySpec extends SpecBase {
               .set(BusinessProtectorStatus(0), Completed).success.value
               .set(TrustHasProtectorYesNoPage, true).success.value
 
-            factory.answerSectionsIfCompleted(userAnswers, Some(Completed)) mustBe
+            factory.answerSections(userAnswers) mustBe
               List(
                 AnswerSection(
                   headingKey = Some("answerPage.section.individualProtector.subheading"),

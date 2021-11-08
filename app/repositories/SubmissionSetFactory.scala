@@ -33,36 +33,29 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      businessProtectorAnswerHelper: BusinessProtectorAnswersHelper) {
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
-    val status = registrationProgress.protectorsStatus(userAnswers)
-
     RegistrationSubmission.DataSet(
       data = Json.toJson(userAnswers),
-      status = status,
-      registrationPieces = mappedDataIfCompleted(userAnswers, status),
-      answerSections = answerSectionsIfCompleted(userAnswers, status)
+      registrationPieces = mappedData(userAnswers),
+      answerSections = answerSections(userAnswers)
     )
   }
 
   private def mappedPieces(protectorsJson: JsValue) =
     List(RegistrationSubmission.MappedPiece("trust/entities/protectors", protectorsJson))
 
-  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]): List[RegistrationSubmission.MappedPiece] = {
-    if (status.contains(Status.Completed)) {
+  private def mappedData(userAnswers: UserAnswers): List[RegistrationSubmission.MappedPiece] = {
       protectorsMapper.build(userAnswers) match {
         case Some(protectors) => mappedPieces(Json.toJson(protectors))
         case _ => mappedPieces(JsNull)
       }
-    } else {
-      mappedPieces(JsNull)
-    }
   }
 
-  def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
-                               (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
+  def answerSections(userAnswers: UserAnswers)
+                    (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
     val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage).contains(true)
 
-    if (status.contains(Status.Completed) && trustHasProtectorYesNo) {
+    if (trustHasProtectorYesNo) {
 
       val entitySections = List(
         individualProtectorAnswersHelper.protectors(userAnswers),

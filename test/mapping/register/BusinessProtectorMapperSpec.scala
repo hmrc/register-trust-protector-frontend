@@ -19,11 +19,12 @@ package mapping.register
 import base.SpecBase
 import generators.Generators
 import models.{AddressType, IdentificationOrgType, InternationalAddress, ProtectorCompany, UkAddress}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import pages.register.business._
 import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 
-class BusinessProtectorMapperSpec extends SpecBase with MustMatchers
+class BusinessProtectorMapperSpec extends SpecBase with Matchers
   with OptionValues with Generators {
 
   private val mapper = injector.instanceOf[BusinessProtectorMapper]

@@ -97,7 +97,7 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
       case (true, false) =>
         AddressYesNoController.onPageLoad(index, draftId)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 

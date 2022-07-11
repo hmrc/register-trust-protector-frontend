@@ -19,10 +19,11 @@ package mapping.register
 import base.SpecBase
 import generators.Generators
 import models.{FullName, YesNoDontKnow}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import pages.register._
 
-class ProtectorsMapperSpec extends SpecBase with MustMatchers
+class ProtectorsMapperSpec extends SpecBase with Matchers
   with OptionValues with Generators {
 
   val protectorsMapper: ProtectorsMapper = injector.instanceOf[ProtectorsMapper]

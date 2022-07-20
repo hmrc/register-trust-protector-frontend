@@ -53,20 +53,20 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
     userAnswers.get(TrustHasProtectorYesNoPage) match {
       case Some(true) => controllers.register.routes.InfoController.onPageLoad(draftId)
       case Some(false) => protectorsCompletedRoute(draftId)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
 
   private def individualOrBusinessRoute(draftId: String)(userAnswers: ReadableUserAnswers): Call =
     userAnswers.get(IndividualOrBusinessPage) match {
       case Some(individualOrBusiness) => ProtectorNavigator.addProtectorNowRoute(individualOrBusiness, userAnswers.protectors, draftId)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
 
   private def addProtectorRoute(draftId: String)(answers: ReadableUserAnswers): Call = {
     answers.get(AddAProtectorPage) match {
       case Some(AddAProtector.YesNow) => ProtectorNavigator.addProtectorRoute(answers.protectors, draftId)
       case Some(_) => protectorsCompletedRoute(draftId)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -75,7 +75,7 @@ class ProtectorNavigator @Inject()(config: FrontendAppConfig) extends Navigator 
       case Some(true) =>
         controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId)
       case Some(false) => protectorsCompletedRoute(draftId)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 

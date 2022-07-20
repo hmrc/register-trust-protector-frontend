@@ -20,14 +20,15 @@ import base.SpecBase
 import generators.Generators
 import mapping.reads.IndividualProtector
 import models.{AddressType, FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, PassportType, Protector, UkAddress, YesNoDontKnow}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import pages.register.individual._
 import pages.register.individual.mld5._
 import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class IndividualProtectorMapperSpec extends SpecBase with MustMatchers
+class IndividualProtectorMapperSpec extends SpecBase with Matchers
   with OptionValues with Generators {
 
   private val mapper = injector.instanceOf[IndividualProtectorMapper]

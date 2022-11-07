@@ -25,7 +25,7 @@ object AppDependencies {
     "org.scalacheck"         %% "scalacheck"               % "1.17.0",
     "wolfendale"             %% "scalacheck-gen-regexp"    % "0.1.2",
     "com.github.tomakehurst" %  "wiremock-standalone"      % "2.27.2",
-    "com.vladsch.flexmark"   %  "flexmark-all"             % "0.64.0"
+    "com.vladsch.flexmark"   %  "flexmark-all"             % "0.62.2"
 
   ).map(_ % Test)
 

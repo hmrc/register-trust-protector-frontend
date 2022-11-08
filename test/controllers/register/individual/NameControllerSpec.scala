@@ -21,8 +21,7 @@ import config.annotations.IndividualProtector
 import forms.NameFormProvider
 import models.{FullName, ReadOnlyUserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import pages.register.individual.NamePage
 import play.api.inject.bind
 import play.api.libs.json.Json

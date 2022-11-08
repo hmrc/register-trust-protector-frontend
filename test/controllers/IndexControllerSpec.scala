@@ -21,8 +21,7 @@ import connectors.SubmissionDraftConnector
 import models.TaskStatus.InProgress
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.scalatest.BeforeAndAfterEach
 import pages.register.business.NamePage
 import play.api.inject.bind

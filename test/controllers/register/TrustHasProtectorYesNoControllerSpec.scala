@@ -19,10 +19,9 @@ package controllers.register
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.TaskStatus.{Completed, InProgress}
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.data.Form
 import play.api.inject.bind

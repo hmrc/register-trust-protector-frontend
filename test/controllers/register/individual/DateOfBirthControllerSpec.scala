@@ -23,7 +23,7 @@ import config.annotations.IndividualProtector
 import forms.DateOfBirthFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.register.individual.{DateOfBirthPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

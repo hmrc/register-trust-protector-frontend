@@ -22,11 +22,9 @@ import models.Status.Completed
 import models.register.pages.IndividualOrBusinessToAdd.Individual
 import models.{FullName, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.verify
+import org.mockito.ArgumentMatchers.any
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import pages.entitystatus.IndividualProtectorStatus
 import pages.register.IndividualOrBusinessPage
 import pages.register.individual.NamePage

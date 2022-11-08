@@ -21,7 +21,7 @@ import config.annotations.BusinessProtector
 import forms.InternationalAddressFormProvider
 import models.InternationalAddress
 import navigation.{FakeNavigator, Navigator}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.register.business.{NamePage, NonUkAddressPage}
 import play.api.data.Form
 import play.api.inject.bind

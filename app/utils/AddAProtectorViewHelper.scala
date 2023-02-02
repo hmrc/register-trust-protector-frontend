@@ -83,7 +83,7 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
 
     InProgressComplete(inProgress = individualProtectorsInProgress, complete = individualProtectorsComplete)
   }
-  
+
   def rows : AddToRows =
     AddToRows(
       inProgress = businessProtectors.inProgress ++ individualProtectors.inProgress,

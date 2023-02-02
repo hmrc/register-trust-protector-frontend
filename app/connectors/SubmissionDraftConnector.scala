@@ -53,5 +53,5 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config: FrontendAppCo
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
       }
   }
-  
+
 }

@@ -61,7 +61,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     ).flatten.flatten
 
     if (entitySections.nonEmpty && trustHasProtectorYesNo) {
-      
+
       val updatedFirstSection = entitySections.head.copy(sectionKey = Some("answerPage.section.protectors.heading"))
 
       val updatedSections = updatedFirstSection :: entitySections.tail

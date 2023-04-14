@@ -42,7 +42,7 @@
     showBackLink = true
 ) {
 
-        @formHelper(action = if(maxedOut.size == 2) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, 'autoComplete -> "off") {
+        @formHelper(action = if(maxedOut.size == 2) {AddAProtectorController.submitComplete(draftId)} else {AddAProtectorController.submitAnother(draftId)}, Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, AddAProtector.options)
 

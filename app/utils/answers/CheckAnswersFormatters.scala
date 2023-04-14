@@ -52,7 +52,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
   }
 
   def country(code: String)(implicit messages: Messages): String =
-    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
+    countryOptions.options().find(_.value.equals(code)).map(_.label).getOrElse("")
 
   def answer[T](key: String, answer: T)(implicit messages: Messages): Html =
     escape(messages(s"$key.$answer"))

@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = action, 'autoComplete -> "off") {
+    @formHelper(action = action, Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

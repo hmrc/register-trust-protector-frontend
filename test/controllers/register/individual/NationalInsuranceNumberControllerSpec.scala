@@ -21,17 +21,22 @@ import config.annotations.IndividualProtector
 import forms.NationalInsuranceNumberFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.ArgumentMatchers.any
 import pages.register.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.DraftRegistrationService
 import views.html.register.individual.NationalInsuranceNumberView
+
+import scala.concurrent.Future
 
 class NationalInsuranceNumberControllerSpec extends SpecBase {
 
   private val formProvider = new NationalInsuranceNumberFormProvider()
   private val index: Int = 0
-  private val form = formProvider.withPrefix("individualProtector.nationalInsuranceNumber", emptyUserAnswers, index)
+  private val existingSettlorNinos = Seq("")
+  private val form = formProvider.withPrefix("individualProtector.nationalInsuranceNumber", emptyUserAnswers, index, existingSettlorNinos)
   private val name = FullName("first name", None, "Last name")
 
   lazy val individualProtectorNationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad(index,draftId).url
@@ -43,7 +48,11 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers.set(NamePage(index),
         name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val mockDraftRegistrationService = mock[DraftRegistrationService]
+
+      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService)).build()
 
       val request = FakeRequest(GET, individualProtectorNationalInsuranceNumberRoute)
 
@@ -64,7 +73,11 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberPage(index), "answer").success.value
         .set(NamePage(index),name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val mockDraftRegistrationService = mock[DraftRegistrationService]
+
+      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService)).build()
 
       val request = FakeRequest(GET, individualProtectorNationalInsuranceNumberRoute)
 
@@ -85,9 +98,14 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers.set(NamePage(index),
         name).success.value
 
+      val mockDraftRegistrationService = mock[DraftRegistrationService]
+
+      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+
       val application =
         applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
+            bind[DraftRegistrationService].toInstance(mockDraftRegistrationService),
             bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(new FakeNavigator)
           ).build()
 
@@ -109,7 +127,11 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.set(NamePage(index),
           name).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockDraftRegistrationService = mock[DraftRegistrationService]
+
+        when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService)).build()
 
         val request =
           FakeRequest(POST, individualProtectorNationalInsuranceNumberRoute)
@@ -137,7 +159,11 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
           .set(NamePage(index), name).success.value
           .set(NationalInsuranceNumberPage(index + 1), nino).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val mockDraftRegistrationService = mock[DraftRegistrationService]
+
+        when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService)).build()
 
         val request =
           FakeRequest(POST, individualProtectorNationalInsuranceNumberRoute)

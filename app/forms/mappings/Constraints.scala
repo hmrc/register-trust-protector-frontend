@@ -161,6 +161,16 @@ trait Constraints {
         }
     }
 
+  protected def uniqueNino(errorKey: String, existingSettlorNinos: Seq[String]): Constraint[String] =
+    Constraint {
+      nino =>
+        if (existingSettlorNinos.contains(nino)) {
+          Invalid(errorKey)
+        } else {
+          Valid
+        }
+    }
+
   protected def uniqueUtr(userAnswers: UserAnswers, index: Int, notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =
     Constraint {
       utr =>

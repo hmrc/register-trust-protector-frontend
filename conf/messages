@@ -213,6 +213,7 @@ individualProtector.nationalInsuranceNumber.hint = It is on their National Insur
 individualProtector.nationalInsuranceNumber.error.required = Enter the protector’s National Insurance number
 individualProtector.nationalInsuranceNumber.error.invalid = Enter the protector’s National Insurance number in the correct format
 individualProtector.nationalInsuranceNumber.error.duplicate = Enter a National Insurance number that has not already been used to add a protector
+individualProtector.nationalInsuranceNumber.error.unique = The protector’s National Insurance number must not be the same as the settlor’s National Insurance number
 
 individualProtector.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 individualProtector.addressYesNo.title = Do you know the protector’s address?

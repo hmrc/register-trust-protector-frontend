@@ -17,7 +17,6 @@
 package forms.mappings
 
 import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
 import org.scalatest.matchers.must.Matchers
@@ -185,6 +184,23 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
           val result = minDate(min, "error.past", "foo")(date)
           result mustEqual Invalid("error.past", "foo")
       }
+    }
+  }
+
+  "uniqueNino" should {
+
+    val existingSettlorNinos: Seq[String] = Seq("AA123456C", "AR123456A", "AE123456C")
+
+    "return Valid if the NINO is unique" in {
+
+      val result = uniqueNino("error.duplicate", existingSettlorNinos)("AC123456C")
+      result mustEqual Valid
+    }
+
+    "return Invalid if the NINO is already in the existingSettlorNinos" in {
+
+      val result = uniqueNino("error.duplicate", existingSettlorNinos)("AR123456A")
+      result mustEqual Invalid("error.duplicate")
     }
   }
 }

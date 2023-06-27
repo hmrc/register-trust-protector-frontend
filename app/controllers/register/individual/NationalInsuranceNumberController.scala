@@ -20,6 +20,7 @@ import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.register.individual.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.NationalInsuranceNumberPage
@@ -27,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
+import services.DraftRegistrationService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.NationalInsuranceNumberView
 
@@ -40,36 +42,53 @@ class NationalInsuranceNumberController @Inject()(
                                                    nameAction: NameRequiredAction,
                                                    formProvider: NationalInsuranceNumberFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: NationalInsuranceNumberView
+                                                   view: NationalInsuranceNumberView,
+                                                   draftRegistrationService: DraftRegistrationService
                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(index: Int)(implicit request: ProtectorNameRequest[AnyContent]) =
-    formProvider.withPrefix("individualProtector.nationalInsuranceNumber", request.userAnswers, index)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
+  private def getForm(draftId: String, index: Int)(implicit request: ProtectorNameRequest[AnyContent]): Future[Form[String]] = {
+    for {
+      existingSettlorNinos <- getSettlorNinos(draftId)
+    } yield {
+      formProvider.withPrefix("individualProtector.nationalInsuranceNumber", request.userAnswers, index, Seq(existingSettlorNinos))
+    }
+  }
+
+  private def getSettlorNinos(draftId: String)(implicit request: ProtectorNameRequest[AnyContent]) = {
+    draftRegistrationService.retrieveSettlorNinos(draftId)
+  }
+
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage(index)) match {
-        case None => form(index)
-        case Some(value) => form(index).fill(value)
-      }
+      getForm(draftId, index).map { form =>
 
-      Ok(view(preparedForm, request.protectorName, index, draftId))
+        val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage(index)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, request.protectorName, index, draftId))
+      }
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
     implicit request =>
 
-      form(index).bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
+      getForm(draftId, index).flatMap { form =>
 
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage(index), value))
-            _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage(index), draftId, updatedAnswers))
-        }
-      )
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
+
+          value => {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage(index), value))
+              _ <- registrationsRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage(index), draftId, updatedAnswers))
+          }
+        )
+      }
   }
 }

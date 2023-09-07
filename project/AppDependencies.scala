@@ -1,4 +1,7 @@
-import sbt.*
+
+import play.core.PlayVersion
+import sbt._
+
 
 object AppDependencies {
 
@@ -14,12 +17,15 @@ object AppDependencies {
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% "bootstrap-test-play-28"   % bootstrapVersion,
     "org.scalatest"          %% "scalatest"                % "3.2.16",
+    "org.scalatestplus.play" %% "scalatestplus-play"       % "5.1.0",
     "org.scalatestplus"      %% "scalatestplus-scalacheck" % "3.1.0.0-RC2",
     "org.jsoup"              %  "jsoup"                    % "1.16.1",
+    "com.typesafe.play"      %% "play-test"                % PlayVersion.current,
     "org.mockito"            %% "mockito-scala-scalatest"  % "1.17.22",
     "org.scalacheck"         %% "scalacheck"               % "1.17.0",
+    "com.github.tomakehurst" %  "wiremock-standalone"      % "2.27.2",
     "io.github.wolfendale"   %% "scalacheck-gen-regexp"    % "1.1.0",
-    "org.wiremock"           %  "wiremock-standalone"      % "3.0.1",
+
     "com.vladsch.flexmark"   %  "flexmark-all"             % "0.64.8"
 
   ).map(_ % Test)

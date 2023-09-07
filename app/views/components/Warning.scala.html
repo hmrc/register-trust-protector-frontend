@@ -21,5 +21,6 @@
 @(messageKeyPrefix: String)(implicit messages: Messages)
 
 @govukWarningText(WarningText(
+    iconFallbackText = Some(messages("site.warning")),
     content = Text(messages(s"$messageKeyPrefix.warning"))
 ))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     arbitrary[BigInt] suchThat(x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.size > 0)
+    alphaStr suchThat(_.length > 0)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]

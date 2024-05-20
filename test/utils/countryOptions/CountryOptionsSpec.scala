@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package utils.countryOptions
 
 import base.SpecBase
 import com.typesafe.config.ConfigException
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 import utils.InputOption
 

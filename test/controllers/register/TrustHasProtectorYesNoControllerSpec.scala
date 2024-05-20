@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.TaskStatus.{Completed, InProgress}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.data.Form

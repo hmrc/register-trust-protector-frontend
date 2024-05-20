@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,12 @@ class DraftIdDataRetrievalActionProviderImpl @Inject()(registrationsRepository: 
 
 trait DraftIdRetrievalActionProvider {
 
-  def apply(draftId : String) : DraftIdDataRetrievalAction
+  def apply(draftId: String): DraftIdDataRetrievalAction
 
 }
 
 class DraftIdDataRetrievalAction(
-                                  draftId : String,
+                                  draftId: String,
                                   registrationsRepository: RegistrationsRepository,
                                   implicit protected val executionContext: ExecutionContext
                                 )
@@ -52,7 +52,15 @@ class DraftIdDataRetrievalAction(
 
     registrationsRepository.get(draftId).map {
       userAnswers =>
-        OptionalRegistrationDataRequest(request.request, request.identifier, Session.id(hc), userAnswers, request.affinityGroup, request.enrolments, request.agentARN)
+        OptionalRegistrationDataRequest(
+          request.request,
+          request.identifier,
+          Session.id(hc),
+          userAnswers,
+          request.affinityGroup,
+          request.enrolments,
+          request.agentARN
+        )
     }
   }
 

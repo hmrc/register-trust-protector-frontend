@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package controllers.actions
 import controllers.actions.register.{DraftIdDataRetrievalAction, DraftIdRetrievalActionProvider}
 import models.{Status, UserAnswers}
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import repositories.RegistrationsRepository
 
 import scala.concurrent.{ExecutionContext, Future}

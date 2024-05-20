@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,12 @@ trait SpecBase extends PlaySpec
 
   lazy val fakeNavigator: FakeNavigator = new FakeNavigator()
 
+  val defaultAppConfigurations = Seq(
+    "auditing.enabled" -> false,
+    "metrics.enabled" -> false,
+    "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
+  )
+
   private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
     new FakeDraftIdRetrievalActionProvider(
       draftId,
@@ -74,4 +80,5 @@ trait SpecBase extends PlaySpec
         bind[RegistrationsRepository].toInstance(registrationsRepository),
         bind[AffinityGroup].toInstance(Organisation)
       )
+      .configure(defaultAppConfigurations :_*)
 }

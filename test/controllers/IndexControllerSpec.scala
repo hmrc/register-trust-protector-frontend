@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import models.TaskStatus.InProgress
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.register.business.NamePage
 import play.api.inject.bind

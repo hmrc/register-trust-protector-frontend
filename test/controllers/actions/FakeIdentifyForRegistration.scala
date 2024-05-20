@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,8 @@ class FakeIdentifyForRegistration @Inject()(affinityGroup: AffinityGroup, config
 
 }
 
-class FakeAffinityGroupIdentifierAction[A](action: Action[A], trustsAuth: TrustsAuthorisedFunctions, config: FrontendAppConfig) extends AffinityGroupIdentifierAction(action, trustsAuth, config)  {
+class FakeAffinityGroupIdentifierAction[A](action: Action[A], trustsAuth: TrustsAuthorisedFunctions, config: FrontendAppConfig)
+  extends AffinityGroupIdentifierAction(action, trustsAuth, config) {
   override def apply(request: Request[A]): Future[Result] = {
     action(request)
   }

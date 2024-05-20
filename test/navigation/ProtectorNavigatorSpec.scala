@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,6 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
        }
      }
    }
-
 
   "AddAProtectorYesNoPage" when {
 
@@ -247,6 +246,25 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
     }
 
+  }
+
+  "nextPage should redirect to SessionExpired Controller" when {
+
+    "user answers are empty, and AddAProtectorPage is next page" in {
+      navigator.nextPage(AddAProtectorPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
+
+    "user answers are empty, and AddAProtectorYesNoPage is next page" in {
+      navigator.nextPage(AddAProtectorYesNoPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
+
+    "user answers are empty, and IndividualOrBusinessPage is next page" in {
+      navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
+
+    "user answers are empty, and TrustHasProtectorYesNoPage is next page" in {
+      navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
   }
 
 }

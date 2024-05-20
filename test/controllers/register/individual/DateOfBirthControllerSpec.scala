@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import config.annotations.IndividualProtector
 import forms.DateOfBirthFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.register.individual.{DateOfBirthPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

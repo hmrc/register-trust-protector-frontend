@@ -26,7 +26,11 @@ lazy val microservice = Project("register-trust-protector-frontend", file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 91,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    scalacOptions ++= Seq("-feature"),
+    scalacOptions ++= Seq(
+      "-feature",
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:cat=unused-imports&src=views/.*:s"
+    ),
     libraryDependencies ++= AppDependencies(),
     // concatenate js
     Concat.groups := Seq(
@@ -48,4 +52,4 @@ lazy val microservice = Project("register-trust-protector-frontend", file("."))
      uglify / includeFilter := GlobFilter("registertrustprotectorfrontend-*.js"),
   )
 
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")

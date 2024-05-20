@@ -32,10 +32,7 @@ class TrustsStoreConnectorSpec extends SpecBase with Matchers with OptionValues 
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
-      Seq(
-        "microservice.services.trusts-store.port" -> server.port(),
-        "auditing.enabled" -> false
-      ): _*
+      defaultAppConfigurations ++ Seq("microservice.services.trusts-store.port" -> server.port()): _*
     ).build()
 
   private lazy val connector = injector.instanceOf[TrustsStoreConnector]

@@ -1,5 +1,4 @@
-import play.core.PlayVersion
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
@@ -14,9 +13,8 @@ object AppDependencies {
 
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% "bootstrap-test-play-30"   % bootstrapVersion,
-    "org.scalatestplus"      %% "scalatestplus-scalacheck" % "3.1.0.0-RC2",
+    "org.scalatestplus"      %% "scalacheck-1-17"          % "3.2.18.0",
     "org.jsoup"              %  "jsoup"                    % "1.17.2",
-    "org.mockito"            %% "mockito-scala-scalatest"  % "1.17.31",
     "io.github.wolfendale"   %% "scalacheck-gen-regexp"    % "1.1.0",
   ).map(_ % Test)
 

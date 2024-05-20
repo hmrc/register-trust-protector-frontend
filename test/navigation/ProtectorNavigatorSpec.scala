@@ -52,7 +52,6 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
      }
    }
 
-
   "AddAProtectorYesNoPage" when {
 
     "go to IndividualOrBusinessPage from AddAProtectorYesNoPage when selected yes" in {
@@ -247,6 +246,25 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       }
     }
 
+  }
+
+  "nextPage should redirect to SessionExpired Controller" when {
+
+    "user answers are empty, and AddAProtectorPage is next page" in {
+      navigator.nextPage(AddAProtectorPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
+
+    "user answers are empty, and AddAProtectorYesNoPage is next page" in {
+      navigator.nextPage(AddAProtectorYesNoPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
+
+    "user answers are empty, and IndividualOrBusinessPage is next page" in {
+      navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
+
+    "user answers are empty, and TrustHasProtectorYesNoPage is next page" in {
+      navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
+    }
   }
 
 }

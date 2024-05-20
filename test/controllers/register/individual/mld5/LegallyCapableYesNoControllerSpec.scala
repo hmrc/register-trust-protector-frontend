@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.YesNoDontKnowFormProvider
 import models.{FullName, YesNoDontKnow}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.register.individual.NamePage
 import pages.register.individual.mld5.LegallyCapableYesNoPage
 import play.api.data.Form

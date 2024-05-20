@@ -20,7 +20,7 @@ import base.SpecBase
 import config.annotations.BusinessProtector
 import forms.CountryFormProvider
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.register.business.NamePage
 import pages.register.business.mld5.CountryOfResidencePage
 import play.api.data.Form

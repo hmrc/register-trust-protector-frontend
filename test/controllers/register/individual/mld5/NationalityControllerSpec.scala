@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.CountryFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.register.individual.NamePage
 import pages.register.individual.mld5.NationalityPage
 import play.api.data.Form

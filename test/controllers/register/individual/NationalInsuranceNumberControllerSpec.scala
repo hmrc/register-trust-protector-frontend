@@ -22,6 +22,7 @@ import forms.NationalInsuranceNumberFormProvider
 import models.FullName
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import pages.register.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

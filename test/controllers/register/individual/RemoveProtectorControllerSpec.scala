@@ -23,6 +23,7 @@ import models.Status._
 import models.{FullName, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import pages.entitystatus.IndividualProtectorStatus
 import pages.register.individual.NamePage
 import play.api.data.Form

@@ -50,7 +50,7 @@ trait SpecBase extends PlaySpec
 
   lazy val fakeNavigator: FakeNavigator = new FakeNavigator()
 
-  val defaultAppConfigurations: Map[String, Any] = Map(
+  val defaultAppConfigurations = Seq(
     "auditing.enabled" -> false,
     "metrics.enabled" -> false,
     "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
@@ -80,5 +80,5 @@ trait SpecBase extends PlaySpec
         bind[RegistrationsRepository].toInstance(registrationsRepository),
         bind[AffinityGroup].toInstance(Organisation)
       )
-      .configure(defaultAppConfigurations)
+      .configure(defaultAppConfigurations :_*)
 }

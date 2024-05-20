@@ -36,12 +36,12 @@ class DraftIdDataRetrievalActionProviderImpl @Inject()(registrationsRepository: 
 
 trait DraftIdRetrievalActionProvider {
 
-  def apply(draftId : String) : DraftIdDataRetrievalAction
+  def apply(draftId: String): DraftIdDataRetrievalAction
 
 }
 
 class DraftIdDataRetrievalAction(
-                                  draftId : String,
+                                  draftId: String,
                                   registrationsRepository: RegistrationsRepository,
                                   implicit protected val executionContext: ExecutionContext
                                 )
@@ -52,7 +52,15 @@ class DraftIdDataRetrievalAction(
 
     registrationsRepository.get(draftId).map {
       userAnswers =>
-        OptionalRegistrationDataRequest(request.request, request.identifier, Session.id(hc), userAnswers, request.affinityGroup, request.enrolments, request.agentARN)
+        OptionalRegistrationDataRequest(
+          request.request,
+          request.identifier,
+          Session.id(hc),
+          userAnswers,
+          request.affinityGroup,
+          request.enrolments,
+          request.agentARN
+        )
     }
   }
 

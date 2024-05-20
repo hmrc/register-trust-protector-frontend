@@ -92,12 +92,10 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
     val isUtrDefined: Boolean = userAnswers.get(UtrPage(index)).isDefined
 
     (isTaxable, isUtrDefined) match {
-      case (true, true) | (false, _) =>
-        CheckDetailsController.onPageLoad(index, draftId)
       case (true, false) =>
         AddressYesNoController.onPageLoad(index, draftId)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad
+        CheckDetailsController.onPageLoad(index, draftId)
     }
   }
 

@@ -20,7 +20,8 @@ import base.SpecBase
 import connectors.SubmissionDraftConnector
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{verify, when}
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.matchers.must.Matchers
 import play.api.http
 import play.api.libs.json.Json

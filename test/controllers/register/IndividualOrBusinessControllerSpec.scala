@@ -19,7 +19,7 @@ package controllers.register
 import base.SpecBase
 import forms.IndividualOrBusinessFormProvider
 import models.register.pages.IndividualOrBusinessToAdd
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.register.IndividualOrBusinessPage
 import play.api.data.Form
 import play.api.test.FakeRequest

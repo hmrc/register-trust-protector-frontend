@@ -20,7 +20,7 @@ import generators.ModelGenerators
 import org.scalacheck.{Gen, Shrink}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.{OptionValues}
+import org.scalatest.OptionValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json._
 

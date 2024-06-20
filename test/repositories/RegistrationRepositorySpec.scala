@@ -33,7 +33,7 @@ import scala.concurrent.{Await, Future}
 
 class RegistrationRepositorySpec extends SpecBase with Matchers with MockitoSugar {
 
-  private val unusedSubmissionSetFactory = mock[SubmissionSetFactory];
+  private val unusedSubmissionSetFactory = mock[SubmissionSetFactory]
 
   private def createRepository(connector: SubmissionDraftConnector, submissionSetFactory: SubmissionSetFactory) = {
     new DefaultRegistrationsRepository(connector, frontendAppConfig, submissionSetFactory)

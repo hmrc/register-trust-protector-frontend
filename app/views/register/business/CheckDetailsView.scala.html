@@ -27,7 +27,7 @@
     submitButton: SubmitButton,
     formHelper: FormWithCSRF
 )
-@(answerSection: Seq[Section], index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
+@(answerSection: Seq[Section], index: Int, draftId: String)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("businessProtector.checkDetails.title"),

@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int, name: String, action: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index: Int, name: String, action: Call)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("removeProtectorYesNo.title")}",

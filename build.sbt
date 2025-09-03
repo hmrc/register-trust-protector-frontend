@@ -7,7 +7,9 @@ ThisBuild / majorVersion := 0
 
 lazy val microservice = Project("register-trust-protector-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtSassify)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin)
+  .settings(CodeCoverageSettings())
+  //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -21,10 +23,6 @@ lazy val microservice = Project("register-trust-protector-frontend", file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 8840,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;.*components.*;.*Mode.*;.*Routes.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 91,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:src=routes/.*:s",

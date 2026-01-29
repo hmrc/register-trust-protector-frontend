@@ -27,8 +27,8 @@ import views.html.register.individual.mld5.NationalityView
 class NationalityViewSpec extends SelectCountryViewBehaviours {
 
   val prefix = "individualProtector.5mld.nationality"
-  val index = 0
-  val name = "Test"
+  val index  = 0
+  val name   = "Test"
 
   val form = new CountryFormProvider().withPrefix(prefix)
 
@@ -49,4 +49,5 @@ class NationalityViewSpec extends SelectCountryViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

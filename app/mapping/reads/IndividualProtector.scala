@@ -23,25 +23,30 @@ import play.api.libs.functional.syntax._
 
 import java.time.LocalDate
 
-final case class IndividualProtector(name: FullName,
-                                     dateOfBirth: Option[LocalDate],
-                                     nationalInsuranceNumber: Option[String],
-                                     ukAddress: Option[UkAddress],
-                                     internationalAddress: Option[InternationalAddress],
-                                     passportDetails: Option[PassportOrIdCardDetails],
-                                     idCardDetails: Option[PassportOrIdCardDetails],
-                                     countryOfResidence: Option[String],
-                                     nationality: Option[String],
-                                     legallyCapable: Option[YesNoDontKnow]) extends Protector {
+final case class IndividualProtector(
+  name: FullName,
+  dateOfBirth: Option[LocalDate],
+  nationalInsuranceNumber: Option[String],
+  ukAddress: Option[UkAddress],
+  internationalAddress: Option[InternationalAddress],
+  passportDetails: Option[PassportOrIdCardDetails],
+  idCardDetails: Option[PassportOrIdCardDetails],
+  countryOfResidence: Option[String],
+  nationality: Option[String],
+  legallyCapable: Option[YesNoDontKnow]
+) extends Protector {
 
-  val identification: Option[IdentificationType] = (nationalInsuranceNumber, address, passportDetails, idCardDetails) match {
-    case (None, None, None, None) => None
-    case (Some(_), _, _, _) => Some(IdentificationType(nationalInsuranceNumber, None, None))
-    case _ => Some(IdentificationType(None, buildValue(passportDetails, idCardDetails)(buildPassport), address))
-  }
+  val identification: Option[IdentificationType] =
+    (nationalInsuranceNumber, address, passportDetails, idCardDetails) match {
+      case (None, None, None, None) => None
+      case (Some(_), _, _, _)       => Some(IdentificationType(nationalInsuranceNumber, None, None))
+      case _                        => Some(IdentificationType(None, buildValue(passportDetails, idCardDetails)(buildPassport), address))
+    }
+
 }
 
 object IndividualProtector {
+
   implicit val reads: Reads[IndividualProtector] = (
     (__ \ "name").read[FullName] and
       (__ \ "dateOfBirth").readNullable[LocalDate] and
@@ -53,15 +58,18 @@ object IndividualProtector {
       (__ \ "countryOfResidence").readNullable[String] and
       (__ \ "nationality").readNullable[String] and
       readMentalCapacity
-    ) (IndividualProtector.apply _)
+  )(IndividualProtector.apply _)
 
   implicit val writes: Writes[IndividualProtector] = Json.writes[IndividualProtector]
 
   def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
-    (__ \ Symbol("legallyCapable")).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
-      Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
-    }.orElse {
-      (__ \ Symbol("legallyCapable")).readNullable[YesNoDontKnow]
-    }
+    (__ \ Symbol("legallyCapable"))
+      .readNullable[Boolean]
+      .flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+        Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
+      }
+      .orElse {
+        (__ \ Symbol("legallyCapable")).readNullable[YesNoDontKnow]
+      }
 
 }

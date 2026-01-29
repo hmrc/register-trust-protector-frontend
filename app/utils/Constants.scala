@@ -17,7 +17,7 @@
 package utils
 
 object Constants {
-  final val GB = "GB"
-  final val ES = "ES"
+  final val GB  = "GB"
+  final val ES  = "ES"
   final val MAX = 25
 }

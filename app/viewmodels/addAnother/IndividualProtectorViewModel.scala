@@ -19,8 +19,7 @@ package viewmodels.addAnother
 import models.{FullName, Status}
 import play.api.libs.json.{Reads, __}
 
-case class IndividualProtectorViewModel(name: Option[FullName],
-                                        status: Status) extends ProtectorViewModel {
+case class IndividualProtectorViewModel(name: Option[FullName], status: Status) extends ProtectorViewModel {
 
   override def displayName: Option[String] = name.map(_.toString)
 }
@@ -29,9 +28,9 @@ object IndividualProtectorViewModel {
 
   import play.api.libs.functional.syntax._
 
-  implicit val reads : Reads[IndividualProtectorViewModel] = (
+  implicit val reads: Reads[IndividualProtectorViewModel] = (
     (__ \ "name").readNullable[FullName] and
       (__ \ "status").readWithDefault[Status](Status.InProgress)
-    )(IndividualProtectorViewModel.apply _)
+  )(IndividualProtectorViewModel.apply _)
 
 }

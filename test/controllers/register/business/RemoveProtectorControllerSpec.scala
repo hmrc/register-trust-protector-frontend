@@ -35,12 +35,12 @@ import scala.concurrent.Future
 
 class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
 
-  private val prefix = "removeProtectorYesNo"
-  private val formProvider = new YesNoFormProvider()
+  private val prefix                              = "removeProtectorYesNo"
+  private val formProvider                        = new YesNoFormProvider()
   private def form(prefix: String): Form[Boolean] = formProvider.withPrefix(prefix)
 
-  private val index = 0
-  private val testName = "Testing Business"
+  private val index                = 0
+  private val testName             = "Testing Business"
   private val defaultProtectorName = "the protector"
 
   private lazy val removeRoute: String = routes.RemoveProtectorController.onPageLoad(index, fakeDraftId).url
@@ -52,7 +52,9 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       "protector without name" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(BusinessProtectorStatus(index), InProgress).success.value
+          .set(BusinessProtectorStatus(index), InProgress)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -65,11 +67,13 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(prefix),
+          view(
+            form(prefix),
             fakeDraftId,
             index,
             defaultProtectorName,
-            routes.RemoveProtectorController.onSubmit(index, draftId))(request, messages).toString
+            routes.RemoveProtectorController.onSubmit(index, draftId)
+          )(request, messages).toString
 
         application.stop()
       }
@@ -77,8 +81,12 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       "protector with name" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(BusinessProtectorStatus(index), InProgress).success.value
-          .set(NamePage(index), testName).success.value
+          .set(BusinessProtectorStatus(index), InProgress)
+          .success
+          .value
+          .set(NamePage(index), testName)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -91,11 +99,10 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(prefix),
-            fakeDraftId,
-            index,
-            testName,
-            routes.RemoveProtectorController.onSubmit(index, draftId))(request, messages).toString
+          view(form(prefix), fakeDraftId, index, testName, routes.RemoveProtectorController.onSubmit(index, draftId))(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -106,8 +113,12 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       lazy val addToPageRoute: String = controllers.register.routes.AddAProtectorController.onPageLoad(fakeDraftId).url
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(BusinessProtectorStatus(index), Completed).success.value
-        .set(NamePage(index), testName).success.value
+        .set(BusinessProtectorStatus(index), Completed)
+        .success
+        .value
+        .set(NamePage(index), testName)
+        .success
+        .value
 
       "YES is submitted and trustee is removed" in {
 
@@ -162,7 +173,9 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(BusinessProtectorStatus(index), Completed).success.value
+        .set(BusinessProtectorStatus(index), Completed)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -184,7 +197,8 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
           fakeDraftId,
           index,
           defaultProtectorName,
-          routes.RemoveProtectorController.onSubmit(index, draftId))(request, messages).toString
+          routes.RemoveProtectorController.onSubmit(index, draftId)
+        )(request, messages).toString
 
       application.stop()
     }
@@ -219,4 +233,5 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       application.stop()
     }
   }
+
 }

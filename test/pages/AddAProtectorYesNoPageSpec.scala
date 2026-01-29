@@ -29,4 +29,5 @@ class AddAProtectorYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddAProtectorYesNoPage)
   }
+
 }

@@ -24,18 +24,18 @@ import controllers.register.business.{routes => businessRts}
 import controllers.register.individual.{routes => individualRts}
 import sections.{BusinessProtectors, IndividualProtectors}
 
-class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implicit messages: Messages) {
+class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId: String)(implicit messages: Messages) {
 
-  private case class InProgressComplete(inProgress : List[AddRow], complete: List[AddRow])
+  private case class InProgressComplete(inProgress: List[AddRow], complete: List[AddRow])
 
-  private def parseName(name : Option[String]) : String = {
+  private def parseName(name: Option[String]): String = {
     val defaultValue = messages("entities.no.name.added")
     name.getOrElse(defaultValue)
   }
 
-  private def parseBusinessProtector(businessProtector : (BusinessProtectorViewModel, Int)) : AddRow = {
+  private def parseBusinessProtector(businessProtector: (BusinessProtectorViewModel, Int)): AddRow = {
 
-    val vm = businessProtector._1
+    val vm    = businessProtector._1
     val index = businessProtector._2
 
     AddRow(
@@ -50,18 +50,17 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
     )
   }
 
-
   private def businessProtectors = {
-    val businessProtectors = userAnswers.get(BusinessProtectors).toList.flatten.zipWithIndex
-    val businessProtectorsComplete = businessProtectors.filter(_._1.isComplete).map(parseBusinessProtector)
+    val businessProtectors           = userAnswers.get(BusinessProtectors).toList.flatten.zipWithIndex
+    val businessProtectorsComplete   = businessProtectors.filter(_._1.isComplete).map(parseBusinessProtector)
     val businessProtectorsInProgress = businessProtectors.filterNot(_._1.isComplete).map(parseBusinessProtector)
 
     InProgressComplete(inProgress = businessProtectorsInProgress, complete = businessProtectorsComplete)
   }
 
-  private def parseIndividualProtector(individualProtector : (IndividualProtectorViewModel, Int)) : AddRow = {
+  private def parseIndividualProtector(individualProtector: (IndividualProtectorViewModel, Int)): AddRow = {
 
-    val vm = individualProtector._1
+    val vm    = individualProtector._1
     val index = individualProtector._2
 
     AddRow(
@@ -77,14 +76,14 @@ class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId : String)(implic
   }
 
   private def individualProtectors = {
-    val individualProtectors = userAnswers.get(IndividualProtectors).toList.flatten.zipWithIndex
-    val individualProtectorsComplete = individualProtectors.filter(_._1.isComplete).map(parseIndividualProtector)
+    val individualProtectors           = userAnswers.get(IndividualProtectors).toList.flatten.zipWithIndex
+    val individualProtectorsComplete   = individualProtectors.filter(_._1.isComplete).map(parseIndividualProtector)
     val individualProtectorsInProgress = individualProtectors.filterNot(_._1.isComplete).map(parseIndividualProtector)
 
     InProgressComplete(inProgress = individualProtectorsInProgress, complete = individualProtectorsComplete)
   }
 
-  def rows : AddToRows =
+  def rows: AddToRows =
     AddToRows(
       inProgress = businessProtectors.inProgress ++ individualProtectors.inProgress,
       complete = businessProtectors.complete ++ individualProtectors.complete

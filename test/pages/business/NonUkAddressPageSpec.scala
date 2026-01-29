@@ -30,4 +30,5 @@ class NonUkAddressPageSpec extends PageBehaviours {
 
     beRemovable[InternationalAddress](NonUkAddressPage(0))
   }
+
 }

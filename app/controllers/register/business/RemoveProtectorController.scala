@@ -31,15 +31,16 @@ import views.html.RemoveIndexView
 
 import scala.concurrent.ExecutionContext
 
-class RemoveProtectorController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           val registrationsRepository: RegistrationsRepository,
-                                           val standardActionSets: StandardActionSets,
-                                           val protectorAction: ProtectorRequiredActionImpl,
-                                           val formProvider: RemoveIndexFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: RemoveIndexView
-                                         )(implicit val ec: ExecutionContext) extends RemoveIndexController {
+class RemoveProtectorController @Inject() (
+  override val messagesApi: MessagesApi,
+  val registrationsRepository: RegistrationsRepository,
+  val standardActionSets: StandardActionSets,
+  val protectorAction: ProtectorRequiredActionImpl,
+  val formProvider: RemoveIndexFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  val view: RemoveIndexView
+)(implicit val ec: ExecutionContext)
+    extends RemoveIndexController {
   def protectorAtIndex(index: Int): QuestionPage[ProtectorViewModel] = BusinessProtector(index)
-  def submitCall(index: Int, draftId: String): Call = routes.RemoveProtectorController.onSubmit(index, draftId)
+  def submitCall(index: Int, draftId: String): Call                  = routes.RemoveProtectorController.onSubmit(index, draftId)
 }

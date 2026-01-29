@@ -40,7 +40,7 @@ class ProtectorsSpec extends SpecBase {
           businesses = List.fill(max)(business)
         )
 
-        protectors.maxedOutOptions.size mustEqual (1)
+        protectors.maxedOutOptions.size mustEqual 1
       }
 
       "protectors not maxed out" in {
@@ -48,8 +48,9 @@ class ProtectorsSpec extends SpecBase {
           businesses = List.fill(max - 1)(business)
         )
 
-        protectors.maxedOutOptions.size mustEqual (0)
+        protectors.maxedOutOptions.size mustEqual 0
       }
     }
   }
+
 }

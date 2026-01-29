@@ -48,7 +48,9 @@ class SubmissionSetFactorySpec extends SpecBase {
       "trust has protectors is set to 'false'" must {
         "return a completed empty set" in {
           val userAnswers: UserAnswers = emptyUserAnswers
-            .set(TrustHasProtectorYesNoPage, false).success.value
+            .set(TrustHasProtectorYesNoPage, false)
+            .success
+            .value
 
           factory.createFrom(userAnswers) mustBe RegistrationSubmission.DataSet(
             data = Json.toJson(userAnswers),
@@ -62,13 +64,20 @@ class SubmissionSetFactorySpec extends SpecBase {
         "have 'Protectors' as section key" when {
           "business protector only" in {
             val userAnswers: UserAnswers = emptyUserAnswers
-              .set(BusinessProtectorStatus(0), Completed).success.value
-              .set(NamePage(0), "None of Your Business").success.value
-              .set(TrustHasProtectorYesNoPage, true).success.value
-              .set(AddAProtectorPage, NoComplete).success.value
+              .set(BusinessProtectorStatus(0), Completed)
+              .success
+              .value
+              .set(NamePage(0), "None of Your Business")
+              .success
+              .value
+              .set(TrustHasProtectorYesNoPage, true)
+              .success
+              .value
+              .set(AddAProtectorPage, NoComplete)
+              .success
+              .value
 
-            val mappedJson = Json.parse(
-              """
+            val mappedJson = Json.parse("""
                 |{"protectorCompany":[{"name":"None of Your Business"}]}
                 |""".stripMargin)
 
@@ -94,8 +103,12 @@ class SubmissionSetFactorySpec extends SpecBase {
 
           "individual protector only" in {
             val userAnswers: UserAnswers = emptyUserAnswers
-              .set(IndividualProtectorStatus(0), Completed).success.value
-              .set(TrustHasProtectorYesNoPage, true).success.value
+              .set(IndividualProtectorStatus(0), Completed)
+              .success
+              .value
+              .set(TrustHasProtectorYesNoPage, true)
+              .success
+              .value
 
             factory.answerSections(userAnswers) mustBe
               List(
@@ -114,9 +127,15 @@ class SubmissionSetFactorySpec extends SpecBase {
         "have 'Protectors' as section key of the topmost section" when {
           "Business protectors" in {
             val userAnswers: UserAnswers = emptyUserAnswers
-              .set(BusinessProtectorStatus(0), Completed).success.value
-              .set(BusinessProtectorStatus(1), Completed).success.value
-              .set(TrustHasProtectorYesNoPage, true).success.value
+              .set(BusinessProtectorStatus(0), Completed)
+              .success
+              .value
+              .set(BusinessProtectorStatus(1), Completed)
+              .success
+              .value
+              .set(TrustHasProtectorYesNoPage, true)
+              .success
+              .value
 
             factory.answerSections(userAnswers) mustBe
               List(
@@ -137,9 +156,15 @@ class SubmissionSetFactorySpec extends SpecBase {
 
           "Individual protectors" in {
             val userAnswers: UserAnswers = emptyUserAnswers
-              .set(IndividualProtectorStatus(0), Completed).success.value
-              .set(IndividualProtectorStatus(1), Completed).success.value
-              .set(TrustHasProtectorYesNoPage, true).success.value
+              .set(IndividualProtectorStatus(0), Completed)
+              .success
+              .value
+              .set(IndividualProtectorStatus(1), Completed)
+              .success
+              .value
+              .set(TrustHasProtectorYesNoPage, true)
+              .success
+              .value
 
             factory.answerSections(userAnswers) mustBe
               List(
@@ -160,9 +185,15 @@ class SubmissionSetFactorySpec extends SpecBase {
 
           "Individual and Business protectors" in {
             val userAnswers: UserAnswers = emptyUserAnswers
-              .set(IndividualProtectorStatus(0), Completed).success.value
-              .set(BusinessProtectorStatus(0), Completed).success.value
-              .set(TrustHasProtectorYesNoPage, true).success.value
+              .set(IndividualProtectorStatus(0), Completed)
+              .success
+              .value
+              .set(BusinessProtectorStatus(0), Completed)
+              .success
+              .value
+              .set(TrustHasProtectorYesNoPage, true)
+              .success
+              .value
 
             factory.answerSections(userAnswers) mustBe
               List(

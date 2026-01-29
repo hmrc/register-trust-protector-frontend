@@ -25,8 +25,8 @@ import views.html.register.individual.mld5.CountryOfResidenceYesNoView
 class CountryOfResidenceYesNoViewSpec extends YesNoViewBehaviours {
 
   val prefix = "individualProtector.5mld.countryOfResidenceYesNo"
-  val index = 0
-  val name = "Test"
+  val index  = 0
+  val name   = "Test"
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(prefix)
 
@@ -45,4 +45,5 @@ class CountryOfResidenceYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

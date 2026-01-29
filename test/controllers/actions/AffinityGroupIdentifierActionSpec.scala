@@ -32,26 +32,45 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-  val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
-  val fakeAction: Action[AnyContent] = action { _ => Results.Ok }
+  val appConfig: FrontendAppConfig     = injector.instanceOf[FrontendAppConfig]
+  val action: DefaultActionBuilder     = app.injector.instanceOf[DefaultActionBuilder]
+  val fakeAction: Action[AnyContent]   = action(_ => Results.Ok)
 
   val utr = "0987654321"
 
-  lazy override val trustsAuth = new TrustsAuthorisedFunctions(mockAuthConnector, appConfig)
+  override lazy val trustsAuth = new TrustsAuthorisedFunctions(mockAuthConnector, appConfig)
 
   private val noEnrollment = Enrolments(Set())
 
-  private def authRetrievals(affinityGroup: AffinityGroup, enrolment: Enrolments): Future[Some[String] ~ Some[AffinityGroup] ~ Enrolments] =
+  private def authRetrievals(
+    affinityGroup: AffinityGroup,
+    enrolment: Enrolments
+  ): Future[Some[String] ~ Some[AffinityGroup] ~ Enrolments] =
     Future.successful(new ~(new ~(Some("id"), Some(affinityGroup)), enrolment))
 
-  private val agentEnrolment = Enrolments(Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)))
-  private val emptyAgentEnrolment = Enrolments(Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "")), "Activated", None)))
-  private val trustsTaxableEnrolment = Enrolments(Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)))
-  private val emptyTaxableEnrolment = Enrolments(Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", "")), "Activated", None)))
-  private val trustsNonTaxableEnrolment = Enrolments(Set(Enrolment("HMRC-TERSNT-ORG", List(EnrolmentIdentifier("URN", utr)), "Activated", None)))
-  private val emptyNonTaxableEnrolment = Enrolments(Set(Enrolment("HMRC-TERSNT-ORG", List(EnrolmentIdentifier("URN", "")), "Activated", None)))
+  private val agentEnrolment            = Enrolments(
+    Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None))
+  )
 
+  private val emptyAgentEnrolment       = Enrolments(
+    Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "")), "Activated", None))
+  )
+
+  private val trustsTaxableEnrolment    = Enrolments(
+    Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None))
+  )
+
+  private val emptyTaxableEnrolment     = Enrolments(
+    Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", "")), "Activated", None))
+  )
+
+  private val trustsNonTaxableEnrolment = Enrolments(
+    Set(Enrolment("HMRC-TERSNT-ORG", List(EnrolmentIdentifier("URN", utr)), "Activated", None))
+  )
+
+  private val emptyNonTaxableEnrolment  = Enrolments(
+    Set(Enrolment("HMRC-TERSNT-ORG", List(EnrolmentIdentifier("URN", "")), "Activated", None))
+  )
 
   "invoking an AuthenticatedIdentifier" when {
     "an Agent user" must {
@@ -67,7 +86,7 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
           val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
+          status(result)           mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(appConfig.createAgentServicesAccountUrl)
           application.stop()
         }
@@ -80,7 +99,7 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
           val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
+          status(result)           mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(appConfig.createAgentServicesAccountUrl)
           application.stop()
         }
@@ -131,7 +150,7 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
             val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
-            status(result) mustBe SEE_OTHER
+            status(result)                 mustBe SEE_OTHER
             redirectLocation(result).value mustBe s"${appConfig.maintainATrustFrontendUrl}"
             application.stop()
           }
@@ -164,7 +183,7 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
             val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
-            status(result) mustBe SEE_OTHER
+            status(result)                 mustBe SEE_OTHER
             redirectLocation(result).value mustBe s"${appConfig.maintainATrustFrontendUrl}"
             application.stop()
           }
@@ -197,7 +216,7 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result)           mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad.url)
 
         application.stop()
@@ -209,7 +228,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed MissingBearerToken())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed MissingBearerToken())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -226,7 +247,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed BearerTokenExpired())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed BearerTokenExpired())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -243,7 +266,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed InsufficientEnrolments())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed InsufficientEnrolments())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -259,7 +284,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed InsufficientConfidenceLevel())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed InsufficientConfidenceLevel())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -275,7 +302,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedAuthProvider())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed UnsupportedAuthProvider())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -291,7 +320,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedAffinityGroup())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed UnsupportedAffinityGroup())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -307,7 +338,9 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedCredentialRole())
+        when(
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
+        ) thenReturn (Future failed UnsupportedCredentialRole())
 
         val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
@@ -318,5 +351,5 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
       }
     }
   }
-}
 
+}

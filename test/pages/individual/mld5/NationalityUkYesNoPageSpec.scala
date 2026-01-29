@@ -19,7 +19,7 @@ package pages.individual.mld5
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.register.individual.mld5.{NationalityUkYesNoPage, NationalityPage, NationalityYesNoPage}
+import pages.register.individual.mld5.{NationalityPage, NationalityUkYesNoPage, NationalityYesNoPage}
 
 class NationalityUkYesNoPageSpec extends PageBehaviours {
 
@@ -31,31 +31,38 @@ class NationalityUkYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](NationalityUkYesNoPage(0))
 
-    "Yes selected - set NationalityPage to 'GB' " in {
-      forAll(arbitrary[UserAnswers]) {
-        initial =>
-          val answers: UserAnswers = initial.set(NationalityYesNoPage(0), false).success.value
-            .set(NationalityPage(0), "ES").success.value
+    "Yes selected - set NationalityPage to 'GB' " in
+      forAll(arbitrary[UserAnswers]) { initial =>
+        val answers: UserAnswers = initial
+          .set(NationalityYesNoPage(0), false)
+          .success
+          .value
+          .set(NationalityPage(0), "ES")
+          .success
+          .value
 
-          val result = answers.set(NationalityUkYesNoPage(0), true).success.value
+        val result = answers.set(NationalityUkYesNoPage(0), true).success.value
 
-          result.get(NationalityPage(0)).get mustBe "GB"
-          result.get(NationalityUkYesNoPage(0)).get mustBe true
+        result.get(NationalityPage(0)).get        mustBe "GB"
+        result.get(NationalityUkYesNoPage(0)).get mustBe true
       }
-    }
 
-    "No selected" in {
-      forAll(arbitrary[UserAnswers]) {
-        initial =>
-          val answers: UserAnswers = initial.set(NationalityYesNoPage(0), false).success.value
-            .set(NationalityPage(0), "ES").success.value
+    "No selected" in
+      forAll(arbitrary[UserAnswers]) { initial =>
+        val answers: UserAnswers = initial
+          .set(NationalityYesNoPage(0), false)
+          .success
+          .value
+          .set(NationalityPage(0), "ES")
+          .success
+          .value
 
-          val result = answers.set(NationalityUkYesNoPage(0), false).success.value
+        val result = answers.set(NationalityUkYesNoPage(0), false).success.value
 
-          result.get(NationalityPage(0)).get mustBe "ES"
-          result.get(NationalityUkYesNoPage(0)).get mustBe false
+        result.get(NationalityPage(0)).get        mustBe "ES"
+        result.get(NationalityUkYesNoPage(0)).get mustBe false
       }
-    }
 
   }
+
 }

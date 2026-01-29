@@ -31,11 +31,11 @@ import views.html.register.business.UtrYesNoView
 
 class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  private val index = 0
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("businessProtector.utrYesNo")
+  private val index                 = 0
+  private val form: Form[Boolean]   = new YesNoFormProvider().withPrefix("businessProtector.utrYesNo")
   private val utrYesNoRoute: String = routes.UtrYesNoController.onPageLoad(index, draftId).url
-  private val name: String = "Business"
-  private val onwardRoute = Call("GET", "/foo")
+  private val name: String          = "Business"
+  private val onwardRoute           = Call("GET", "/foo")
 
   private val baseAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
@@ -85,7 +85,8 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(new FakeNavigator(onwardRoute))
-          ).build()
+          )
+          .build()
 
       val request =
         FakeRequest(POST, utrYesNoRoute)
@@ -117,7 +118,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       contentAsString(result) mustEqual
         view(boundForm, name, index, draftId)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -151,4 +152,5 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

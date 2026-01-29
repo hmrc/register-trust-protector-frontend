@@ -28,15 +28,12 @@ abstract class AnswersHelper[T <: ProtectorViewModel](printHelper: PrintHelper) 
 
   val protectorType: QuestionPage[List[T]]
 
-  def protectors(userAnswers: UserAnswers)
-                (implicit messages: Messages, rds: Reads[T]): Option[Seq[AnswerSection]] = {
+  def protectors(userAnswers: UserAnswers)(implicit messages: Messages, rds: Reads[T]): Option[Seq[AnswerSection]] =
     for {
       protectors <- userAnswers.get(protectorType)
-      indexed = protectors.zipWithIndex
-    } yield indexed.map {
-      case (protector, index) =>
-        printHelper.printSection(userAnswers, protector.displayName, index, userAnswers.draftId)
+      indexed     = protectors.zipWithIndex
+    } yield indexed.map { case (protector, index) =>
+      printHelper.printSection(userAnswers, protector.displayName, index, userAnswers.draftId)
     }
-  }
 
 }

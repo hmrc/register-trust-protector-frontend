@@ -37,7 +37,13 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
   def applyView(form: Form[_]): HtmlFormat.Appendable =
     view.apply(form, fakeDraftId, Nil, Nil, "Add a protector", Nil)(fakeRequest, messages)
 
-  def applyView(form: Form[_], inProgressProtectors: Seq[AddRow], completeProtectors: Seq[AddRow], count: Int, maxedOut: List[String]): HtmlFormat.Appendable = {
+  def applyView(
+    form: Form[_],
+    inProgressProtectors: Seq[AddRow],
+    completeProtectors: Seq[AddRow],
+    count: Int,
+    maxedOut: List[String]
+  ): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count protectors" else "You have added 1 protector"
     view.apply(form, fakeDraftId, inProgressProtectors, completeProtectors, title, maxedOut)(fakeRequest, messages)
   }
@@ -88,7 +94,7 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
     "there is both in progress and complete data" must {
 
       val inProgressProtectors = List.fill(2)(fakeRow)
-      val completeProtectors = List.fill(2)(fakeRow)
+      val completeProtectors   = List.fill(2)(fakeRow)
 
       val viewWithData = applyView(form, inProgressProtectors, completeProtectors, 4, Nil)
 
@@ -104,7 +110,7 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
     "all protectors are maxed out" must {
 
       val inProgressProtectors = List.fill(25)(fakeRow)
-      val completeProtectors = List.fill(25)(fakeRow)
+      val completeProtectors   = List.fill(25)(fakeRow)
 
       val viewWithData = applyView(
         form = form,
@@ -131,7 +137,7 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
     "individual protectors are maxed out" must {
 
       val inProgressProtectors = Nil
-      val completeProtectors = List.fill(25)(fakeRow)
+      val completeProtectors   = List.fill(25)(fakeRow)
 
       val viewWithData = applyView(
         form = form,
@@ -158,7 +164,7 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
     "business protectors are maxed out" must {
 
       val inProgressProtectors = Nil
-      val completeProtectors = List.fill(25)(fakeRow)
+      val completeProtectors   = List.fill(25)(fakeRow)
 
       val viewWithData = applyView(
         form = form,

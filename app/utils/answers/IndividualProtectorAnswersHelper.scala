@@ -23,8 +23,8 @@ import viewmodels.addAnother.IndividualProtectorViewModel
 
 import javax.inject.Inject
 
-class IndividualProtectorAnswersHelper @Inject()(printHelper: IndividualProtectorPrintHelper)
-  extends AnswersHelper[IndividualProtectorViewModel](printHelper) {
+class IndividualProtectorAnswersHelper @Inject() (printHelper: IndividualProtectorPrintHelper)
+    extends AnswersHelper[IndividualProtectorViewModel](printHelper) {
 
   override val protectorType: QuestionPage[List[IndividualProtectorViewModel]] = IndividualProtectors
 }

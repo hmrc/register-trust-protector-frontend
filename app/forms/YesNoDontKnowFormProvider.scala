@@ -28,4 +28,5 @@ class YesNoDontKnowFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[YesNoDontKnow](s"$prefix.error.required")
     )
+
 }

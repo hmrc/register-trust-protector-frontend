@@ -21,8 +21,7 @@ import models.requests.RegistrationDataRequest
 import play.api.mvc.WrappedRequest
 import viewmodels.addAnother.ProtectorViewModel
 
-case class ProtectorRequiredRequest[T](
-                                  request: RegistrationDataRequest[T],
-                                  protector: ProtectorViewModel) extends WrappedRequest[T](request){
-  val userAnswers:UserAnswers = request.userAnswers
+case class ProtectorRequiredRequest[T](request: RegistrationDataRequest[T], protector: ProtectorViewModel)
+    extends WrappedRequest[T](request) {
+  val userAnswers: UserAnswers = request.userAnswers
 }

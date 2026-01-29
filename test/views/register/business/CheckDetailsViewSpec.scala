@@ -22,7 +22,7 @@ import views.html.register.business.CheckDetailsView
 
 class CheckDetailsViewSpec extends ViewBehaviours {
 
-  val index = 0
+  val index            = 0
   val messageKeyPrefix = "businessProtector.checkDetails"
 
   "CheckAnswers view" must {
@@ -35,4 +35,5 @@ class CheckDetailsViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
   }
+
 }

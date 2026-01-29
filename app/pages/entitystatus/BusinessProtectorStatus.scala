@@ -21,7 +21,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.BusinessProtectors
 
-final case class BusinessProtectorStatus(index : Int) extends QuestionPage[Status] {
+final case class BusinessProtectorStatus(index: Int) extends QuestionPage[Status] {
 
   override def path: JsPath = BusinessProtectors.path \ index \ toString
 

@@ -21,29 +21,70 @@ import controllers.register.business.mld5.{routes => mld5brts}
 import controllers.register.business.{routes => brts}
 import models.UserAnswers
 import pages.register.business._
-import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.register.business.mld5.{
+  CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
+}
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
-class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) extends PrintHelper {
+class BusinessProtectorPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) extends PrintHelper {
 
   override val protectorType: String = "businessProtector"
 
-  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)
-                      (implicit messages: Messages): Seq[AnswerRow] = {
+  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit
+    messages: Messages
+  ): Seq[AnswerRow] = {
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     Seq(
-      bound.stringQuestion(NamePage(index), "businessProtector.name", brts.NameController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(UtrYesNoPage(index), "businessProtector.utrYesNo", brts.UtrYesNoController.onPageLoad(index, draftId).url),
+      bound.stringQuestion(
+        NamePage(index),
+        "businessProtector.name",
+        brts.NameController.onPageLoad(index, draftId).url
+      ),
+      bound.yesNoQuestion(
+        UtrYesNoPage(index),
+        "businessProtector.utrYesNo",
+        brts.UtrYesNoController.onPageLoad(index, draftId).url
+      ),
       bound.stringQuestion(UtrPage(index), "businessProtector.utr", brts.UtrController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(CountryOfResidenceYesNoPage(index), "businessProtector.5mld.countryOfResidenceYesNo", mld5brts.CountryOfResidenceYesNoController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage(index), "businessProtector.5mld.countryOfResidenceInTheUkYesNo", mld5brts.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url),
-      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage(index), CountryOfResidencePage(index), "businessProtector.5mld.countryOfResidence", mld5brts.CountryOfResidenceController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(AddressYesNoPage(index), "businessProtector.addressYesNo", brts.AddressYesNoController.onPageLoad(index, draftId).url),
-      bound.yesNoQuestion(AddressUkYesNoPage(index), "businessProtector.addressUkYesNo", brts.AddressUkYesNoController.onPageLoad(index, draftId).url),
-      bound.addressQuestion(UkAddressPage(index), "site.address.uk", brts.UkAddressController.onPageLoad(index, draftId).url),
-      bound.addressQuestion(NonUkAddressPage(index), "site.address.international", brts.NonUkAddressController.onPageLoad(index, draftId).url)
+      bound.yesNoQuestion(
+        CountryOfResidenceYesNoPage(index),
+        "businessProtector.5mld.countryOfResidenceYesNo",
+        mld5brts.CountryOfResidenceYesNoController.onPageLoad(index, draftId).url
+      ),
+      bound.yesNoQuestion(
+        CountryOfResidenceInTheUkYesNoPage(index),
+        "businessProtector.5mld.countryOfResidenceInTheUkYesNo",
+        mld5brts.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId).url
+      ),
+      bound.countryQuestion(
+        CountryOfResidenceInTheUkYesNoPage(index),
+        CountryOfResidencePage(index),
+        "businessProtector.5mld.countryOfResidence",
+        mld5brts.CountryOfResidenceController.onPageLoad(index, draftId).url
+      ),
+      bound.yesNoQuestion(
+        AddressYesNoPage(index),
+        "businessProtector.addressYesNo",
+        brts.AddressYesNoController.onPageLoad(index, draftId).url
+      ),
+      bound.yesNoQuestion(
+        AddressUkYesNoPage(index),
+        "businessProtector.addressUkYesNo",
+        brts.AddressUkYesNoController.onPageLoad(index, draftId).url
+      ),
+      bound.addressQuestion(
+        UkAddressPage(index),
+        "site.address.uk",
+        brts.UkAddressController.onPageLoad(index, draftId).url
+      ),
+      bound.addressQuestion(
+        NonUkAddressPage(index),
+        "site.address.international",
+        brts.NonUkAddressController.onPageLoad(index, draftId).url
+      )
     ).flatten
   }
+
 }

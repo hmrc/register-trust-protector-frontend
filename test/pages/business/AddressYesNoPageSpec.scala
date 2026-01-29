@@ -21,7 +21,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.register.business.{AddressUkYesNoPage, AddressYesNoPage, NonUkAddressPage, UkAddressPage}
 
-
 class AddressYesNoPageSpec extends PageBehaviours {
 
   "AddressYesNoPage" must {
@@ -34,18 +33,25 @@ class AddressYesNoPageSpec extends PageBehaviours {
 
     "remove relevant Data when AddressYesNoPage is set to false" in {
       val index = 0
-      forAll(arbitrary[UserAnswers], arbitrary[String]) {
-        (initial, str) =>
-          val answers: UserAnswers = initial.set(AddressUkYesNoPage(index), true).success.value
-            .set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str)).success.value
-            .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str)).success.value
+      forAll(arbitrary[UserAnswers], arbitrary[String]) { (initial, str) =>
+        val answers: UserAnswers = initial
+          .set(AddressUkYesNoPage(index), true)
+          .success
+          .value
+          .set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str))
+          .success
+          .value
+          .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str))
+          .success
+          .value
 
-          val result = answers.set(AddressYesNoPage(index), false).success.value
+        val result = answers.set(AddressYesNoPage(index), false).success.value
 
-          result.get(AddressUkYesNoPage(index)) mustNot be(defined)
-          result.get(UkAddressPage(index)) mustNot be(defined)
-          result.get(NonUkAddressPage(index)) mustNot be(defined)
+        result.get(AddressUkYesNoPage(index)) mustNot be(defined)
+        result.get(UkAddressPage(index)) mustNot be(defined)
+        result.get(NonUkAddressPage(index)) mustNot be(defined)
       }
     }
   }
+
 }

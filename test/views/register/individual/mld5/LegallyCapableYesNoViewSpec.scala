@@ -27,8 +27,8 @@ import views.html.register.individual.mld5.LegallyCapableYesNoView
 class LegallyCapableYesNoViewSpec extends QuestionViewBehaviours[YesNoDontKnow] with OptionsViewBehaviours {
 
   val prefix = "individualProtector.5mld.legallyCapableYesNo"
-  val index = 0
-  val name = "Test"
+  val index  = 0
+  val name   = "Test"
 
   val form: Form[YesNoDontKnow] = new YesNoDontKnowFormProvider().withPrefix(prefix)
 
@@ -39,7 +39,16 @@ class LegallyCapableYesNoViewSpec extends QuestionViewBehaviours[YesNoDontKnow] 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, fakeDraftId, index, name)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), prefix, name, "p1", "bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4")
+    behave like dynamicTitlePage(
+      applyView(form),
+      prefix,
+      name,
+      "p1",
+      "bulletpoint1",
+      "bulletpoint2",
+      "bulletpoint3",
+      "bulletpoint4"
+    )
 
     behave like pageWithBackLink(applyView(form))
 
@@ -53,4 +62,5 @@ class LegallyCapableYesNoViewSpec extends QuestionViewBehaviours[YesNoDontKnow] 
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

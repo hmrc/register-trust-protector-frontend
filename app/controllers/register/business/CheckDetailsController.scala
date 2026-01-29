@@ -34,33 +34,34 @@ import views.html.register.business.CheckDetailsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        repository: RegistrationsRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        val appConfig: FrontendAppConfig,
-                                        printHelper: BusinessProtectorPrintHelper,
-                                        nameAction: NameRequiredAction
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  repository: RegistrationsRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  val appConfig: FrontendAppConfig,
+  printHelper: BusinessProtectorPrintHelper,
+  nameAction: NameRequiredAction
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
-    implicit request =>
-
-      val section: AnswerSection = printHelper.checkDetailsSection(request.userAnswers, request.protectorName, index, draftId)
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) { implicit request =>
+      val section: AnswerSection =
+        printHelper.checkDetailsSection(request.userAnswers, request.protectorName, index, draftId)
       Ok(view(Seq(section), index, draftId))
-  }
+    }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
-    implicit request =>
-
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).async { implicit request =>
       val answers = request.userAnswers.set(BusinessProtectorStatus(index), Completed)
 
       for {
         updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
+        _              <- repository.set(updatedAnswers)
       } yield Redirect(navigator.nextPage(AnswersPage, draftId, request.userAnswers))
-  }
+    }
+
 }

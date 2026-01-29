@@ -23,8 +23,8 @@ import viewmodels.addAnother.BusinessProtectorViewModel
 
 import javax.inject.Inject
 
-class BusinessProtectorAnswersHelper @Inject()(printHelper: BusinessProtectorPrintHelper)
-  extends AnswersHelper[BusinessProtectorViewModel](printHelper) {
+class BusinessProtectorAnswersHelper @Inject() (printHelper: BusinessProtectorPrintHelper)
+    extends AnswersHelper[BusinessProtectorViewModel](printHelper) {
 
   override val protectorType: QuestionPage[List[BusinessProtectorViewModel]] = BusinessProtectors
 }

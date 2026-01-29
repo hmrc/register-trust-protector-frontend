@@ -23,8 +23,7 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import pages.register._
 
-class ProtectorsMapperSpec extends SpecBase with Matchers
-  with OptionValues with Generators {
+class ProtectorsMapperSpec extends SpecBase with Matchers with OptionValues with Generators {
 
   val protectorsMapper: ProtectorsMapper = injector.instanceOf[ProtectorsMapper]
 
@@ -47,9 +46,15 @@ class ProtectorsMapperSpec extends SpecBase with Matchers
         val index = 0
 
         val userAnswers = emptyUserAnswers
-          .set(business.NamePage(index), "Business").success.value
-          .set(business.UtrYesNoPage(index), true).success.value
-          .set(business.UtrPage(index), "1234567890").success.value
+          .set(business.NamePage(index), "Business")
+          .success
+          .value
+          .set(business.UtrYesNoPage(index), true)
+          .success
+          .value
+          .set(business.UtrPage(index), "1234567890")
+          .success
+          .value
 
         val result = protectorsMapper.build(userAnswers).value
 
@@ -61,12 +66,22 @@ class ProtectorsMapperSpec extends SpecBase with Matchers
         val index = 0
 
         val userAnswers = emptyUserAnswers
-          .set(individual.NamePage(index), FullName("first", None, "last")).success.value
-          .set(individual.DateOfBirthYesNoPage(index), false).success.value
-          .set(individual.NationalInsuranceYesNoPage(index), true).success.value
-          .set(individual.NationalInsuranceNumberPage(index), "AB123456C").success.value
-          .set(individual.mld5.LegallyCapableYesNoPage(index), YesNoDontKnow.DontKnow).success.value
-        val result = protectorsMapper.build(userAnswers).value
+          .set(individual.NamePage(index), FullName("first", None, "last"))
+          .success
+          .value
+          .set(individual.DateOfBirthYesNoPage(index), false)
+          .success
+          .value
+          .set(individual.NationalInsuranceYesNoPage(index), true)
+          .success
+          .value
+          .set(individual.NationalInsuranceNumberPage(index), "AB123456C")
+          .success
+          .value
+          .set(individual.mld5.LegallyCapableYesNoPage(index), YesNoDontKnow.DontKnow)
+          .success
+          .value
+        val result      = protectorsMapper.build(userAnswers).value
 
         result.protector mustBe defined
       }
@@ -76,22 +91,37 @@ class ProtectorsMapperSpec extends SpecBase with Matchers
         val index = 0
 
         val userAnswers = emptyUserAnswers
-          .set(individual.NamePage(index), FullName("first", None, "last")).success.value
-          .set(individual.DateOfBirthYesNoPage(index), false).success.value
-          .set(individual.NationalInsuranceYesNoPage(index), true).success.value
-          .set(individual.NationalInsuranceNumberPage(index), "AB123456C").success.value
-          .set(individual.mld5.LegallyCapableYesNoPage(index), YesNoDontKnow.Yes).success.value
-
-          .set(business.NamePage(index), "Business").success.value
-          .set(business.UtrYesNoPage(index), true).success.value
-          .set(business.UtrPage(index), "1234567890").success.value
-
+          .set(individual.NamePage(index), FullName("first", None, "last"))
+          .success
+          .value
+          .set(individual.DateOfBirthYesNoPage(index), false)
+          .success
+          .value
+          .set(individual.NationalInsuranceYesNoPage(index), true)
+          .success
+          .value
+          .set(individual.NationalInsuranceNumberPage(index), "AB123456C")
+          .success
+          .value
+          .set(individual.mld5.LegallyCapableYesNoPage(index), YesNoDontKnow.Yes)
+          .success
+          .value
+          .set(business.NamePage(index), "Business")
+          .success
+          .value
+          .set(business.UtrYesNoPage(index), true)
+          .success
+          .value
+          .set(business.UtrPage(index), "1234567890")
+          .success
+          .value
 
         val result = protectorsMapper.build(userAnswers).value
 
-        result.protector mustBe defined
+        result.protector        mustBe defined
         result.protectorCompany mustBe defined
       }
     }
   }
+
 }

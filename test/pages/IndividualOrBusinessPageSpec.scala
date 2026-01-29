@@ -28,7 +28,7 @@ import sections.{BusinessProtectors, IndividualProtectors}
 
 class IndividualOrBusinessPageSpec extends PageBehaviours {
 
-  val busName: String = "Business"
+  val busName: String   = "Business"
   val indName: FullName = FullName("Joe", None, "Bloggs")
 
   "IndividualOrBusinessPage" must {
@@ -42,33 +42,37 @@ class IndividualOrBusinessPageSpec extends PageBehaviours {
     "implement cleanup" when {
 
       "individual selected" when {
-        "last business is in progress" in {
-          forAll(arbitrary[UserAnswers]) {
-            initial =>
-              val answers = initial
-                .set(bus.NamePage(0), busName).success.value
-                .set(BusinessProtectorStatus(0), InProgress).success.value
+        "last business is in progress" in
+          forAll(arbitrary[UserAnswers]) { initial =>
+            val answers = initial
+              .set(bus.NamePage(0), busName)
+              .success
+              .value
+              .set(BusinessProtectorStatus(0), InProgress)
+              .success
+              .value
 
-              val result = answers.set(IndividualOrBusinessPage, Individual).success.value
+            val result = answers.set(IndividualOrBusinessPage, Individual).success.value
 
-              result.get(BusinessProtectors).getOrElse(Nil).size mustBe 0
+            result.get(BusinessProtectors).getOrElse(Nil).size mustBe 0
           }
-        }
       }
 
       "business selected" when {
-        "last individual is in progress" in {
-          forAll(arbitrary[UserAnswers]) {
-            initial =>
-              val answers = initial
-                .set(ind.NamePage(0), indName).success.value
-                .set(IndividualProtectorStatus(0), InProgress).success.value
+        "last individual is in progress" in
+          forAll(arbitrary[UserAnswers]) { initial =>
+            val answers = initial
+              .set(ind.NamePage(0), indName)
+              .success
+              .value
+              .set(IndividualProtectorStatus(0), InProgress)
+              .success
+              .value
 
-              val result = answers.set(IndividualOrBusinessPage, Business).success.value
+            val result = answers.set(IndividualOrBusinessPage, Business).success.value
 
-              result.get(IndividualProtectors).getOrElse(Nil).size mustBe 0
+            result.get(IndividualProtectors).getOrElse(Nil).size mustBe 0
           }
-        }
       }
     }
 
@@ -76,53 +80,54 @@ class IndividualOrBusinessPageSpec extends PageBehaviours {
 
       "individual selected" when {
 
-        "no businesses" in {
-          forAll(arbitrary[UserAnswers]) {
-            initial =>
-              val result = initial.set(IndividualOrBusinessPage, Individual).success.value
+        "no businesses" in
+          forAll(arbitrary[UserAnswers]) { initial =>
+            val result = initial.set(IndividualOrBusinessPage, Individual).success.value
 
-              result.get(BusinessProtectors).getOrElse(Nil).size mustBe 0
+            result.get(BusinessProtectors).getOrElse(Nil).size mustBe 0
           }
-        }
 
-        "last business is complete" in {
-          forAll(arbitrary[UserAnswers]) {
-            initial =>
-              val answers = initial
-                .set(bus.NamePage(0), busName).success.value
-                .set(BusinessProtectorStatus(0), Completed).success.value
+        "last business is complete" in
+          forAll(arbitrary[UserAnswers]) { initial =>
+            val answers = initial
+              .set(bus.NamePage(0), busName)
+              .success
+              .value
+              .set(BusinessProtectorStatus(0), Completed)
+              .success
+              .value
 
-              val result = answers.set(IndividualOrBusinessPage, Individual).success.value
+            val result = answers.set(IndividualOrBusinessPage, Individual).success.value
 
-              result.get(BusinessProtectors).getOrElse(Nil).size mustBe 1
+            result.get(BusinessProtectors).getOrElse(Nil).size mustBe 1
           }
-        }
       }
 
       "business selected" when {
 
-        "no individuals" in {
-          forAll(arbitrary[UserAnswers]) {
-            initial =>
-              val result = initial.set(IndividualOrBusinessPage, Business).success.value
+        "no individuals" in
+          forAll(arbitrary[UserAnswers]) { initial =>
+            val result = initial.set(IndividualOrBusinessPage, Business).success.value
 
-              result.get(IndividualProtectors).getOrElse(Nil).size mustBe 0
+            result.get(IndividualProtectors).getOrElse(Nil).size mustBe 0
           }
-        }
 
-        "last individual is complete" in {
-          forAll(arbitrary[UserAnswers]) {
-            initial =>
-              val answers = initial
-                .set(ind.NamePage(0), indName).success.value
-                .set(IndividualProtectorStatus(0), Completed).success.value
+        "last individual is complete" in
+          forAll(arbitrary[UserAnswers]) { initial =>
+            val answers = initial
+              .set(ind.NamePage(0), indName)
+              .success
+              .value
+              .set(IndividualProtectorStatus(0), Completed)
+              .success
+              .value
 
-              val result = answers.set(IndividualOrBusinessPage, Business).success.value
+            val result = answers.set(IndividualOrBusinessPage, Business).success.value
 
-              result.get(IndividualProtectors).getOrElse(Nil).size mustBe 1
+            result.get(IndividualProtectors).getOrElse(Nil).size mustBe 1
           }
-        }
       }
     }
   }
+
 }

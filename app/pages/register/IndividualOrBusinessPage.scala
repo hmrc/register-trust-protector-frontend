@@ -34,19 +34,21 @@ case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusinessTo
 
   override def cleanup(value: Option[IndividualOrBusinessToAdd], userAnswers: UserAnswers): Try[UserAnswers] = {
 
-    def cleanupLastIfInProgress[T <: ProtectorViewModel](page: QuestionPage[List[T]])
-                                                        (implicit rds: Reads[T]): Try[UserAnswers] = {
+    def cleanupLastIfInProgress[T <: ProtectorViewModel](
+      page: QuestionPage[List[T]]
+    )(implicit rds: Reads[T]): Try[UserAnswers] = {
       val protectors = userAnswers.get(page).getOrElse(Nil)
       protectors match {
         case x if x.nonEmpty && !x.last.isComplete => userAnswers.deleteAtPath(page.path \ (protectors.size - 1))
-        case _ => Success(userAnswers)
+        case _                                     => Success(userAnswers)
       }
     }
 
     value match {
       case Some(Individual) => cleanupLastIfInProgress(BusinessProtectors)
-      case Some(Business) => cleanupLastIfInProgress(IndividualProtectors)
-      case None => super.cleanup(value, userAnswers)
+      case Some(Business)   => cleanupLastIfInProgress(IndividualProtectors)
+      case None             => super.cleanup(value, userAnswers)
     }
   }
+
 }

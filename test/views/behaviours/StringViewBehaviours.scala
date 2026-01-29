@@ -24,12 +24,14 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
   val answer = "answer"
 
-  def stringPage(form: Form[String],
-                 createView: Form[String] => HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 messageKeyParam: Option[String],
-                 expectedFormAction: String,
-                 expectedHintKey: Option[String] = None) = {
+  def stringPage(
+    form: Form[String],
+    createView: Form[String] => HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    messageKeyParam: Option[String],
+    expectedFormAction: String,
+    expectedHintKey: Option[String] = None
+  ) =
 
     "behave like a page with a string value field" when {
 
@@ -37,9 +39,14 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
         "contain a label for the value" in {
 
-          val doc = asDocument(createView(form))
+          val doc              = asDocument(createView(form))
           val expectedHintText = expectedHintKey map (k => messages(k))
-          assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.heading", messageKeyParam.getOrElse("")), expectedHintText)
+          assertContainsLabel(
+            doc,
+            "value",
+            messages(s"$messageKeyPrefix.heading", messageKeyParam.getOrElse("")),
+            expectedHintText
+          )
         }
 
         "contain an input for the value" in {
@@ -68,7 +75,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
         "show an error associated to the value field" in {
 
-          val doc = asDocument(createView(form.withError(error)))
+          val doc       = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("govuk-error-message").first
           errorSpan.text mustBe s"""${messages(errorPrefix)} ${messages(errorMessage)}"""
         }
@@ -76,18 +83,25 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam.getOrElse(""))}"""))
+          assertEqualsValue(
+            doc,
+            "title",
+            ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(
+                s"$messageKeyPrefix.title",
+                messageKeyParam.getOrElse("")
+              )}""")
+          )
         }
       }
     }
-  }
 
-
-  def stringPageWithDynamicTitle(form: Form[String],
-                                 createView: Form[String] => HtmlFormat.Appendable,
-                                 messageKeyPrefix: String,
-                                 messageKeyParam: String,
-                                 expectedHintKey: Option[String] = None) = {
+  def stringPageWithDynamicTitle(
+    form: Form[String],
+    createView: Form[String] => HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    messageKeyParam: String,
+    expectedHintKey: Option[String] = None
+  ) =
 
     "behave like a page with a string value field with a dynamic title" when {
 
@@ -95,7 +109,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
         "contain a label for the value" in {
 
-          val doc = asDocument(createView(form))
+          val doc              = asDocument(createView(form))
           val expectedHintText = expectedHintKey map (k => messages(k))
           assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.heading", messageKeyParam), expectedHintText)
         }
@@ -126,7 +140,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
         "show an error in the value field's label" in {
 
-          val doc = asDocument(createView(form.withError(error)))
+          val doc       = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("govuk-error-message").first
           errorSpan.text mustBe s"""${messages(errorPrefix)} ${messages(errorMessage)}"""
         }
@@ -134,11 +148,15 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam)}"""))
+          assertEqualsValue(
+            doc,
+            "title",
+            ViewUtils.breadcrumbTitle(
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam)}"""
+            )
+          )
         }
       }
     }
-  }
-
 
 }

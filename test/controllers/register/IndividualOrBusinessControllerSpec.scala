@@ -28,9 +28,9 @@ import views.html.register.IndividualOrBusinessView
 
 class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
-  private val form: Form[IndividualOrBusinessToAdd] = new IndividualOrBusinessFormProvider()()
+  private val form: Form[IndividualOrBusinessToAdd]  = new IndividualOrBusinessFormProvider()()
   private lazy val individualOrBusinessRoute: String = routes.IndividualOrBusinessController.onPageLoad(draftId).url
-  private val individualOrBusinessAnswer = IndividualOrBusinessToAdd.Business
+  private val individualOrBusinessAnswer             = IndividualOrBusinessToAdd.Business
 
   "IndividualOrBusiness Controller" must {
 
@@ -140,4 +140,5 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

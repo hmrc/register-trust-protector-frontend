@@ -31,19 +31,19 @@ class AddAProtectorViewHelperSpec extends SpecBase {
   private def changeInProgressBusinessProtectorRoute(index: Int): String =
     brts.NameController.onPageLoad(index, draftId).url
 
-  private def changeCompleteBusinessProtectorRoute(index: Int): String   =
+  private def changeCompleteBusinessProtectorRoute(index: Int): String =
     brts.CheckDetailsController.onPageLoad(index, draftId).url
 
-  private def removeBusinessProtectorRoute(index: Int): String           =
+  private def removeBusinessProtectorRoute(index: Int): String =
     brts.RemoveProtectorController.onPageLoad(index, draftId).url
 
   private def changeInProgressIndividualProtectorRoute(index: Int): String =
     irts.NameController.onPageLoad(index, draftId).url
 
-  private def changeCompleteIndividualProtectorRoute(index: Int): String   =
+  private def changeCompleteIndividualProtectorRoute(index: Int): String =
     irts.CheckDetailsController.onPageLoad(index, draftId).url
 
-  private def removeIndividualProtectorRoute(index: Int): String           =
+  private def removeIndividualProtectorRoute(index: Int): String =
     irts.RemoveProtectorController.onPageLoad(index, draftId).url
 
   "Add a protector view helper" when {

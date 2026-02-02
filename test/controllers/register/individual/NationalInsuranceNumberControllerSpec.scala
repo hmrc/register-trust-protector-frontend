@@ -38,14 +38,14 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
   private val index: Int           = 0
   private val existingSettlorNinos = Seq("")
 
-  private val form                 = formProvider.withPrefix(
+  private val form = formProvider.withPrefix(
     "individualProtector.nationalInsuranceNumber",
     emptyUserAnswers,
     index,
     existingSettlorNinos
   )
 
-  private val name                 = FullName("first name", None, "Last name")
+  private val name = FullName("first name", None, "Last name")
 
   lazy val individualProtectorNationalInsuranceNumberRoute =
     routes.NationalInsuranceNumberController.onPageLoad(index, draftId).url

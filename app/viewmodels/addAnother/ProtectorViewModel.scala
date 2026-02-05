@@ -29,13 +29,12 @@ trait ProtectorViewModel {
 
 object ProtectorViewModel {
 
-  implicit val reads : Reads[ProtectorViewModel] = {
+  implicit val reads: Reads[ProtectorViewModel] = {
 
     implicit class ReadsWithContravariantOr[A](a: Reads[A]) {
 
-      def or[B >: A](b: Reads[B]): Reads[B] = {
+      def or[B >: A](b: Reads[B]): Reads[B] =
         a.map[B](identity).orElse(b)
-      }
     }
 
     implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
@@ -44,4 +43,5 @@ object ProtectorViewModel {
     IndividualProtectorViewModel.reads or
       BusinessProtectorViewModel.reads
   }
+
 }

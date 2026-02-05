@@ -27,22 +27,28 @@ import viewmodels.addAnother.ProtectorViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: String)(implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[RegistrationDataRequest, ProtectorRequiredRequest] with Logging {
+class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: String)(implicit
+  val executionContext: ExecutionContext
+) extends ActionRefiner[RegistrationDataRequest, ProtectorRequiredRequest] with Logging {
 
-  override protected def refine[A](request: RegistrationDataRequest[A]): Future[Either[Result, ProtectorRequiredRequest[A]]] = {
+  override protected def refine[A](
+    request: RegistrationDataRequest[A]
+  ): Future[Either[Result, ProtectorRequiredRequest[A]]] =
     Future.successful(
       request.userAnswers.get(page) match {
         case Some(protector) =>
           Right(register.ProtectorRequiredRequest(request, protector))
-        case _ =>
+        case _               =>
           logger.info(s"[Session ID: ${request.sessionId}] Did not find protector")
           Left(Redirect(controllers.register.routes.AddAProtectorController.onPageLoad(draftId)))
       }
     )
-  }
+
 }
 
-class ProtectorRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) {
-  def apply(page: QuestionPage[ProtectorViewModel], draftId: String): ProtectorRequiredAction = new ProtectorRequiredAction(page, draftId)
+class ProtectorRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) {
+
+  def apply(page: QuestionPage[ProtectorViewModel], draftId: String): ProtectorRequiredAction =
+    new ProtectorRequiredAction(page, draftId)
+
 }

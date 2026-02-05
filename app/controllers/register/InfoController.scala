@@ -24,17 +24,16 @@ import views.html.register.{InfoView, InfoViewNonTaxable}
 
 import javax.inject.Inject
 
-class InfoController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                standardActionSets: StandardActionSets,
-                                val controllerComponents: MessagesControllerComponents,
-                                view: InfoView,
-                                viewNonTaxable: InfoViewNonTaxable
-                              ) extends FrontendBaseController with I18nSupport {
+class InfoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: InfoView,
+  viewNonTaxable: InfoViewNonTaxable
+) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
-
       if (request.userAnswers.isTaxable) {
         Ok(view(draftId))
       } else {
@@ -45,4 +44,5 @@ class InfoController @Inject()(
   def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) { _ =>
     Redirect(controllers.register.routes.IndividualOrBusinessController.onPageLoad(draftId))
   }
+
 }

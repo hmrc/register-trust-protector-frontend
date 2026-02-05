@@ -32,12 +32,11 @@ class IndividualProtectorMapper extends Mapper[Protector, IndividualProtector] {
     identification = protector.identification,
     countryOfResidence = protector.countryOfResidence,
     nationality = protector.nationality,
-    legallyIncapable = {
-      protector.legallyCapable.flatMap {
-        case Yes => Some(false)
-        case No => Some(true)
-        case DontKnow => None
-      }
+    legallyIncapable = protector.legallyCapable.flatMap {
+      case Yes      => Some(false)
+      case No       => Some(true)
+      case DontKnow => None
     }
   )
+
 }

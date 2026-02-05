@@ -32,43 +32,43 @@ import views.html.register.individual.PassportDetailsYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PassportDetailsYesNoController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                registrationsRepository: RegistrationsRepository,
-                                                @IndividualProtector navigator: Navigator,
-                                                standardActionSets: StandardActionSets,
-                                                nameAction: NameRequiredAction,
-                                                yesNoFormProvider: YesNoFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: PassportDetailsYesNoView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PassportDetailsYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  @IndividualProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  yesNoFormProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PassportDetailsYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form = yesNoFormProvider.withPrefix("individualProtector.passportDetailsYesNo")
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
-    implicit request =>
-
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) { implicit request =>
       val preparedForm = request.userAnswers.get(PassportDetailsYesNoPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, request.protectorName, index, draftId))
-  }
+    }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
-    implicit request =>
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsYesNoPage(index), value))
+              _              <- registrationsRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage(index), draftId, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsYesNoPage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage(index), draftId, updatedAnswers))
-        }
-      )
-  }
 }

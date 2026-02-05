@@ -36,9 +36,9 @@ import scala.concurrent.Future
 class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val name: String = "Company"
-  private val utr: String = "1234567890"
+  private val utr: String  = "1234567890"
 
-  private val trustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+  private val trustsStoreService: TrustsStoreService             = mock[TrustsStoreService]
   private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
 
   override def beforeEach(): Unit = {
@@ -55,7 +55,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       "redirect to add-to page if there is at least one in-progress or completed protector" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(NamePage(0), name).success.value
+          .set(NamePage(0), name)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
@@ -72,7 +74,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).get mustBe controllers.register.routes.AddAProtectorController.onPageLoad(fakeDraftId).url
+        redirectLocation(result).get mustBe controllers.register.routes.AddAProtectorController
+          .onPageLoad(fakeDraftId)
+          .url
 
         verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
@@ -98,7 +102,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).get mustBe controllers.register.routes.TrustHasProtectorYesNoController.onPageLoad(fakeDraftId).url
+        redirectLocation(result).get mustBe controllers.register.routes.TrustHasProtectorYesNoController
+          .onPageLoad(fakeDraftId)
+          .url
 
         verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
@@ -127,7 +133,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-          uaCaptor.getValue.isTaxable mustBe true
+          uaCaptor.getValue.isTaxable            mustBe true
           uaCaptor.getValue.existingTrustUtr.get mustBe utr
 
           application.stop()
@@ -161,8 +167,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
               verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-              uaCaptor.getValue.isTaxable mustBe true
-              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.isTaxable      mustBe true
+              uaCaptor.getValue.draftId        mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "id"
 
               application.stop()
@@ -192,8 +198,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
               verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-              uaCaptor.getValue.isTaxable mustBe false
-              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.isTaxable      mustBe false
+              uaCaptor.getValue.draftId        mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "id"
 
               application.stop()
@@ -203,4 +209,5 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
   }
+
 }

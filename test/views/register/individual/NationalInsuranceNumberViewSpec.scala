@@ -25,13 +25,18 @@ import views.html.register.individual.NationalInsuranceNumberView
 
 class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "individualProtector.nationalInsuranceNumber"
-  val index = 0
+  val messageKeyPrefix     = "individualProtector.nationalInsuranceNumber"
+  val index                = 0
   val existingSettlorNinos = Seq("")
-  val name: FullName = FullName("First", None, "Last")
+  val name: FullName       = FullName("First", None, "Last")
 
   val form: Form[String] =
-    new NationalInsuranceNumberFormProvider().withPrefix(messageKeyPrefix, emptyUserAnswers, index, existingSettlorNinos)
+    new NationalInsuranceNumberFormProvider().withPrefix(
+      messageKeyPrefix,
+      emptyUserAnswers,
+      index,
+      existingSettlorNinos
+    )
 
   "IndividualProtectorNationalInsuranceNumber view" must {
 
@@ -44,9 +49,16 @@ class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPageWithDynamicTitle(form, applyView, messageKeyPrefix, name.toString, Some(s"$messageKeyPrefix.hint"))
+    behave like stringPageWithDynamicTitle(
+      form,
+      applyView,
+      messageKeyPrefix,
+      name.toString,
+      Some(s"$messageKeyPrefix.hint")
+    )
 
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

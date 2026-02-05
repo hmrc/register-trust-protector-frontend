@@ -21,7 +21,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.IndividualProtectors
 
-final case class IndividualProtectorStatus(index : Int) extends QuestionPage[Status] {
+final case class IndividualProtectorStatus(index: Int) extends QuestionPage[Status] {
 
   override def path: JsPath = IndividualProtectors.path \ index \ toString
 

@@ -32,11 +32,11 @@ import views.html.register.individual.AddressYesNoView
 
 class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  private val index = 0
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("individualProtector.addressYesNo")
+  private val index                     = 0
+  private val form: Form[Boolean]       = new YesNoFormProvider().withPrefix("individualProtector.addressYesNo")
   private val AddressYesNoRoute: String = routes.AddressYesNoController.onPageLoad(index, draftId).url
-  private val name: FullName = FullName("First", Some("Middle"), "Last")
-  private val onwardRoute = Call("GET", "/foo")
+  private val name: FullName            = FullName("First", Some("Middle"), "Last")
+  private val onwardRoute               = Call("GET", "/foo")
 
   private val baseAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
@@ -86,7 +86,8 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(new FakeNavigator(onwardRoute))
-          ).build()
+          )
+          .build()
 
       val request =
         FakeRequest(POST, AddressYesNoRoute)
@@ -152,4 +153,5 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

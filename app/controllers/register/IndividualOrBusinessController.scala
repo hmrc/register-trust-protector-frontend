@@ -31,41 +31,41 @@ import views.html.register.IndividualOrBusinessView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualOrBusinessController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                standardActionSets: StandardActionSets,
-                                                navigator: Navigator,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: IndividualOrBusinessView,
-                                                formProvider: IndividualOrBusinessFormProvider,
-                                                repository: RegistrationsRepository
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IndividualOrBusinessController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  navigator: Navigator,
+  val controllerComponents: MessagesControllerComponents,
+  view: IndividualOrBusinessView,
+  formProvider: IndividualOrBusinessFormProvider,
+  repository: RegistrationsRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[IndividualOrBusinessToAdd] = formProvider()
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(value) => form.fill(value)
-        case None => form
+        case None        => form
       }
 
       Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
-    implicit request =>
+  def onSubmit(draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, draftId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage, value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(IndividualOrBusinessPage, draftId, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage, draftId, updatedAnswers))
-      )
-  }
 }

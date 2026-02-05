@@ -28,8 +28,8 @@ import views.html.register.individual.DateOfBirthView
 class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "individualProtector.dateOfBirth"
-  val index = 0
-  val name: FullName = FullName("First", None, "Last")
+  val index            = 0
+  val name: FullName   = FullName("First", None, "Last")
 
   val form = new DateOfBirthFormProvider(frontendAppConfig).withPrefix("individualProtector.dateOfBirth")
 
@@ -40,19 +40,16 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.toString, index, draftId)(fakeRequest, messages)
 
-    val applyViewF = (form : Form[_]) => applyView(form)
+    val applyViewF = (form: Form[_]) => applyView(form)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.toString, "hint")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithDateFields(form, applyViewF,
-      messageKeyPrefix,
-      "value",
-      name.toString
-    )
+    behave like pageWithDateFields(form, applyViewF, messageKeyPrefix, "value", name.toString)
 
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

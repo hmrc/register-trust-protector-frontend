@@ -21,10 +21,12 @@ import utils.Constants.MAX
 import viewmodels.RadioOption
 import viewmodels.addAnother.{BusinessProtectorViewModel, IndividualProtectorViewModel}
 
-case class Protectors(individuals: List[IndividualProtectorViewModel] = Nil,
-                      businesses: List[BusinessProtectorViewModel] = Nil) {
+case class Protectors(
+  individuals: List[IndividualProtectorViewModel] = Nil,
+  businesses: List[BusinessProtectorViewModel] = Nil
+) {
 
-  type ProtectorOption = (Int, IndividualOrBusinessToAdd)
+  type ProtectorOption  = (Int, IndividualOrBusinessToAdd)
   type ProtectorOptions = List[ProtectorOption]
 
   private val options: ProtectorOptions = List(
@@ -32,10 +34,9 @@ case class Protectors(individuals: List[IndividualProtectorViewModel] = Nil,
     (businesses.size, IndividualOrBusinessToAdd.Business)
   )
 
-  val maxedOutOptions: List[RadioOption] = {
-    options.filter(_._1 >= MAX).map {
-      x => RadioOption(IndividualOrBusinessToAdd.prefix, x._2.toString)
+  val maxedOutOptions: List[RadioOption] =
+    options.filter(_._1 >= MAX).map { x =>
+      RadioOption(IndividualOrBusinessToAdd.prefix, x._2.toString)
     }
-  }
 
 }

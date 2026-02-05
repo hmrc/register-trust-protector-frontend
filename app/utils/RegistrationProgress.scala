@@ -27,11 +27,11 @@ import viewmodels.addAnother._
 
 class RegistrationProgress {
 
-  def protectorsStatus(userAnswers: ReadableUserAnswers): Option[Status] = {
+  def protectorsStatus(userAnswers: ReadableUserAnswers): Option[Status] =
 
     if (!userAnswers.isAnyProtectorAdded) {
       userAnswers.get(TrustHasProtectorYesNoPage) map {
-        case true => InProgress
+        case true  => InProgress
         case false => Completed
       }
     } else {
@@ -44,26 +44,27 @@ class RegistrationProgress {
       val isComplete = statusList.forall(_.apply(userAnswers))
       Some(if (isComplete) Completed else InProgress)
     }
-  }
 
   sealed trait IsComplete {
     def apply(userAnswers: ReadableUserAnswers): Boolean
   }
 
-  sealed class ListIsComplete[T <: ProtectorViewModel](section: QuestionPage[List[T]])
-                                                      (implicit reads: Reads[T]) extends IsComplete {
+  sealed class ListIsComplete[T <: ProtectorViewModel](section: QuestionPage[List[T]])(implicit reads: Reads[T])
+      extends IsComplete {
 
-    override def apply(userAnswers: ReadableUserAnswers): Boolean = {
+    override def apply(userAnswers: ReadableUserAnswers): Boolean =
       userAnswers.get(section) match {
         case Some(protectors) => !protectors.exists(_.status == InProgress)
-        case _ => true
+        case _                => true
       }
-    }
+
   }
 
   private object AddingProtectorsIsComplete extends IsComplete {
+
     override def apply(userAnswers: ReadableUserAnswers): Boolean =
       userAnswers.get(AddAProtectorPage).contains(AddAProtector.NoComplete)
+
   }
 
   private object BusinessProtectorsAreComplete extends ListIsComplete(BusinessProtectors)

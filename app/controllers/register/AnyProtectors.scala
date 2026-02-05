@@ -30,7 +30,8 @@ trait AnyProtectors {
     val protectorLists: Protectors = protectors(userAnswers)
 
     protectorLists.individuals.nonEmpty ||
-      protectorLists.businesses.nonEmpty
+    protectorLists.businesses.nonEmpty
 
   }
+
 }

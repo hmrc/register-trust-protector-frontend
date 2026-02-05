@@ -20,6 +20,7 @@ import models.UserAnswers
 import models.requests.RegistrationDataRequest
 import play.api.mvc.WrappedRequest
 
-case class ProtectorNameRequest[T](request: RegistrationDataRequest[T], protectorName: String) extends WrappedRequest[T](request){
-  val userAnswers:UserAnswers = request.userAnswers
+case class ProtectorNameRequest[T](request: RegistrationDataRequest[T], protectorName: String)
+    extends WrappedRequest[T](request) {
+  val userAnswers: UserAnswers = request.userAnswers
 }

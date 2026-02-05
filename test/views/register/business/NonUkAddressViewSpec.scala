@@ -27,9 +27,9 @@ import views.html.register.business.NonUkAddressView
 
 class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
-  private val index = 0
+  private val index            = 0
   private val messageKeyPrefix = "site.address.international"
-  private val name: String = "Business"
+  private val name: String     = "Business"
 
   override val form: Form[InternationalAddress] = new InternationalAddressFormProvider().apply()
 
@@ -54,4 +54,5 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

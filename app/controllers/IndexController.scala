@@ -31,32 +31,32 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 repository: RegistrationsRepository,
-                                 identify: RegistrationIdentifierAction,
-                                 trustsStoreService: TrustsStoreService,
-                                 submissionDraftConnector: SubmissionDraftConnector
-                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IndexController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  repository: RegistrationsRepository,
+  identify: RegistrationIdentifierAction,
+  trustsStoreService: TrustsStoreService,
+  submissionDraftConnector: SubmissionDraftConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
-
     for {
-      isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
-      utr <- submissionDraftConnector.getTrustUtr(draftId)
+      isTaxable   <- submissionDraftConnector.getIsTrustTaxable(draftId)
+      utr         <- submissionDraftConnector.getTrustUtr(draftId)
       userAnswers <- repository.get(draftId)
-      ua = userAnswers match {
-        case Some(value) => value.copy(isTaxable = isTaxable, existingTrustUtr = utr)
-        case _ => UserAnswers(draftId, Json.obj(), request.identifier, isTaxable, utr)
-      }
-      _ <- repository.set(ua)
-      _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
-    } yield {
+      ua           = userAnswers match {
+                       case Some(value) => value.copy(isTaxable = isTaxable, existingTrustUtr = utr)
+                       case _           => UserAnswers(draftId, Json.obj(), request.identifier, isTaxable, utr)
+                     }
+      _           <- repository.set(ua)
+      _           <- trustsStoreService.updateTaskStatus(draftId, InProgress)
+    } yield
       if (ua.isAnyProtectorAdded) {
         Redirect(rts.AddAProtectorController.onPageLoad(draftId))
       } else {
         Redirect(rts.TrustHasProtectorYesNoController.onPageLoad(draftId))
       }
-    }
   }
+
 }

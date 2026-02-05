@@ -30,4 +30,5 @@ class AddAProtectorPageSpec extends PageBehaviours {
 
     beRemovable[AddAProtector](AddAProtectorPage)
   }
+
 }

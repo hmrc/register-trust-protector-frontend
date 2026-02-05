@@ -22,12 +22,14 @@ import controllers.register.business.{routes => brts}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.business._
-import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.register.business.mld5.{
+  CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
+}
 
 class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new BusinessProtectorNavigator()
-  val index = 0
+  val navigator   = new BusinessProtectorNavigator()
+  val index       = 0
   val utr: String = "1234567890"
 
   "Business protector navigator" must {
@@ -36,143 +38,197 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
-      "NamePage -> UtrYesNoPage" in {
-        navigator.nextPage(NamePage(index), fakeDraftId, baseAnswers)
+      "NamePage -> UtrYesNoPage" in
+        navigator
+          .nextPage(NamePage(index), fakeDraftId, baseAnswers)
           .mustBe(brts.UtrYesNoController.onPageLoad(index, fakeDraftId))
-      }
 
       "UtrYesNoPage -> Yes -> UtrPage" in {
         val answers = baseAnswers.set(UtrYesNoPage(index), true).success.value
 
-        navigator.nextPage(UtrYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(UtrYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.UtrController.onPageLoad(index, fakeDraftId))
       }
 
       "UtrYesNoPage -> No -> ResidencyYesNoPage" in {
         val answers = baseAnswers.set(UtrYesNoPage(index), false).success.value
 
-        navigator.nextPage(UtrYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(UtrYesNoPage(index), fakeDraftId, answers)
           .mustBe(mld5Routes.CountryOfResidenceYesNoController.onPageLoad(index, fakeDraftId))
       }
 
-      "UtrPage -> ResidencyYesNoPage" in {
-        navigator.nextPage(UtrPage(index), fakeDraftId, baseAnswers)
+      "UtrPage -> ResidencyYesNoPage" in
+        navigator
+          .nextPage(UtrPage(index), fakeDraftId, baseAnswers)
           .mustBe(mld5Routes.CountryOfResidenceYesNoController.onPageLoad(index, fakeDraftId))
-      }
 
       "ResidencyYesNoPage -> Yes -> ResidencyUkYesNoPage" in {
         val answers = baseAnswers.set(CountryOfResidenceYesNoPage(index), true).success.value
 
-        navigator.nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, answers)
           .mustBe(mld5Routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyYesNoPage -> No (without UTR) -> AddressYesNoPage" in {
         val answers = baseAnswers
-          .set(UtrYesNoPage(index), false).success.value
-          .set(CountryOfResidenceYesNoPage(index), false).success.value
+          .set(UtrYesNoPage(index), false)
+          .success
+          .value
+          .set(CountryOfResidenceYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyYesNoPage -> No (with UTR) -> CheckDetailsPage" in {
         val answers = baseAnswers
-          .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), utr).success.value
-          .set(CountryOfResidenceYesNoPage(index), false).success.value
+          .set(UtrYesNoPage(index), true)
+          .success
+          .value
+          .set(UtrPage(index), utr)
+          .success
+          .value
+          .set(CountryOfResidenceYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyUkYesNoPage -> Yes (without UTR) -> AddressYesNoPage" in {
         val answers = baseAnswers
-          .set(UtrYesNoPage(index), false).success.value
-          .set(CountryOfResidenceInTheUkYesNoPage(index), true).success.value
+          .set(UtrYesNoPage(index), false)
+          .success
+          .value
+          .set(CountryOfResidenceInTheUkYesNoPage(index), true)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyUkYesNoPage -> Yes (with UTR) -> CheckDetailsPage" in {
         val answers = baseAnswers
-          .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), utr).success.value
-          .set(CountryOfResidenceInTheUkYesNoPage(index), true).success.value
+          .set(UtrYesNoPage(index), true)
+          .success
+          .value
+          .set(UtrPage(index), utr)
+          .success
+          .value
+          .set(CountryOfResidenceInTheUkYesNoPage(index), true)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyUkYesNoPage -> No -> CountryOfResidencePage" in {
         val answers = baseAnswers
-          .set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, answers)
           .mustBe(mld5Routes.CountryOfResidenceController.onPageLoad(index, fakeDraftId))
       }
 
       "CountryOfResidencePage -> (with UTR) -> CheckDetailsPage" in {
         val answers = baseAnswers
-          .set(UtrYesNoPage(index), true).success.value
-          .set(UtrPage(index), utr).success.value
-          .set(CountryOfResidencePage(index), "FR").success.value
+          .set(UtrYesNoPage(index), true)
+          .success
+          .value
+          .set(UtrPage(index), utr)
+          .success
+          .value
+          .set(CountryOfResidencePage(index), "FR")
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidencePage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidencePage(index), fakeDraftId, answers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
 
       "CountryOfResidencePage -> (without UTR) -> AddressYesNoPage" in {
         val answers = baseAnswers
-          .set(UtrYesNoPage(index), false).success.value
-          .set(CountryOfResidencePage(index), "FR").success.value
+          .set(UtrYesNoPage(index), false)
+          .success
+          .value
+          .set(CountryOfResidencePage(index), "FR")
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidencePage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(CountryOfResidencePage(index), fakeDraftId, answers)
           .mustBe(brts.AddressYesNoController.onPageLoad(index, fakeDraftId))
       }
 
       "AddressYesNoPage -> Yes -> AddressUkYesNoPage" in {
         val answers = baseAnswers
-          .set(AddressYesNoPage(index), true).success.value
+          .set(AddressYesNoPage(index), true)
+          .success
+          .value
 
-        navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(AddressYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.AddressUkYesNoController.onPageLoad(index, fakeDraftId))
       }
 
       "AddressYesNoPage -> No -> CheckDetailsPage" in {
         val answers = baseAnswers
-          .set(AddressYesNoPage(index), false).success.value
+          .set(AddressYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(AddressYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(AddressYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
 
       "AddressUkYesNoPage -> Yes -> UKAddressPage" in {
         val answers = baseAnswers
-          .set(AddressUkYesNoPage(index), true).success.value
+          .set(AddressUkYesNoPage(index), true)
+          .success
+          .value
 
-        navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.UkAddressController.onPageLoad(index, fakeDraftId))
       }
 
       "AddressUkYesNoPage -> No -> NonUKAddressPage" in {
         val answers = baseAnswers
-          .set(AddressUkYesNoPage(index), false).success.value
+          .set(AddressUkYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
+        navigator
+          .nextPage(AddressUkYesNoPage(index), fakeDraftId, answers)
           .mustBe(brts.NonUkAddressController.onPageLoad(index, fakeDraftId))
       }
 
-      "UKAddressPage -> CheckDetailsPage" in {
-        navigator.nextPage(UkAddressPage(index), fakeDraftId, baseAnswers)
+      "UKAddressPage -> CheckDetailsPage" in
+        navigator
+          .nextPage(UkAddressPage(index), fakeDraftId, baseAnswers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
-      }
 
-      "NonUKAddressPage -> CheckDetailsPage" in {
-        navigator.nextPage(NonUkAddressPage(index), fakeDraftId, baseAnswers)
+      "NonUKAddressPage -> CheckDetailsPage" in
+        navigator
+          .nextPage(NonUkAddressPage(index), fakeDraftId, baseAnswers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
-      }
 
     }
 
@@ -180,50 +236,66 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
 
-      "NamePage -> ResidencyYesNoPage" in {
-        navigator.nextPage(NamePage(index), fakeDraftId, baseAnswers)
+      "NamePage -> ResidencyYesNoPage" in
+        navigator
+          .nextPage(NamePage(index), fakeDraftId, baseAnswers)
           .mustBe(mld5Routes.CountryOfResidenceYesNoController.onPageLoad(index, fakeDraftId))
-      }
 
       "ResidencyYesNoPage -> Yes -> ResidencyUkYesNoPage" in {
         val userAnswers = baseAnswers
-          .set(CountryOfResidenceYesNoPage(index), true).success.value
+          .set(CountryOfResidenceYesNoPage(index), true)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, userAnswers)
+        navigator
+          .nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, userAnswers)
           .mustBe(mld5Routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyYesNoPage -> No -> CheckDetailsPage" in {
         val userAnswers = baseAnswers
-          .set(CountryOfResidenceYesNoPage(index), false).success.value
+          .set(CountryOfResidenceYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, userAnswers)
+        navigator
+          .nextPage(CountryOfResidenceYesNoPage(index), fakeDraftId, userAnswers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyUkYesNoPage -> Yes -> CheckDetailsPage" in {
         val userAnswers = baseAnswers
-          .set(CountryOfResidenceInTheUkYesNoPage(index), true).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage(index), true)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, userAnswers)
+        navigator
+          .nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, userAnswers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
 
       "ResidencyUkYesNoPage -> No -> CountryOfResidencePage" in {
         val userAnswers = baseAnswers
-          .set(CountryOfResidenceInTheUkYesNoPage(index), false).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage(index), false)
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, userAnswers)
+        navigator
+          .nextPage(CountryOfResidenceInTheUkYesNoPage(index), fakeDraftId, userAnswers)
           .mustBe(mld5Routes.CountryOfResidenceController.onPageLoad(index, fakeDraftId))
       }
 
       "CountryOfResidencePage -> CheckDetailsPage" in {
         val mld5Answers = baseAnswers
-          .set(CountryOfResidencePage(index), "FR").success.value
+          .set(CountryOfResidencePage(index), "FR")
+          .success
+          .value
 
-        navigator.nextPage(CountryOfResidencePage(index), fakeDraftId, mld5Answers)
+        navigator
+          .nextPage(CountryOfResidencePage(index), fakeDraftId, mld5Answers)
           .mustBe(brts.CheckDetailsController.onPageLoad(index, fakeDraftId))
       }
     }
   }
+
 }

@@ -31,7 +31,9 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
-import pages.register.{AddAProtectorPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
+import pages.register.{
+  AddAProtectorPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage, business => bus, individual => ind
+}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -44,7 +46,8 @@ import views.html.register.{AddAProtectorView, TrustHasProtectorYesNoView}
 
 import scala.concurrent.Future
 
-class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with ScalaCheckPropertyChecks with ModelGenerators {
+class AddAProtectorControllerSpec
+    extends SpecBase with BeforeAndAfterEach with ScalaCheckPropertyChecks with ModelGenerators {
 
   private def onwardRoute: Call = Call("GET", "/foo")
 
@@ -65,7 +68,7 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private lazy val submitCompleteRoute = routes.AddAProtectorController.submitComplete(fakeDraftId).url
 
   private val formProvider = new AddAProtectorFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private val yesNoForm = new YesNoFormProvider().withPrefix("trustHasProtectorYesNo")
 
@@ -76,35 +79,57 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
   )
 
   private val userAnswersWithProtectorsComplete = emptyUserAnswers
-    .set(TrustHasProtectorYesNoPage, true).success.value
-    .set(NamePage(0), "Business Name 1").success.value
-    .set(UtrYesNoPage(0), true).success.value
-    .set(UtrPage(0), "1234567890").success.value
-    .set(BusinessProtectorStatus(0), Completed).success.value
-    .set(NamePage(1), "Business Name 2").success.value
-    .set(UtrYesNoPage(1), true).success.value
-    .set(UtrPage(1), "1234567890").success.value
-    .set(BusinessProtectorStatus(1), Completed).success.value
-    .set(NamePage(2), "Business Name 3").success.value
-    .set(UtrYesNoPage(2), true).success.value
-    .set(UtrPage(2), "1234567890").success.value
-    .set(BusinessProtectorStatus(2), Completed).success.value
+    .set(TrustHasProtectorYesNoPage, true)
+    .success
+    .value
+    .set(NamePage(0), "Business Name 1")
+    .success
+    .value
+    .set(UtrYesNoPage(0), true)
+    .success
+    .value
+    .set(UtrPage(0), "1234567890")
+    .success
+    .value
+    .set(BusinessProtectorStatus(0), Completed)
+    .success
+    .value
+    .set(NamePage(1), "Business Name 2")
+    .success
+    .value
+    .set(UtrYesNoPage(1), true)
+    .success
+    .value
+    .set(UtrPage(1), "1234567890")
+    .success
+    .value
+    .set(BusinessProtectorStatus(1), Completed)
+    .success
+    .value
+    .set(NamePage(2), "Business Name 3")
+    .success
+    .value
+    .set(UtrYesNoPage(2), true)
+    .success
+    .value
+    .set(UtrPage(2), "1234567890")
+    .success
+    .value
+    .set(BusinessProtectorStatus(2), Completed)
+    .success
+    .value
 
-  private def genBusinessProtectors(range: Int): UserAnswers = {
+  private def genBusinessProtectors(range: Int): UserAnswers =
     (0 until range)
-      .foldLeft(emptyUserAnswers)((ua,index) =>
-        ua.set(bus.NamePage(index), "Business Name").success.value
-      )
-  }
+      .foldLeft(emptyUserAnswers)((ua, index) => ua.set(bus.NamePage(index), "Business Name").success.value)
 
-  private def genIndividualProtectors(range: Int): UserAnswers = {
+  private def genIndividualProtectors(range: Int): UserAnswers =
     (0 until range)
-      .foldLeft(emptyUserAnswers)((ua,index) =>
+      .foldLeft(emptyUserAnswers)((ua, index) =>
         ua.set(ind.NamePage(index), FullName("First", None, "Last")).success.value
       )
-  }
 
-  private val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+  private val mockTrustsStoreService: TrustsStoreService     = mock[TrustsStoreService]
   private val mockRegistrationProgress: RegistrationProgress = mock[RegistrationProgress]
 
   override def beforeEach(): Unit = {
@@ -154,8 +179,12 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
       "return OK and the correct view for a GET" in {
 
         val userAnswers = emptyUserAnswers
-          .set(TrustHasProtectorYesNoPage, true).success.value
-          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
+          .set(IndividualOrBusinessPage, Individual)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -264,7 +293,10 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -272,8 +304,12 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
       "populate the view without value on a GET when the question has previously been answered" in {
 
         val userAnswers = userAnswersWithProtectorsComplete
-          .set(AddAProtectorPage, AddAProtector.YesNow).success.value
-          .set(TrustHasProtectorYesNoPage, true).success.value
+          .set(AddAProtectorPage, AddAProtector.YesNow)
+          .success
+          .value
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -286,7 +322,10 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(request, messages).toString
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -314,7 +353,9 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
           redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
           verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
-          verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value))
+          verify(mockRegistrationProgress).protectorsStatus(
+            eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
+          )
 
           application.stop()
         }
@@ -340,7 +381,9 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
           redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
           verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
-          verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value))
+          verify(mockRegistrationProgress).protectorsStatus(
+            eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
+          )
 
           application.stop()
         }
@@ -368,13 +411,14 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
             redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
             verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
-            verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value))
+            verify(mockRegistrationProgress).protectorsStatus(
+              eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
+            )
 
             application.stop()
           }
 
-          "registration progress is not completed" in {
-
+          "registration progress is not completed" in
             forAll(arbitrary[Option[Status]].suchThat(!_.contains(Completed))) { regProgressStatus =>
               beforeEach()
 
@@ -395,11 +439,12 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
               redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
               verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
-              verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value))
+              verify(mockRegistrationProgress).protectorsStatus(
+                eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
+              )
 
               application.stop()
             }
-          }
         }
       }
 
@@ -436,8 +481,11 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
           genIndividualProtectors(max)
         )
 
-        val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
-          .set(TrustHasProtectorYesNoPage, true).success.value
+        val userAnswers = protectors
+          .foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -457,8 +505,11 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
           genBusinessProtectors(max)
         )
 
-        val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
-          .set(TrustHasProtectorYesNoPage, true).success.value
+        val userAnswers = protectors
+          .foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -479,8 +530,11 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
           genBusinessProtectors(max)
         )
 
-        val userAnswers = protectors.foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
-          .set(TrustHasProtectorYesNoPage, true).success.value
+        val userAnswers = protectors
+          .foldLeft(emptyUserAnswers)((x, acc) => acc.copy(data = x.data.deepMerge(acc.data)))
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -513,16 +567,19 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
+          redirectLocation(
+            result
+          ).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
           verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
-          verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value))
+          verify(mockRegistrationProgress).protectorsStatus(
+            eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value)
+          )
 
           application.stop()
         }
 
-        "registration progress is not completed" in {
-
+        "registration progress is not completed" in
           forAll(arbitrary[Option[Status]].suchThat(!_.contains(Completed))) { regProgressStatus =>
             beforeEach()
 
@@ -541,15 +598,19 @@ class AddAProtectorControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
+            redirectLocation(
+              result
+            ).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
             verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
-            verify(mockRegistrationProgress).protectorsStatus(eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value))
+            verify(mockRegistrationProgress).protectorsStatus(
+              eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value)
+            )
 
             application.stop()
           }
-        }
       }
     }
   }
+
 }

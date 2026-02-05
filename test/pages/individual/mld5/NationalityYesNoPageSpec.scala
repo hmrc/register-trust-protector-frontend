@@ -19,7 +19,7 @@ package pages.individual.mld5
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.register.individual.mld5.{NationalityUkYesNoPage, NationalityPage, NationalityYesNoPage}
+import pages.register.individual.mld5.{NationalityPage, NationalityUkYesNoPage, NationalityYesNoPage}
 
 class NationalityYesNoPageSpec extends PageBehaviours {
 
@@ -32,16 +32,20 @@ class NationalityYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](NationalityYesNoPage(0))
   }
 
-  "remove pages when CountryOfResidenceYesNoPage is set to false" in {
-    forAll(arbitrary[UserAnswers]) {
-      initial =>
-        val answers: UserAnswers = initial.set(NationalityUkYesNoPage(0), false).success.value
-          .set(NationalityPage(0), "ES").success.value
+  "remove pages when CountryOfResidenceYesNoPage is set to false" in
+    forAll(arbitrary[UserAnswers]) { initial =>
+      val answers: UserAnswers = initial
+        .set(NationalityUkYesNoPage(0), false)
+        .success
+        .value
+        .set(NationalityPage(0), "ES")
+        .success
+        .value
 
-        val result = answers.set(NationalityYesNoPage(0), false).success.value
+      val result = answers.set(NationalityYesNoPage(0), false).success.value
 
-        result.get(NationalityUkYesNoPage(0)) mustNot be(defined)
-        result.get(NationalityPage(0)) mustNot be(defined)
+      result.get(NationalityUkYesNoPage(0)) mustNot be(defined)
+      result.get(NationalityPage(0)) mustNot be(defined)
     }
-  }
+
 }

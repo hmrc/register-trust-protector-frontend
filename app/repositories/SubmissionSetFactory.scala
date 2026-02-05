@@ -27,31 +27,32 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 import javax.inject.Inject
 
-class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
-                                     protectorsMapper: ProtectorsMapper,
-                                     individualProtectorAnswersHelper: IndividualProtectorAnswersHelper,
-                                     businessProtectorAnswerHelper: BusinessProtectorAnswersHelper) {
+class SubmissionSetFactory @Inject() (
+  registrationProgress: RegistrationProgress,
+  protectorsMapper: ProtectorsMapper,
+  individualProtectorAnswersHelper: IndividualProtectorAnswersHelper,
+  businessProtectorAnswerHelper: BusinessProtectorAnswersHelper
+) {
 
-  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
+  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet =
     RegistrationSubmission.DataSet(
       data = Json.toJson(userAnswers),
       registrationPieces = mappedData(userAnswers),
       answerSections = answerSections(userAnswers)
     )
-  }
 
   private def mappedPieces(protectorsJson: JsValue) =
     List(RegistrationSubmission.MappedPiece("trust/entities/protectors", protectorsJson))
 
-  private def mappedData(userAnswers: UserAnswers): List[RegistrationSubmission.MappedPiece] = {
-      protectorsMapper.build(userAnswers) match {
-        case Some(protectors) => mappedPieces(Json.toJson(protectors))
-        case _ => mappedPieces(JsNull)
-      }
-  }
+  private def mappedData(userAnswers: UserAnswers): List[RegistrationSubmission.MappedPiece] =
+    protectorsMapper.build(userAnswers) match {
+      case Some(protectors) => mappedPieces(Json.toJson(protectors))
+      case _                => mappedPieces(JsNull)
+    }
 
-  def answerSections(userAnswers: UserAnswers)
-                    (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
+  def answerSections(
+    userAnswers: UserAnswers
+  )(implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
     val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage).contains(true)
 
@@ -73,20 +74,19 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     }
   }
 
-  private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {
+  private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow =
     RegistrationSubmission.AnswerRow(
       label = row.label,
       answer = row.answer.toString,
       labelArg = row.labelArg
     )
-  }
 
-  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
+  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection =
     RegistrationSubmission.AnswerSection(
       headingKey = section.headingKey,
       rows = section.rows.map(convertForSubmission),
       sectionKey = section.sectionKey,
       headingArgs = section.headingArgs.map(_.toString)
     )
-  }
+
 }

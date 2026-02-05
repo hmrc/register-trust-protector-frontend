@@ -29,8 +29,15 @@ class Module extends AbstractModule {
     bind(classOf[RegistrationDataRequiredAction]).to(classOf[RegistrationDataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[BusinessProtector]).to(classOf[BusinessProtectorNavigator]).asEagerSingleton()
-    bind(classOf[Navigator]).annotatedWith(classOf[IndividualProtector]).to(classOf[IndividualProtectorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[BusinessProtector])
+      .to(classOf[BusinessProtectorNavigator])
+      .asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[IndividualProtector])
+      .to(classOf[IndividualProtectorNavigator])
+      .asEagerSingleton()
     bind(classOf[Navigator]).to(classOf[ProtectorNavigator]).asEagerSingleton()
   }
+
 }

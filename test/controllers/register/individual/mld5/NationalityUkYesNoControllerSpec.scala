@@ -32,10 +32,10 @@ import views.html.register.individual.mld5.NationalityUkYesNoView
 
 class NationalityUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("individualProtector.5mld.nationalityUkYesNo")
-  val index: Int = 0
-  val name = FullName("Test", None, "Name")
+  val index: Int          = 0
+  val name                = FullName("Test", None, "Name")
 
   lazy val nationalityUkYesNo: String = routes.NationalityUkYesNoController.onPageLoad(index, draftId).url
 
@@ -44,7 +44,9 @@ class NationalityUkYesNoControllerSpec extends SpecBase with MockitoSugar {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), name).success.value
+        .set(NamePage(index), name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -64,8 +66,13 @@ class NationalityUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
-        .set(NationalityUkYesNoPage(index), true).success.value
+      val userAnswers = emptyUserAnswers
+        .set(NamePage(index), name)
+        .success
+        .value
+        .set(NationalityUkYesNoPage(index), true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -86,12 +93,15 @@ class NationalityUkYesNoControllerSpec extends SpecBase with MockitoSugar {
     "redirect to the next page when valid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), name).success.value
+        .set(NamePage(index), name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
           bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(new FakeNavigator)
-        ).build()
+        )
+        .build()
 
       val request =
         FakeRequest(POST, nationalityUkYesNo)
@@ -109,7 +119,9 @@ class NationalityUkYesNoControllerSpec extends SpecBase with MockitoSugar {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), name).success.value
+        .set(NamePage(index), name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -163,4 +175,5 @@ class NationalityUkYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

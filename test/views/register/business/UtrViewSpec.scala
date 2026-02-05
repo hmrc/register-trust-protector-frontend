@@ -24,9 +24,9 @@ import views.html.register.business.UtrView
 
 class UtrViewSpec extends StringViewBehaviours {
 
-  private val index = 0
+  private val index    = 0
   val messageKeyPrefix = "businessProtector.utr"
-  val name = "Name"
+  val name             = "Name"
 
   override val form: Form[String] = new UtrFormProvider().withConfig(messageKeyPrefix, emptyUserAnswers, index)
 
@@ -41,8 +41,15 @@ class UtrViewSpec extends StringViewBehaviours {
 
     behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), controllers.register.business.routes.UtrController.onSubmit(index, fakeDraftId).url)
+    behave like stringPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name),
+      controllers.register.business.routes.UtrController.onSubmit(index, fakeDraftId).url
+    )
 
     behave like pageWithBackLink(applyView(form))
   }
+
 }

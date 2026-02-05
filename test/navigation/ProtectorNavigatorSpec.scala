@@ -36,235 +36,242 @@ class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   private val max: Int = 25
 
-  private def protectorsCompletedRoute(draftId: String, config: FrontendAppConfig): Call = {
+  private def protectorsCompletedRoute(draftId: String, config: FrontendAppConfig): Call =
     Call("GET", config.registrationProgressUrl(draftId))
-  }
 
   val navigator: ProtectorNavigator = injector.instanceOf[ProtectorNavigator]
 
-   "AnswersPage" when {
-     "go to AddAProtectorPage from AnswersPage" in {
-       forAll(arbitrary[UserAnswers]) {
-         userAnswers =>
-           navigator.nextPage(AnswersPage, fakeDraftId, userAnswers)
-             .mustBe(controllers.register.routes.AddAProtectorController.onPageLoad(fakeDraftId))
-       }
-     }
-   }
+  "AnswersPage" when {
+    "go to AddAProtectorPage from AnswersPage" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        navigator
+          .nextPage(AnswersPage, fakeDraftId, userAnswers)
+          .mustBe(controllers.register.routes.AddAProtectorController.onPageLoad(fakeDraftId))
+      }
+  }
 
   "AddAProtectorYesNoPage" when {
 
-    "go to IndividualOrBusinessPage from AddAProtectorYesNoPage when selected yes" in {
+    "go to IndividualOrBusinessPage from AddAProtectorYesNoPage when selected yes" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(AddAProtectorYesNoPage, true).success.value
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(AddAProtectorYesNoPage, true).success.value
-
-          navigator.nextPage(AddAProtectorYesNoPage, fakeDraftId, answers)
-            .mustBe(controllers.register.routes.IndividualOrBusinessController.onPageLoad(fakeDraftId))
+        navigator
+          .nextPage(AddAProtectorYesNoPage, fakeDraftId, answers)
+          .mustBe(controllers.register.routes.IndividualOrBusinessController.onPageLoad(fakeDraftId))
       }
 
-    }
+    "go to RegistrationProgress from AddAProtectorYesNoPage when selected no" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(AddAProtectorYesNoPage, false).success.value
 
-    "go to RegistrationProgress from AddAProtectorYesNoPage when selected no" in {
-
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(AddAProtectorYesNoPage, false).success.value
-
-          navigator.nextPage(AddAProtectorYesNoPage, fakeDraftId, answers)
-            .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
+        navigator
+          .nextPage(AddAProtectorYesNoPage, fakeDraftId, answers)
+          .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
       }
-    }
 
-    "go to IndividualOrBusinessPage from AddAProtectorPage when selected add them now" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+    "go to IndividualOrBusinessPage from AddAProtectorPage when selected add them now" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(AddAProtectorPage, AddAProtector.YesNow).success.value
 
-          val answers = userAnswers.set(AddAProtectorPage, AddAProtector.YesNow).success.value
-
-          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
-            .mustBe(controllers.register.routes.IndividualOrBusinessController.onPageLoad(fakeDraftId))
+        navigator
+          .nextPage(AddAProtectorPage, fakeDraftId, answers)
+          .mustBe(controllers.register.routes.IndividualOrBusinessController.onPageLoad(fakeDraftId))
       }
-    }
 
-    "go to Individual name page from AddAProtectorPage when selected add them now and 25 business protectors" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = (0 until 25).foldLeft(userAnswers)((acc, index) => {
+    "go to Individual name page from AddAProtectorPage when selected add them now and 25 business protectors" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = (0 until 25)
+          .foldLeft(userAnswers)((acc, index) =>
             acc
-              .set(bus.NamePage(index), "Business Name").success.value
-              .set(BusinessProtectorStatus(index), Completed).success.value
-          }).set(AddAProtectorPage, AddAProtector.YesNow).success.value
+              .set(bus.NamePage(index), "Business Name")
+              .success
+              .value
+              .set(BusinessProtectorStatus(index), Completed)
+              .success
+              .value
+          )
+          .set(AddAProtectorPage, AddAProtector.YesNow)
+          .success
+          .value
 
-          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
-            .mustBe(controllers.register.individual.routes.NameController.onPageLoad(0, fakeDraftId))
+        navigator
+          .nextPage(AddAProtectorPage, fakeDraftId, answers)
+          .mustBe(controllers.register.individual.routes.NameController.onPageLoad(0, fakeDraftId))
       }
-    }
 
-    "go to Business name page from AddAProtectorPage when selected add them now and 25 individual protectors" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = (0 until 25).foldLeft(userAnswers)((acc, index) => {
+    "go to Business name page from AddAProtectorPage when selected add them now and 25 individual protectors" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = (0 until 25)
+          .foldLeft(userAnswers)((acc, index) =>
             acc
-              .set(ind.NamePage(index), FullName("First", None, "Last")).success.value
-              .set(IndividualProtectorStatus(index), Completed).success.value
-          }).set(AddAProtectorPage, AddAProtector.YesNow).success.value
+              .set(ind.NamePage(index), FullName("First", None, "Last"))
+              .success
+              .value
+              .set(IndividualProtectorStatus(index), Completed)
+              .success
+              .value
+          )
+          .set(AddAProtectorPage, AddAProtector.YesNow)
+          .success
+          .value
 
-          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
-            .mustBe(controllers.register.business.routes.NameController.onPageLoad(0, fakeDraftId))
+        navigator
+          .nextPage(AddAProtectorPage, fakeDraftId, answers)
+          .mustBe(controllers.register.business.routes.NameController.onPageLoad(0, fakeDraftId))
       }
-    }
   }
-
 
   "go to RegistrationProgress from AddAProtectorPage" when {
 
-    "selecting add them later" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+    "selecting add them later" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers
+          .set(bus.NamePage(0), "Business")
+          .success
+          .value
+          .set(AddAProtectorPage, AddAProtector.YesLater)
+          .success
+          .value
 
-          val answers = userAnswers
-            .set(bus.NamePage(0), "Business").success.value
-            .set(AddAProtectorPage, AddAProtector.YesLater).success.value
-
-          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
-            .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
+        navigator
+          .nextPage(AddAProtectorPage, fakeDraftId, answers)
+          .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
       }
-    }
 
-    "selecting added them all" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+    "selecting added them all" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers
+          .set(bus.NamePage(0), "Business")
+          .success
+          .value
+          .set(AddAProtectorPage, AddAProtector.NoComplete)
+          .success
+          .value
 
-          val answers = userAnswers
-            .set(bus.NamePage(0), "Business").success.value
-            .set(AddAProtectorPage, AddAProtector.NoComplete).success.value
-
-          navigator.nextPage(AddAProtectorPage, fakeDraftId, answers)
-            .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
+        navigator
+          .nextPage(AddAProtectorPage, fakeDraftId, answers)
+          .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
       }
-    }
 
   }
-
 
   "IndividualOrBusinessPage" when {
 
     "Business option selected" must {
 
-      val name = "Company"
+      val name      = "Company"
       val selection = IndividualOrBusinessToAdd.Business
 
-      "go to NamePage at index 0 when no other businesses" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val answers = userAnswers.set(IndividualOrBusinessPage, selection).success.value
+      "go to NamePage at index 0 when no other businesses" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          val answers = userAnswers.set(IndividualOrBusinessPage, selection).success.value
 
-            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
-              .mustBe(brts.NameController.onPageLoad(0, fakeDraftId))
+          navigator
+            .nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
+            .mustBe(brts.NameController.onPageLoad(0, fakeDraftId))
         }
-      }
 
-      "go to NamePage at next index when there are businesses" in {
-        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
-          (userAnswers, status, n) =>
+      "go to NamePage at next index when there are businesses" in
+        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) { (userAnswers, status, n) =>
+          val answers = (0 until n).foldLeft(userAnswers) { (acc, index) =>
+            val statusAtIndex = if (index == n - 1) Completed else status
+            acc
+              .set(bus.NamePage(index), name)
+              .success
+              .value
+              .set(BusinessProtectorStatus(index), statusAtIndex)
+              .success
+              .value
+          }
 
-            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
-              val statusAtIndex = if (index == n - 1) Completed else status
-              acc
-                .set(bus.NamePage(index), name).success.value
-                .set(BusinessProtectorStatus(index), statusAtIndex).success.value
-            })
+          val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
 
-            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
-
-            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
-              .mustBe(brts.NameController.onPageLoad(n, fakeDraftId))
+          navigator
+            .nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
+            .mustBe(brts.NameController.onPageLoad(n, fakeDraftId))
         }
-      }
     }
 
     "Individual option selected" must {
 
-      val name = FullName("Joe", None, "Bloggs")
+      val name      = FullName("Joe", None, "Bloggs")
       val selection = IndividualOrBusinessToAdd.Individual
 
-      "go to NamePage at index 0 when no other individuals" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val answers = userAnswers.set(IndividualOrBusinessPage, selection).success.value
+      "go to NamePage at index 0 when no other individuals" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          val answers = userAnswers.set(IndividualOrBusinessPage, selection).success.value
 
-            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
-              .mustBe(irts.NameController.onPageLoad(0, fakeDraftId))
+          navigator
+            .nextPage(IndividualOrBusinessPage, fakeDraftId, answers)
+            .mustBe(irts.NameController.onPageLoad(0, fakeDraftId))
         }
-      }
 
-      "go to NamePage at next index when there are individuals" in {
-        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) {
-          (userAnswers, status, n) =>
+      "go to NamePage at next index when there are individuals" in
+        forAll(arbitrary[UserAnswers], arbitrary[Status], Gen.choose(1, max)) { (userAnswers, status, n) =>
+          val answers = (0 until n).foldLeft(userAnswers) { (acc, index) =>
+            val statusAtIndex = if (index == n - 1) Completed else status
+            acc
+              .set(ind.NamePage(index), name)
+              .success
+              .value
+              .set(IndividualProtectorStatus(index), statusAtIndex)
+              .success
+              .value
+          }
 
-            val answers = (0 until n).foldLeft(userAnswers)((acc, index) => {
-              val statusAtIndex = if (index == n - 1) Completed else status
-              acc
-                .set(ind.NamePage(index), name).success.value
-                .set(IndividualProtectorStatus(index), statusAtIndex).success.value
-            })
+          val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
 
-            val answersWithSelection = answers.set(IndividualOrBusinessPage, selection).success.value
-
-            navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
-              .mustBe(irts.NameController.onPageLoad(n, fakeDraftId))
+          navigator
+            .nextPage(IndividualOrBusinessPage, fakeDraftId, answersWithSelection)
+            .mustBe(irts.NameController.onPageLoad(n, fakeDraftId))
         }
-      }
     }
   }
 
   "TrustHasProtectorYesNoPage" when {
 
-    "go to InfoPage from TrustHasProtectorYesNoPage when yes selected" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val answers = userAnswers.set(TrustHasProtectorYesNoPage, value = true).success.value
+    "go to InfoPage from TrustHasProtectorYesNoPage when yes selected" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(TrustHasProtectorYesNoPage, value = true).success.value
 
-          navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, answers)
-            .mustBe(rts.InfoController.onPageLoad(fakeDraftId))
+        navigator
+          .nextPage(TrustHasProtectorYesNoPage, fakeDraftId, answers)
+          .mustBe(rts.InfoController.onPageLoad(fakeDraftId))
       }
-    }
 
-    "go to RegistrationProgress from TrustHasProtectorYesNoPage when no selected" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val answers = userAnswers.set(TrustHasProtectorYesNoPage, value = false).success.value
+    "go to RegistrationProgress from TrustHasProtectorYesNoPage when no selected" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(TrustHasProtectorYesNoPage, value = false).success.value
 
-          navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, answers)
-            .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
+        navigator
+          .nextPage(TrustHasProtectorYesNoPage, fakeDraftId, answers)
+          .mustBe(protectorsCompletedRoute(fakeDraftId, frontendAppConfig))
       }
-    }
 
   }
 
   "nextPage should redirect to SessionExpired Controller" when {
 
-    "user answers are empty, and AddAProtectorPage is next page" in {
-      navigator.nextPage(AddAProtectorPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
-    }
+    "user answers are empty, and AddAProtectorPage is next page" in
+      navigator
+        .nextPage(AddAProtectorPage, fakeDraftId, emptyUserAnswers)
+        .mustBe(controllers.routes.SessionExpiredController.onPageLoad)
 
-    "user answers are empty, and AddAProtectorYesNoPage is next page" in {
-      navigator.nextPage(AddAProtectorYesNoPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
-    }
+    "user answers are empty, and AddAProtectorYesNoPage is next page" in
+      navigator
+        .nextPage(AddAProtectorYesNoPage, fakeDraftId, emptyUserAnswers)
+        .mustBe(controllers.routes.SessionExpiredController.onPageLoad)
 
-    "user answers are empty, and IndividualOrBusinessPage is next page" in {
-      navigator.nextPage(IndividualOrBusinessPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
-    }
+    "user answers are empty, and IndividualOrBusinessPage is next page" in
+      navigator
+        .nextPage(IndividualOrBusinessPage, fakeDraftId, emptyUserAnswers)
+        .mustBe(controllers.routes.SessionExpiredController.onPageLoad)
 
-    "user answers are empty, and TrustHasProtectorYesNoPage is next page" in {
-      navigator.nextPage(TrustHasProtectorYesNoPage, fakeDraftId, emptyUserAnswers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
-    }
+    "user answers are empty, and TrustHasProtectorYesNoPage is next page" in
+      navigator
+        .nextPage(TrustHasProtectorYesNoPage, fakeDraftId, emptyUserAnswers)
+        .mustBe(controllers.routes.SessionExpiredController.onPageLoad)
   }
 
 }

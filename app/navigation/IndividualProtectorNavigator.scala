@@ -27,124 +27,136 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class IndividualProtectorNavigator @Inject()() extends Navigator {
+class IndividualProtectorNavigator @Inject() () extends Navigator {
 
   override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
     routes(draftId)(page)(userAnswers)
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case NamePage(index) => _ => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
-    case DateOfBirthPage(index) => _ => mld5.NationalityYesNoController.onPageLoad(index, draftId)
-    case NationalityPage(index) => ua => navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable)
+    case NamePage(index)                    => _ => irts.DateOfBirthYesNoController.onPageLoad(index, draftId)
+    case DateOfBirthPage(index)             => _ => mld5.NationalityYesNoController.onPageLoad(index, draftId)
+    case NationalityPage(index)             => ua => navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable)
     case NationalInsuranceNumberPage(index) => _ => mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
-    case CountryOfResidencePage(index) => ua => navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua)
-    case UkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case NonUkAddressPage(index) => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
-    case PassportDetailsPage(index) => _ => mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
-    case IDCardDetailsPage(index) => _ => mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
-    case LegallyCapableYesNoPage(index) => _ => irts.CheckDetailsController.onPageLoad(index, draftId)
-    case CheckDetailsPage => _ => rts.AddAProtectorController.onPageLoad(draftId)
+    case CountryOfResidencePage(index)      => ua => navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua)
+    case UkAddressPage(index)               => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
+    case NonUkAddressPage(index)            => _ => irts.PassportDetailsYesNoController.onPageLoad(index, draftId)
+    case PassportDetailsPage(index)         => _ => mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+    case IDCardDetailsPage(index)           => _ => mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+    case LegallyCapableYesNoPage(index)     => _ => irts.CheckDetailsController.onPageLoad(index, draftId)
+    case CheckDetailsPage                   => _ => rts.AddAProtectorController.onPageLoad(draftId)
   }
 
   private def yesNoNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case DateOfBirthYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        DateOfBirthYesNoPage(index),
-        irts.DateOfBirthController.onPageLoad(index, draftId),
-        mld5.NationalityYesNoController.onPageLoad(index, draftId)
-      )
-    case NationalInsuranceYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        NationalInsuranceYesNoPage(index),
-        irts.NationalInsuranceNumberController.onPageLoad(index, draftId),
-        mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
-      )
-    case AddressYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        AddressYesNoPage(index),
-        irts.AddressUkYesNoController.onPageLoad(index, draftId),
-        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
-      )
-    case CountryOfResidencePage(index) => ua =>
-      yesNoNav(
-        ua,
-        NationalInsuranceYesNoPage(index),
-        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId),
-        irts.AddressYesNoController.onPageLoad(index, draftId)
-      )
-    case AddressUkYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        AddressUkYesNoPage(index),
-        irts.UkAddressController.onPageLoad(index, draftId),
-        irts.NonUkAddressController.onPageLoad(index, draftId)
-      )
-    case PassportDetailsYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        PassportDetailsYesNoPage(index),
-        irts.PassportDetailsController.onPageLoad(index, draftId),
-        irts.IDCardDetailsYesNoController.onPageLoad(index, draftId)
-      )
-    case IDCardDetailsYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        IDCardDetailsYesNoPage(index),
-        irts.IDCardDetailsController.onPageLoad(index, draftId),
-        mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
-      )
-    case NationalityYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        NationalityYesNoPage(index),
-        mld5.NationalityUkYesNoController.onPageLoad(index, draftId),
-        navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable)
-      )
-    case CountryOfResidenceYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        CountryOfResidenceYesNoPage(index),
-        mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId),
-        navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua)
-      )
-    case NationalityUkYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        NationalityUkYesNoPage(index),
-        navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable),
-        mld5.NationalityController.onPageLoad(index, draftId)
-      )
-    case CountryOfResidenceInTheUkYesNoPage(index) => ua =>
-      yesNoNav(
-        ua,
-        CountryOfResidenceInTheUkYesNoPage(index),
-        navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua),
-        mld5.CountryOfResidenceController.onPageLoad(index, draftId)
-      )
+    case DateOfBirthYesNoPage(index)               =>
+      ua =>
+        yesNoNav(
+          ua,
+          DateOfBirthYesNoPage(index),
+          irts.DateOfBirthController.onPageLoad(index, draftId),
+          mld5.NationalityYesNoController.onPageLoad(index, draftId)
+        )
+    case NationalInsuranceYesNoPage(index)         =>
+      ua =>
+        yesNoNav(
+          ua,
+          NationalInsuranceYesNoPage(index),
+          irts.NationalInsuranceNumberController.onPageLoad(index, draftId),
+          mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
+        )
+    case AddressYesNoPage(index)                   =>
+      ua =>
+        yesNoNav(
+          ua,
+          AddressYesNoPage(index),
+          irts.AddressUkYesNoController.onPageLoad(index, draftId),
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+        )
+    case CountryOfResidencePage(index)             =>
+      ua =>
+        yesNoNav(
+          ua,
+          NationalInsuranceYesNoPage(index),
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId),
+          irts.AddressYesNoController.onPageLoad(index, draftId)
+        )
+    case AddressUkYesNoPage(index)                 =>
+      ua =>
+        yesNoNav(
+          ua,
+          AddressUkYesNoPage(index),
+          irts.UkAddressController.onPageLoad(index, draftId),
+          irts.NonUkAddressController.onPageLoad(index, draftId)
+        )
+    case PassportDetailsYesNoPage(index)           =>
+      ua =>
+        yesNoNav(
+          ua,
+          PassportDetailsYesNoPage(index),
+          irts.PassportDetailsController.onPageLoad(index, draftId),
+          irts.IDCardDetailsYesNoController.onPageLoad(index, draftId)
+        )
+    case IDCardDetailsYesNoPage(index)             =>
+      ua =>
+        yesNoNav(
+          ua,
+          IDCardDetailsYesNoPage(index),
+          irts.IDCardDetailsController.onPageLoad(index, draftId),
+          mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
+        )
+    case NationalityYesNoPage(index)               =>
+      ua =>
+        yesNoNav(
+          ua,
+          NationalityYesNoPage(index),
+          mld5.NationalityUkYesNoController.onPageLoad(index, draftId),
+          navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable)
+        )
+    case CountryOfResidenceYesNoPage(index)        =>
+      ua =>
+        yesNoNav(
+          ua,
+          CountryOfResidenceYesNoPage(index),
+          mld5.CountryOfResidenceInTheUkYesNoController.onPageLoad(index, draftId),
+          navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua)
+        )
+    case NationalityUkYesNoPage(index)             =>
+      ua =>
+        yesNoNav(
+          ua,
+          NationalityUkYesNoPage(index),
+          navigateAwayFromNationalityQuestions(index, draftId, ua.isTaxable),
+          mld5.NationalityController.onPageLoad(index, draftId)
+        )
+    case CountryOfResidenceInTheUkYesNoPage(index) =>
+      ua =>
+        yesNoNav(
+          ua,
+          CountryOfResidenceInTheUkYesNoPage(index),
+          navigateAwayFromCountryOfResidencyQuestions(index, draftId, ua),
+          mld5.CountryOfResidenceController.onPageLoad(index, draftId)
+        )
   }
 
-  private def navigateAwayFromNationalityQuestions(index: Int, draftId: String, isTaxable: Boolean): Call = {
+  private def navigateAwayFromNationalityQuestions(index: Int, draftId: String, isTaxable: Boolean): Call =
     if (isTaxable) {
       irts.NationalInsuranceYesNoController.onPageLoad(index, draftId)
     } else {
       mld5.CountryOfResidenceYesNoController.onPageLoad(index, draftId)
     }
-  }
 
-  private def navigateAwayFromCountryOfResidencyQuestions(index: Int, draftId: String, answers: ReadableUserAnswers): Call = {
+  private def navigateAwayFromCountryOfResidencyQuestions(
+    index: Int,
+    draftId: String,
+    answers: ReadableUserAnswers
+  ): Call =
     answers.get(NationalInsuranceYesNoPage(index)) match {
       case Some(false) if answers.isTaxable =>
         irts.AddressYesNoController.onPageLoad(index, draftId)
-      case _ =>
+      case _                                =>
         mld5.LegallyCapableYesNoController.onPageLoad(index, draftId)
     }
-  }
 
-  private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+  private def routes(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] =
     simpleNavigation(draftId) orElse yesNoNavigation(draftId)
-  }
 
 }

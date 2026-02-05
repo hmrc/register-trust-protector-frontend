@@ -29,11 +29,11 @@ import views.html.register.business.UtrView
 
 class UtrControllerSpec extends SpecBase {
 
-  val index: Int = 0
-  val formProvider = new UtrFormProvider()
+  val index: Int         = 0
+  val formProvider       = new UtrFormProvider()
   val form: Form[String] = formProvider.withConfig("businessProtector.utr", emptyUserAnswers, index)
 
-  val name = "Business"
+  val name    = "Business"
   val fakeUtr = "1234567890"
 
   lazy val UtrRoute = routes.UtrController.onPageLoad(index, fakeDraftId).url
@@ -42,8 +42,7 @@ class UtrControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.set(NamePage(index),
-        name).success.value
+      val userAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -63,8 +62,13 @@ class UtrControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(UtrPage(index), fakeUtr).success.value
-        .set(NamePage(index), name).success.value
+      val userAnswers = emptyUserAnswers
+        .set(UtrPage(index), fakeUtr)
+        .success
+        .value
+        .set(NamePage(index), name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,14 +88,14 @@ class UtrControllerSpec extends SpecBase {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.set(NamePage(index),
-        name).success.value
+      val userAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(new FakeNavigator)
-          ).build()
+          )
+          .build()
 
       val request =
         FakeRequest(POST, UtrRoute)
@@ -107,8 +111,7 @@ class UtrControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.set(NamePage(index),
-        name).success.value
+      val userAnswers = emptyUserAnswers.set(NamePage(index), name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -162,4 +165,5 @@ class UtrControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

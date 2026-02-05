@@ -24,9 +24,9 @@ import views.html.register.business.UtrYesNoView
 
 class UtrYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val index = 0
+  private val index    = 0
   val messageKeyPrefix = "businessProtector.utrYesNo"
-  val name = "Business"
+  val name             = "Business"
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -45,4 +45,5 @@ class UtrYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

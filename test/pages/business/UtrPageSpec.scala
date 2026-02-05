@@ -19,7 +19,6 @@ package pages.business
 import pages.behaviours.PageBehaviours
 import pages.register.business.UtrPage
 
-
 class UtrPageSpec extends PageBehaviours {
 
   "UtrPage" must {
@@ -31,4 +30,5 @@ class UtrPageSpec extends PageBehaviours {
     beRemovable[String](UtrPage(0))
 
   }
+
 }

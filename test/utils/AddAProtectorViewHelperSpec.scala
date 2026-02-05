@@ -26,24 +26,33 @@ import pages.register.business._
 import pages.register.{individual => ind}
 import viewmodels.{AddRow, AddToRows}
 
-
 class AddAProtectorViewHelperSpec extends SpecBase {
 
-  private def changeInProgressBusinessProtectorRoute(index: Int): String = brts.NameController.onPageLoad(index, draftId).url
-  private def changeCompleteBusinessProtectorRoute(index: Int): String = brts.CheckDetailsController.onPageLoad(index, draftId).url
-  private def removeBusinessProtectorRoute(index: Int): String = brts.RemoveProtectorController.onPageLoad(index, draftId).url
-  
-  private def changeInProgressIndividualProtectorRoute(index: Int): String = irts.NameController.onPageLoad(index, draftId).url
-  private def changeCompleteIndividualProtectorRoute(index: Int): String = irts.CheckDetailsController.onPageLoad(index, draftId).url
-  private def removeIndividualProtectorRoute(index: Int): String = irts.RemoveProtectorController.onPageLoad(index, draftId).url
-  
+  private def changeInProgressBusinessProtectorRoute(index: Int): String =
+    brts.NameController.onPageLoad(index, draftId).url
+
+  private def changeCompleteBusinessProtectorRoute(index: Int): String =
+    brts.CheckDetailsController.onPageLoad(index, draftId).url
+
+  private def removeBusinessProtectorRoute(index: Int): String =
+    brts.RemoveProtectorController.onPageLoad(index, draftId).url
+
+  private def changeInProgressIndividualProtectorRoute(index: Int): String =
+    irts.NameController.onPageLoad(index, draftId).url
+
+  private def changeCompleteIndividualProtectorRoute(index: Int): String =
+    irts.CheckDetailsController.onPageLoad(index, draftId).url
+
+  private def removeIndividualProtectorRoute(index: Int): String =
+    irts.RemoveProtectorController.onPageLoad(index, draftId).url
+
   "Add a protector view helper" when {
 
     def helper(userAnswers: UserAnswers) = new AddAProtectorViewHelper(userAnswers, fakeDraftId)
 
     "business protector" must {
 
-      val name: String = "Business"
+      val name: String  = "Business"
       val label: String = "Business protector"
 
       "render a complete" in {
@@ -51,12 +60,24 @@ class AddAProtectorViewHelperSpec extends SpecBase {
         val index: Int = 0
 
         val userAnswers = emptyUserAnswers
-          .set(NamePage(index), name).success.value
-          .set(UtrYesNoPage(index), false).success.value
-          .set(AddressYesNoPage(index), true).success.value
-          .set(AddressUkYesNoPage(index), true).success.value
-          .set(UkAddressPage(index), UkAddress("line1", "line2", None, None, "NE99 1NE")).success.value
-          .set(BusinessProtectorStatus(index), Completed).success.value
+          .set(NamePage(index), name)
+          .success
+          .value
+          .set(UtrYesNoPage(index), false)
+          .success
+          .value
+          .set(AddressYesNoPage(index), true)
+          .success
+          .value
+          .set(AddressUkYesNoPage(index), true)
+          .success
+          .value
+          .set(UkAddressPage(index), UkAddress("line1", "line2", None, None, "NE99 1NE"))
+          .success
+          .value
+          .set(BusinessProtectorStatus(index), Completed)
+          .success
+          .value
 
         helper(userAnswers).rows mustEqual AddToRows(
           inProgress = Nil,
@@ -78,9 +99,15 @@ class AddAProtectorViewHelperSpec extends SpecBase {
           val index: Int = 0
 
           val userAnswers = emptyUserAnswers
-            .set(NamePage(index), name).success.value
-            .set(UtrYesNoPage(index), false).success.value
-            .set(BusinessProtectorStatus(index), InProgress).success.value
+            .set(NamePage(index), name)
+            .success
+            .value
+            .set(UtrYesNoPage(index), false)
+            .success
+            .value
+            .set(BusinessProtectorStatus(index), InProgress)
+            .success
+            .value
 
           helper(userAnswers).rows mustEqual AddToRows(
             inProgress = List(
@@ -103,19 +130,39 @@ class AddAProtectorViewHelperSpec extends SpecBase {
         val name3 = "Name 3"
 
         val userAnswers = emptyUserAnswers
-          .set(NamePage(0), name1).success.value
-          .set(UtrYesNoPage(0), true).success.value
-          .set(UtrPage(0), "1234567890").success.value
-          .set(BusinessProtectorStatus(0), Completed).success.value
-
-          .set(NamePage(1), name2).success.value
-          .set(UtrYesNoPage(1), true).success.value
-          .set(UtrPage(1), "1234567890").success.value
-          .set(BusinessProtectorStatus(1), Completed).success.value
-
-          .set(NamePage(2), name3).success.value
-          .set(UtrYesNoPage(2), false).success.value
-          .set(BusinessProtectorStatus(2), InProgress).success.value
+          .set(NamePage(0), name1)
+          .success
+          .value
+          .set(UtrYesNoPage(0), true)
+          .success
+          .value
+          .set(UtrPage(0), "1234567890")
+          .success
+          .value
+          .set(BusinessProtectorStatus(0), Completed)
+          .success
+          .value
+          .set(NamePage(1), name2)
+          .success
+          .value
+          .set(UtrYesNoPage(1), true)
+          .success
+          .value
+          .set(UtrPage(1), "1234567890")
+          .success
+          .value
+          .set(BusinessProtectorStatus(1), Completed)
+          .success
+          .value
+          .set(NamePage(2), name3)
+          .success
+          .value
+          .set(UtrYesNoPage(2), false)
+          .success
+          .value
+          .set(BusinessProtectorStatus(2), InProgress)
+          .success
+          .value
 
         helper(userAnswers).rows mustEqual AddToRows(
           inProgress = List(
@@ -147,21 +194,37 @@ class AddAProtectorViewHelperSpec extends SpecBase {
     "individual protector" must {
 
       val name: FullName = FullName("First", Some("Middle"), "Last")
-      val label: String = "Individual protector"
+      val label: String  = "Individual protector"
 
       "render a complete" in {
 
         val index: Int = 0
 
         val userAnswers = emptyUserAnswers
-          .set(ind.NamePage(index), name).success.value
-          .set(ind.DateOfBirthYesNoPage(index), false).success.value
-          .set(ind.AddressYesNoPage(index), true).success.value
-          .set(ind.AddressUkYesNoPage(index), true).success.value
-          .set(ind.UkAddressPage(index), UkAddress("line1", "line2", None, None, "NE99 1NE")).success.value
-          .set(ind.PassportDetailsYesNoPage(index), false).success.value
-          .set(ind.IDCardDetailsYesNoPage(index), false).success.value
-          .set(IndividualProtectorStatus(index), Completed).success.value
+          .set(ind.NamePage(index), name)
+          .success
+          .value
+          .set(ind.DateOfBirthYesNoPage(index), false)
+          .success
+          .value
+          .set(ind.AddressYesNoPage(index), true)
+          .success
+          .value
+          .set(ind.AddressUkYesNoPage(index), true)
+          .success
+          .value
+          .set(ind.UkAddressPage(index), UkAddress("line1", "line2", None, None, "NE99 1NE"))
+          .success
+          .value
+          .set(ind.PassportDetailsYesNoPage(index), false)
+          .success
+          .value
+          .set(ind.IDCardDetailsYesNoPage(index), false)
+          .success
+          .value
+          .set(IndividualProtectorStatus(index), Completed)
+          .success
+          .value
 
         helper(userAnswers).rows mustEqual AddToRows(
           inProgress = Nil,
@@ -183,9 +246,15 @@ class AddAProtectorViewHelperSpec extends SpecBase {
           val index: Int = 0
 
           val userAnswers = emptyUserAnswers
-            .set(ind.NamePage(index), name).success.value
-            .set(ind.DateOfBirthYesNoPage(index), false).success.value
-            .set(IndividualProtectorStatus(index), InProgress).success.value
+            .set(ind.NamePage(index), name)
+            .success
+            .value
+            .set(ind.DateOfBirthYesNoPage(index), false)
+            .success
+            .value
+            .set(IndividualProtectorStatus(index), InProgress)
+            .success
+            .value
 
           helper(userAnswers).rows mustEqual AddToRows(
             inProgress = List(
@@ -208,25 +277,57 @@ class AddAProtectorViewHelperSpec extends SpecBase {
         val name3: FullName = FullName("Name 3", Some("Middle"), "Last")
 
         val userAnswers = emptyUserAnswers
-          .set(ind.NamePage(0), name1).success.value
-          .set(ind.DateOfBirthYesNoPage(0), false).success.value
-          .set(ind.NationalInsuranceYesNoPage(0), true).success.value
-          .set(ind.NationalInsuranceNumberPage(0), "AB123456C").success.value
-          .set(IndividualProtectorStatus(0), Completed).success.value
-
-          .set(ind.NamePage(1), name2).success.value
-          .set(ind.DateOfBirthYesNoPage(1), false).success.value
-          .set(ind.NationalInsuranceYesNoPage(1), false).success.value
-          .set(ind.AddressYesNoPage(1), true).success.value
-          .set(ind.AddressUkYesNoPage(1), true).success.value
-          .set(ind.UkAddressPage(1), UkAddress("line1", "line2", None, None, "NE99 1NE")).success.value
-          .set(ind.PassportDetailsYesNoPage(1), false).success.value
-          .set(ind.IDCardDetailsYesNoPage(1), false).success.value
-          .set(IndividualProtectorStatus(1), Completed).success.value
-
-          .set(ind.NamePage(2), name3).success.value
-          .set(ind.DateOfBirthYesNoPage(2), false).success.value
-          .set(IndividualProtectorStatus(2), InProgress).success.value
+          .set(ind.NamePage(0), name1)
+          .success
+          .value
+          .set(ind.DateOfBirthYesNoPage(0), false)
+          .success
+          .value
+          .set(ind.NationalInsuranceYesNoPage(0), true)
+          .success
+          .value
+          .set(ind.NationalInsuranceNumberPage(0), "AB123456C")
+          .success
+          .value
+          .set(IndividualProtectorStatus(0), Completed)
+          .success
+          .value
+          .set(ind.NamePage(1), name2)
+          .success
+          .value
+          .set(ind.DateOfBirthYesNoPage(1), false)
+          .success
+          .value
+          .set(ind.NationalInsuranceYesNoPage(1), false)
+          .success
+          .value
+          .set(ind.AddressYesNoPage(1), true)
+          .success
+          .value
+          .set(ind.AddressUkYesNoPage(1), true)
+          .success
+          .value
+          .set(ind.UkAddressPage(1), UkAddress("line1", "line2", None, None, "NE99 1NE"))
+          .success
+          .value
+          .set(ind.PassportDetailsYesNoPage(1), false)
+          .success
+          .value
+          .set(ind.IDCardDetailsYesNoPage(1), false)
+          .success
+          .value
+          .set(IndividualProtectorStatus(1), Completed)
+          .success
+          .value
+          .set(ind.NamePage(2), name3)
+          .success
+          .value
+          .set(ind.DateOfBirthYesNoPage(2), false)
+          .success
+          .value
+          .set(IndividualProtectorStatus(2), InProgress)
+          .success
+          .value
 
         helper(userAnswers).rows mustEqual AddToRows(
           inProgress = List(

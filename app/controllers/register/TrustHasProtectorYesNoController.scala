@@ -32,44 +32,43 @@ import views.html.register.TrustHasProtectorYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustHasProtectorYesNoController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  repository: RegistrationsRepository,
-                                                  navigator: Navigator,
-                                                  standardActionSets: StandardActionSets,
-                                                  formProvider: YesNoFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: TrustHasProtectorYesNoView,
-                                                  trustsStoreService: TrustsStoreService
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TrustHasProtectorYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  repository: RegistrationsRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TrustHasProtectorYesNoView,
+  trustsStoreService: TrustsStoreService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustHasProtectorYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(TrustHasProtectorYesNoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustHasProtectorYesNoPage, value))
-            _ <- repository.set(updatedAnswers)
-            _ <- trustsStoreService.updateTaskStatus(draftId, if (value) InProgress else Completed)
-          } yield Redirect(navigator.nextPage(TrustHasProtectorYesNoPage, draftId, updatedAnswers))
-      )
-  }
+  def onSubmit(draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, draftId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustHasProtectorYesNoPage, value))
+              _              <- repository.set(updatedAnswers)
+              _              <- trustsStoreService.updateTaskStatus(draftId, if (value) InProgress else Completed)
+            } yield Redirect(navigator.nextPage(TrustHasProtectorYesNoPage, draftId, updatedAnswers))
+        )
+    }
 
 }

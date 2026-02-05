@@ -21,17 +21,19 @@ import play.api.Logging
 
 import javax.inject.Inject
 
-class ProtectorsMapper @Inject()(individualProtectorMapper: IndividualProtectorMapper,
-                                 businessProtectorMapper: BusinessProtectorMapper) extends Logging {
+class ProtectorsMapper @Inject() (
+  individualProtectorMapper: IndividualProtectorMapper,
+  businessProtectorMapper: BusinessProtectorMapper
+) extends Logging {
 
-  def build(userAnswers: UserAnswers): Option[ProtectorsType] = {
+  def build(userAnswers: UserAnswers): Option[ProtectorsType] =
 
     (individualProtectorMapper.build(userAnswers), businessProtectorMapper.build(userAnswers)) match {
-      case (None, None) =>
+      case (None, None)              =>
         logger.info(s"[build] no protectors to map")
         None
       case (individuals, businesses) =>
         Some(ProtectorsType(protector = individuals, protectorCompany = businesses))
     }
-  }
+
 }

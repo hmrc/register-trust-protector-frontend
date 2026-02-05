@@ -31,39 +31,40 @@ import views.html.register.business.NameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameController @Inject()(
-                                val controllerComponents: MessagesControllerComponents,
-                                standardActionSets: StandardActionSets,
-                                formProvider: StringFormProvider,
-                                repository: RegistrationsRepository,
-                                view: NameView,
-                                @BusinessProtector navigator: Navigator
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NameController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  standardActionSets: StandardActionSets,
+  formProvider: StringFormProvider,
+  repository: RegistrationsRepository,
+  view: NameView,
+  @BusinessProtector navigator: Navigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form: Form[String] = formProvider.withPrefix("businessProtector.name", 105)
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(NamePage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, index, draftId))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, draftId))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage(index), draftId, updatedAnswers))
-        }
-      )
-  }
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NamePage(index), draftId, updatedAnswers))
+        )
+    }
+
 }

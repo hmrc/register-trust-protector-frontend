@@ -19,17 +19,20 @@ package mapping.reads
 import models.{IdentificationOrgType, InternationalAddress, UkAddress}
 import play.api.libs.json.{Format, Json}
 
-final case class BusinessProtector(name: String,
-                                   utr: Option[String],
-                                   ukAddress: Option[UkAddress],
-                                   internationalAddress: Option[InternationalAddress],
-                                   countryOfResidence: Option[String]) extends Protector {
+final case class BusinessProtector(
+  name: String,
+  utr: Option[String],
+  ukAddress: Option[UkAddress],
+  internationalAddress: Option[InternationalAddress],
+  countryOfResidence: Option[String]
+) extends Protector {
 
   val identification: Option[IdentificationOrgType] = (utr, ukAddress, internationalAddress) match {
     case (None, None, None) => None
-    case (Some(_),_ , _) => Some(IdentificationOrgType(utr, None))
-    case _ => Some(IdentificationOrgType(None, address))
+    case (Some(_), _, _)    => Some(IdentificationOrgType(utr, None))
+    case _                  => Some(IdentificationOrgType(None, address))
   }
+
 }
 
 object BusinessProtector {

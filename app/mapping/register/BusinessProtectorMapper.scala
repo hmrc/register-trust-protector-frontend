@@ -30,4 +30,5 @@ class BusinessProtectorMapper extends Mapper[ProtectorCompany, BusinessProtector
     identification = protector.identification,
     countryOfResidence = protector.countryOfResidence
   )
+
 }

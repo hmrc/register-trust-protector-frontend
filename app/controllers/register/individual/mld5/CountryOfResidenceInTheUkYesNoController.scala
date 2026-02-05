@@ -32,43 +32,42 @@ import views.html.register.individual.mld5.CountryOfResidenceInTheUkYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfResidenceInTheUkYesNoController @Inject()(
-                                               val controllerComponents: MessagesControllerComponents,
-                                               @IndividualProtector navigator: Navigator,
-                                               standardActionSets: StandardActionSets,
-                                               formProvider: YesNoFormProvider,
-                                               repository: RegistrationsRepository,
-                                               nameAction: NameRequiredAction,
-                                               view: CountryOfResidenceInTheUkYesNoView
-                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryOfResidenceInTheUkYesNoController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  @IndividualProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: YesNoFormProvider,
+  repository: RegistrationsRepository,
+  nameAction: NameRequiredAction,
+  view: CountryOfResidenceInTheUkYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("individualProtector.5mld.countryOfResidenceInTheUkYesNo")
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
-    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
-    implicit request =>
-
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) { implicit request =>
       val preparedForm = request.userAnswers.get(CountryOfResidenceInTheUkYesNoPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm,  draftId , index, request.protectorName))
-  }
+      Ok(view(preparedForm, draftId, index, request.protectorName))
+    }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] =
-    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
-    implicit request =>
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, draftId, index, request.protectorName))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, draftId , index, request.protectorName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidenceInTheUkYesNoPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfResidenceInTheUkYesNoPage(index), draftId, updatedAnswers))
-      )
-  }
 }

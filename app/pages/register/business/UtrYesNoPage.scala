@@ -23,23 +23,24 @@ import sections.BusinessProtectors
 
 import scala.util.Try
 
-final case class UtrYesNoPage(index : Int) extends QuestionPage[Boolean] {
+final case class UtrYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = BusinessProtectors.path \ index \ toString
 
   override def toString: String = "utrYesNo"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) =>
-        userAnswers.remove(AddressYesNoPage(index))
+      case Some(true)  =>
+        userAnswers
+          .remove(AddressYesNoPage(index))
           .flatMap(_.remove(AddressUkYesNoPage(index)))
           .flatMap(_.remove(UkAddressPage(index)))
           .flatMap(_.remove(NonUkAddressPage(index)))
       case Some(false) =>
         userAnswers.remove(UtrPage(index))
-      case _ =>
+      case _           =>
         super.cleanup(value, userAnswers)
     }
-  }
+
 }

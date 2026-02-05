@@ -32,41 +32,43 @@ import views.html.register.business.UtrView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UtrController @Inject()(
-                               val controllerComponents: MessagesControllerComponents,
-                               standardActionSets: StandardActionSets,
-                               nameAction: NameRequiredAction,
-                               formProvider: UtrFormProvider,
-                               repository: RegistrationsRepository,
-                               view: UtrView,
-                               @BusinessProtector navigator: Navigator
-                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UtrController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: UtrFormProvider,
+  repository: RegistrationsRepository,
+  view: UtrView,
+  @BusinessProtector navigator: Navigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def form(index: Int)(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
     formProvider.withConfig("businessProtector.utr", request.userAnswers, index)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
-    implicit request =>
-
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) { implicit request =>
       val preparedForm = request.userAnswers.get(UtrPage(index)) match {
-        case None => form(index)
+        case None        => form(index)
         case Some(value) => form(index).fill(value)
       }
 
       Ok(view(preparedForm, request.protectorName, index, draftId))
-  }
+    }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
-    implicit request =>
-      form(index).bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage(index), value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrPage(index), draftId, updatedAnswers))
-        }
-      )
-  }
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async { implicit request =>
+      form(index)
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UtrPage(index), draftId, updatedAnswers))
+        )
+    }
+
 }

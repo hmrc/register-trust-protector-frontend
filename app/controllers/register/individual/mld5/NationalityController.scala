@@ -33,46 +33,46 @@ import views.html.register.individual.mld5.NationalityView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NationalityController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              registrationsRepository: RegistrationsRepository,
-                                              @IndividualProtector navigator: Navigator,
-                                              standardActionSets: StandardActionSets,
-                                              nameAction: NameRequiredAction,
-                                              formProvider: CountryFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val countryOptions: CountryOptionsNonUK,
-                                              view: NationalityView
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NationalityController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  @IndividualProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: CountryFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  val countryOptions: CountryOptionsNonUK,
+  view: NationalityView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withPrefix("individualProtector.5mld.nationality")
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
-    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) {
-      implicit request =>
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)) { implicit request =>
+      val preparedForm = request.userAnswers.get(NationalityPage(index)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-        val preparedForm = request.userAnswers.get(NationalityPage(index)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-
-        Ok(view(preparedForm, countryOptions.options(), draftId, index, request.protectorName))
+      Ok(view(preparedForm, countryOptions.options(), draftId, index, request.protectorName))
     }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] =
-    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async {
-      implicit request =>
-
-        form.bindFromRequest().fold(
+    standardActionSets.identifiedUserWithData(draftId).andThen(nameAction(index)).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), draftId, index, request.protectorName))),
-
-          value => {
+            Future.successful(
+              BadRequest(view(formWithErrors, countryOptions.options(), draftId, index, request.protectorName))
+            ),
+          value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityPage(index), value))
               _              <- registrationsRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NationalityPage(index), draftId, updatedAnswers))
-          }
         )
     }
+
 }

@@ -27,4 +27,5 @@ class IndividualOrBusinessFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[IndividualOrBusinessToAdd]("individualOrBusiness.error.required")
     )
+
 }

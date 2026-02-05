@@ -37,9 +37,9 @@ import scala.concurrent.Future
 
 class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustHasProtectorYesNo")
+  private val form: Form[Boolean]              = new YesNoFormProvider().withPrefix("trustHasProtectorYesNo")
   lazy val trustHasProtectorYesNoRoute: String = routes.TrustHasProtectorYesNoController.onPageLoad(draftId).url
-  private val onwardRoute = Call("GET", "/foo")
+  private val onwardRoute                      = Call("GET", "/foo")
 
   private val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
 
@@ -185,4 +185,5 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
       application.stop()
     }
   }
+
 }

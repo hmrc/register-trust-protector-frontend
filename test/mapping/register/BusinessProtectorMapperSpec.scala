@@ -22,10 +22,11 @@ import models.{AddressType, IdentificationOrgType, InternationalAddress, Protect
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import pages.register.business._
-import pages.register.business.mld5.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.register.business.mld5.{
+  CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
+}
 
-class BusinessProtectorMapperSpec extends SpecBase with Matchers
-  with OptionValues with Generators {
+class BusinessProtectorMapperSpec extends SpecBase with Matchers with OptionValues with Generators {
 
   private val mapper = injector.instanceOf[BusinessProtectorMapper]
   private val index0 = 0
@@ -50,13 +51,19 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
         "name, utr is set" in {
           val userAnswers =
             emptyUserAnswers
-              .set(NamePage(index0), "Business Name").success.value
-              .set(UtrYesNoPage(index0), true).success.value
-              .set(UtrPage(index0), "1234567890").success.value
+              .set(NamePage(index0), "Business Name")
+              .success
+              .value
+              .set(UtrYesNoPage(index0), true)
+              .success
+              .value
+              .set(UtrPage(index0), "1234567890")
+              .success
+              .value
 
           val businessProtectors = mapper.build(userAnswers)
 
-          businessProtectors mustBe defined
+          businessProtectors            mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
             identification = Some(IdentificationOrgType(utr = Some("1234567890"), address = None)),
@@ -67,16 +74,28 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
         "name, utr, residency GB is set" in {
           val userAnswers =
             emptyUserAnswers
-              .set(NamePage(index0), "Business Name").success.value
-              .set(UtrYesNoPage(index0), true).success.value
-              .set(UtrPage(index0), "JP121212A").success.value
-              .set(CountryOfResidenceYesNoPage(index0), true).success.value
-              .set(CountryOfResidenceInTheUkYesNoPage(index0), true).success.value
-              .set(CountryOfResidencePage(index0), "GB").success.value
+              .set(NamePage(index0), "Business Name")
+              .success
+              .value
+              .set(UtrYesNoPage(index0), true)
+              .success
+              .value
+              .set(UtrPage(index0), "JP121212A")
+              .success
+              .value
+              .set(CountryOfResidenceYesNoPage(index0), true)
+              .success
+              .value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), true)
+              .success
+              .value
+              .set(CountryOfResidencePage(index0), "GB")
+              .success
+              .value
 
           val businessProtectors = mapper.build(userAnswers)
 
-          businessProtectors mustBe defined
+          businessProtectors            mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
             identification = Some(IdentificationOrgType(utr = Some("JP121212A"), address = None)),
@@ -87,16 +106,28 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
         "name, utr, residency country is set" in {
           val userAnswers =
             emptyUserAnswers
-              .set(NamePage(index0), "Business Name").success.value
-              .set(UtrYesNoPage(index0), true).success.value
-              .set(UtrPage(index0), "JP121212A").success.value
-              .set(CountryOfResidenceYesNoPage(index0), true).success.value
-              .set(CountryOfResidenceInTheUkYesNoPage(index0), false).success.value
-              .set(CountryOfResidencePage(index0), "FR").success.value
+              .set(NamePage(index0), "Business Name")
+              .success
+              .value
+              .set(UtrYesNoPage(index0), true)
+              .success
+              .value
+              .set(UtrPage(index0), "JP121212A")
+              .success
+              .value
+              .set(CountryOfResidenceYesNoPage(index0), true)
+              .success
+              .value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), false)
+              .success
+              .value
+              .set(CountryOfResidencePage(index0), "FR")
+              .success
+              .value
 
           val businessProtectors = mapper.build(userAnswers)
 
-          businessProtectors mustBe defined
+          businessProtectors            mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
             identification = Some(IdentificationOrgType(utr = Some("JP121212A"), address = None)),
@@ -107,23 +138,35 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
         "name, UK Address is set" in {
           val userAnswers =
             emptyUserAnswers
-              .set(NamePage(index0), "Business Name").success.value
-              .set(UtrYesNoPage(index0), false).success.value
-              .set(AddressYesNoPage(index0), true).success.value
-              .set(AddressUkYesNoPage(index0), true).success.value
-              .set(UkAddressPage(index0),
-                UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT")).success.value
+              .set(NamePage(index0), "Business Name")
+              .success
+              .value
+              .set(UtrYesNoPage(index0), false)
+              .success
+              .value
+              .set(AddressYesNoPage(index0), true)
+              .success
+              .value
+              .set(AddressUkYesNoPage(index0), true)
+              .success
+              .value
+              .set(UkAddressPage(index0), UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT"))
+              .success
+              .value
 
           val businessProtectors = mapper.build(userAnswers)
 
-          businessProtectors mustBe defined
+          businessProtectors            mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
-            identification = Some(IdentificationOrgType(utr = None,
-              address = Some(
-                AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
+            identification = Some(
+              IdentificationOrgType(
+                utr = None,
+                address = Some(
+                  AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
+                )
               )
-            )),
+            ),
             countryOfResidence = None
           )
         }
@@ -131,24 +174,35 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
         "name, International Address is set" in {
           val userAnswers =
             emptyUserAnswers
-              .set(NamePage(index0), "Business Name").success.value
-              .set(UtrYesNoPage(index0), false).success.value
-              .set(AddressYesNoPage(index0), true).success.value
-              .set(AddressUkYesNoPage(index0), false).success.value
-              .set(NonUkAddressPage(index0),
-                InternationalAddress("Line1", "Line2", Some("Line3"), "US")).success.value
+              .set(NamePage(index0), "Business Name")
+              .success
+              .value
+              .set(UtrYesNoPage(index0), false)
+              .success
+              .value
+              .set(AddressYesNoPage(index0), true)
+              .success
+              .value
+              .set(AddressUkYesNoPage(index0), false)
+              .success
+              .value
+              .set(NonUkAddressPage(index0), InternationalAddress("Line1", "Line2", Some("Line3"), "US"))
+              .success
+              .value
 
           val businessProtectors = mapper.build(userAnswers)
 
-          businessProtectors mustBe defined
+          businessProtectors            mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
-            identification = Some(IdentificationOrgType(
-              utr = None,
-              address = Some(
-                AddressType("Line1", "Line2", Some("Line3"), None, None, "US")
+            identification = Some(
+              IdentificationOrgType(
+                utr = None,
+                address = Some(
+                  AddressType("Line1", "Line2", Some("Line3"), None, None, "US")
+                )
               )
-            )),
+            ),
             countryOfResidence = None
           )
         }
@@ -156,26 +210,44 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
         "name, residency, address is set" in {
           val userAnswers =
             emptyUserAnswers
-              .set(NamePage(index0), "Business Name").success.value
-              .set(UtrYesNoPage(index0), false).success.value
-              .set(CountryOfResidenceYesNoPage(index0), true).success.value
-              .set(CountryOfResidenceInTheUkYesNoPage(index0), false).success.value
-              .set(CountryOfResidencePage(index0), "FR").success.value
-              .set(AddressYesNoPage(index0), true).success.value
-              .set(AddressUkYesNoPage(index0), true).success.value
-              .set(UkAddressPage(index0),
-                UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT")).success.value
+              .set(NamePage(index0), "Business Name")
+              .success
+              .value
+              .set(UtrYesNoPage(index0), false)
+              .success
+              .value
+              .set(CountryOfResidenceYesNoPage(index0), true)
+              .success
+              .value
+              .set(CountryOfResidenceInTheUkYesNoPage(index0), false)
+              .success
+              .value
+              .set(CountryOfResidencePage(index0), "FR")
+              .success
+              .value
+              .set(AddressYesNoPage(index0), true)
+              .success
+              .value
+              .set(AddressUkYesNoPage(index0), true)
+              .success
+              .value
+              .set(UkAddressPage(index0), UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT"))
+              .success
+              .value
 
           val businessProtectors = mapper.build(userAnswers)
 
-          businessProtectors mustBe defined
+          businessProtectors            mustBe defined
           businessProtectors.value.head mustBe ProtectorCompany(
             name = "Business Name",
-            identification = Some(IdentificationOrgType(utr = None,
-              address = Some(
-                AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
+            identification = Some(
+              IdentificationOrgType(
+                utr = None,
+                address = Some(
+                  AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
+                )
               )
-            )),
+            ),
             countryOfResidence = Some("FR")
           )
         }
@@ -185,21 +257,34 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
       "must be able to create multiple Business Protectors" in {
         val userAnswers =
           emptyUserAnswers
-            .set(NamePage(index0), "Business Name 1").success.value
-            .set(UtrYesNoPage(index0), true).success.value
-            .set(UtrPage(index0), "1234567890").success.value
-
-            .set(NamePage(index1), "Business Name 2").success.value
-            .set(UtrYesNoPage(index1), false).success.value
-            .set(AddressYesNoPage(index1), true).success.value
-            .set(AddressUkYesNoPage(index1), true).success.value
-            .set(UkAddressPage(index1),
-              UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT")).success.value
-
+            .set(NamePage(index0), "Business Name 1")
+            .success
+            .value
+            .set(UtrYesNoPage(index0), true)
+            .success
+            .value
+            .set(UtrPage(index0), "1234567890")
+            .success
+            .value
+            .set(NamePage(index1), "Business Name 2")
+            .success
+            .value
+            .set(UtrYesNoPage(index1), false)
+            .success
+            .value
+            .set(AddressYesNoPage(index1), true)
+            .success
+            .value
+            .set(AddressUkYesNoPage(index1), true)
+            .success
+            .value
+            .set(UkAddressPage(index1), UkAddress("Line1", "Line2", Some("Line3"), Some("Newcastle"), "NE62RT"))
+            .success
+            .value
 
         val businessProtectors = mapper.build(userAnswers)
 
-        businessProtectors mustBe defined
+        businessProtectors       mustBe defined
         businessProtectors.value mustBe
           List(
             ProtectorCompany(
@@ -214,7 +299,8 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
                   utr = None,
                   address = Some(
                     AddressType("Line1", "Line2", Some("Line3"), Some("Newcastle"), Some("NE62RT"), "GB")
-                  ))
+                  )
+                )
               ),
               countryOfResidence = None
             )
@@ -223,5 +309,5 @@ class BusinessProtectorMapperSpec extends SpecBase with Matchers
 
     }
   }
-}
 
+}

@@ -26,13 +26,13 @@ class AddAProtectorFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "addAProtector.error.required"
 
     behave like optionsField[AddAProtector](
       form,
       fieldName,
-      validValues  = AddAProtector.values,
+      validValues = AddAProtector.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
@@ -42,4 +42,5 @@ class AddAProtectorFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

@@ -25,10 +25,10 @@ trait Protector {
 
   def address: Option[AddressType] = buildValue(ukAddress, internationalAddress)(buildAddress)
 
-  def buildValue[A, B](o1: Option[A], o2: Option[A])
-                      (build: A => Option[B]): Option[B] = (o1, o2) match {
+  def buildValue[A, B](o1: Option[A], o2: Option[A])(build: A => Option[B]): Option[B] = (o1, o2) match {
     case (Some(v), _) => build(v)
     case (_, Some(v)) => build(v)
-    case _ => None
+    case _            => None
   }
+
 }

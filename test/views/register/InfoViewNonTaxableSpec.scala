@@ -27,7 +27,9 @@ class InfoViewNonTaxableSpec extends ViewBehaviours {
 
     val applyView = view.apply(fakeDraftId)(fakeRequest, messages)
 
-    behave like normalPageTitleWithSectionSubheading(applyView, "protectorsInfo.5mld.nonTaxable",
+    behave like normalPageTitleWithSectionSubheading(
+      applyView,
+      "protectorsInfo.5mld.nonTaxable",
       "caption",
       "subheading1",
       "paragraph1",
@@ -52,4 +54,5 @@ class InfoViewNonTaxableSpec extends ViewBehaviours {
     behave like pageWithBackLink(applyView)
 
   }
+
 }

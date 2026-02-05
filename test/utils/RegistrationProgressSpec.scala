@@ -31,7 +31,7 @@ class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
   private val registrationProgress: RegistrationProgress = injector.instanceOf[RegistrationProgress]
 
-  private val business = "Amazon"
+  private val business   = "Amazon"
   private val individual = FullName("Joe", None, "Bloggs")
 
   "RegistrationProgress" must {
@@ -41,7 +41,7 @@ class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "no protectors added and TrustHasProtectorYesNoPage is undefined" in {
 
         val userAnswers = emptyUserAnswers
-        val result = registrationProgress.protectorsStatus(userAnswers)
+        val result      = registrationProgress.protectorsStatus(userAnswers)
         result mustBe None
       }
     }
@@ -51,20 +51,31 @@ class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "no protectors added and TrustHasProtectorYesNoPage is false" in {
 
         val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, false).success.value
-        val result = registrationProgress.protectorsStatus(userAnswers)
+        val result      = registrationProgress.protectorsStatus(userAnswers)
         result mustBe Some(Completed)
       }
 
       "protectors added, all are complete and NoComplete selected" in {
 
         val userAnswers = emptyUserAnswers
-          .set(TrustHasProtectorYesNoPage, true).success.value
-          .set(AddAProtectorPage, NoComplete).success.value
-
-          .set(bus.NamePage(0), business).success.value
-          .set(BusinessProtectorStatus(0), Completed).success.value
-          .set(ind.NamePage(0), individual).success.value
-          .set(IndividualProtectorStatus(0), Completed).success.value
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
+          .set(AddAProtectorPage, NoComplete)
+          .success
+          .value
+          .set(bus.NamePage(0), business)
+          .success
+          .value
+          .set(BusinessProtectorStatus(0), Completed)
+          .success
+          .value
+          .set(ind.NamePage(0), individual)
+          .success
+          .value
+          .set(IndividualProtectorStatus(0), Completed)
+          .success
+          .value
 
         val result = registrationProgress.protectorsStatus(userAnswers)
         result mustBe Some(Completed)
@@ -76,15 +87,22 @@ class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "no protectors added and TrustHasProtectorYesNoPage is true" in {
 
         val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
-        val result = registrationProgress.protectorsStatus(userAnswers)
+        val result      = registrationProgress.protectorsStatus(userAnswers)
         result mustBe Some(InProgress)
       }
 
       "protectors added but none are complete" in {
 
-        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
-          .set(bus.NamePage(0), business).success.value
-          .set(ind.NamePage(0), individual).success.value
+        val userAnswers = emptyUserAnswers
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
+          .set(bus.NamePage(0), business)
+          .success
+          .value
+          .set(ind.NamePage(0), individual)
+          .success
+          .value
 
         val result = registrationProgress.protectorsStatus(userAnswers)
         result mustBe Some(InProgress)
@@ -92,10 +110,19 @@ class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       "protectors added but one business is in progress" in {
 
-        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
-          .set(bus.NamePage(0), business).success.value
-          .set(ind.NamePage(0), individual).success.value
-          .set(IndividualProtectorStatus(0), Completed).success.value
+        val userAnswers = emptyUserAnswers
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
+          .set(bus.NamePage(0), business)
+          .success
+          .value
+          .set(ind.NamePage(0), individual)
+          .success
+          .value
+          .set(IndividualProtectorStatus(0), Completed)
+          .success
+          .value
 
         val result = registrationProgress.protectorsStatus(userAnswers)
         result mustBe Some(InProgress)
@@ -103,32 +130,49 @@ class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       "protectors added but one individual is in progress" in {
 
-        val userAnswers = emptyUserAnswers.set(TrustHasProtectorYesNoPage, true).success.value
-          .set(bus.NamePage(0), business).success.value
-          .set(BusinessProtectorStatus(0), Completed).success.value
-          .set(ind.NamePage(0), individual).success.value
+        val userAnswers = emptyUserAnswers
+          .set(TrustHasProtectorYesNoPage, true)
+          .success
+          .value
+          .set(bus.NamePage(0), business)
+          .success
+          .value
+          .set(BusinessProtectorStatus(0), Completed)
+          .success
+          .value
+          .set(ind.NamePage(0), individual)
+          .success
+          .value
 
         val result = registrationProgress.protectorsStatus(userAnswers)
         result mustBe Some(InProgress)
       }
 
-      "protectors added, all are complete but NoComplete not selected" in {
-
+      "protectors added, all are complete but NoComplete not selected" in
         forAll(arbitrary[AddAProtector].suchThat(_ != NoComplete)) { selection =>
-
           val userAnswers = emptyUserAnswers
-            .set(TrustHasProtectorYesNoPage, true).success.value
-            .set(AddAProtectorPage, selection).success.value
-
-            .set(bus.NamePage(0), business).success.value
-            .set(BusinessProtectorStatus(0), Completed).success.value
-            .set(ind.NamePage(0), individual).success.value
-            .set(IndividualProtectorStatus(0), Completed).success.value
+            .set(TrustHasProtectorYesNoPage, true)
+            .success
+            .value
+            .set(AddAProtectorPage, selection)
+            .success
+            .value
+            .set(bus.NamePage(0), business)
+            .success
+            .value
+            .set(BusinessProtectorStatus(0), Completed)
+            .success
+            .value
+            .set(ind.NamePage(0), individual)
+            .success
+            .value
+            .set(IndividualProtectorStatus(0), Completed)
+            .success
+            .value
 
           val result = registrationProgress.protectorsStatus(userAnswers)
           result mustBe Some(InProgress)
         }
-      }
     }
   }
 

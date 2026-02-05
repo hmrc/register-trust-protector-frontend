@@ -33,34 +33,47 @@ class UtrYesNoPageSpec extends PageBehaviours {
 
     "remove relevant Data when UtrYesNoPage is set to true" in {
       val index = 0
-      forAll(arbitrary[UserAnswers], arbitrary[String]) {
-        (initial, str) =>
-          val answers: UserAnswers = initial.set(AddressYesNoPage(index), true).success.value
-            .set(AddressUkYesNoPage(index), true).success.value
-            .set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str)).success.value
-            .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str)).success.value
+      forAll(arbitrary[UserAnswers], arbitrary[String]) { (initial, str) =>
+        val answers: UserAnswers = initial
+          .set(AddressYesNoPage(index), true)
+          .success
+          .value
+          .set(AddressUkYesNoPage(index), true)
+          .success
+          .value
+          .set(UkAddressPage(index), UkAddress(str, str, Some(str), Some(str), str))
+          .success
+          .value
+          .set(NonUkAddressPage(index), InternationalAddress(str, str, Some(str), str))
+          .success
+          .value
 
-          val result = answers.set(UtrYesNoPage(index), true).success.value
+        val result = answers.set(UtrYesNoPage(index), true).success.value
 
-          result.get(AddressYesNoPage(index)) mustNot be(defined)
-          result.get(AddressUkYesNoPage(index)) mustNot be(defined)
-          result.get(UkAddressPage(index)) mustNot be(defined)
-          result.get(NonUkAddressPage(index)) mustNot be(defined)
+        result.get(AddressYesNoPage(index)) mustNot be(defined)
+        result.get(AddressUkYesNoPage(index)) mustNot be(defined)
+        result.get(UkAddressPage(index)) mustNot be(defined)
+        result.get(NonUkAddressPage(index)) mustNot be(defined)
       }
     }
 
     "remove relevant Data when UtrYesNoPage is set to false" in {
       val index = 0
-      forAll(arbitrary[UserAnswers], arbitrary[String]) {
-        (initial, str) =>
-          val answers: UserAnswers = initial.set(UtrYesNoPage(index), true).success.value
-            .set(UtrPage(index), "1234567890").success.value
+      forAll(arbitrary[UserAnswers], arbitrary[String]) { (initial, str) =>
+        val answers: UserAnswers = initial
+          .set(UtrYesNoPage(index), true)
+          .success
+          .value
+          .set(UtrPage(index), "1234567890")
+          .success
+          .value
 
-          val result = answers.set(UtrYesNoPage(index), false).success.value
+        val result = answers.set(UtrYesNoPage(index), false).success.value
 
-          result.get(UtrPage(index)) mustNot be(defined)
+        result.get(UtrPage(index)) mustNot be(defined)
       }
     }
 
   }
+
 }

@@ -39,13 +39,17 @@ import views.html.register.individual.CheckDetailsView
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val index: Int = 0
-  private val name = FullName("Test", None, "Name")
+  private val name       = FullName("Test", None, "Name")
 
   private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index, fakeDraftId).url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(IndividualOrBusinessPage, Individual).success.value
-    .set(NamePage(index), name).success.value
+    .set(IndividualOrBusinessPage, Individual)
+    .success
+    .value
+    .set(NamePage(index), name)
+    .success
+    .value
 
   "CheckDetails Controller" must {
 
@@ -57,8 +61,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CheckDetailsView]
-      val printHelper = application.injector.instanceOf[IndividualProtectorPrintHelper]
+      val view          = application.injector.instanceOf[CheckDetailsView]
+      val printHelper   = application.injector.instanceOf[IndividualProtectorPrintHelper]
       val answerSection = printHelper.checkDetailsSection(emptyUserAnswers, name.toString, index, fakeDraftId)
 
       status(result) mustEqual OK
@@ -91,4 +95,5 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     }
 
   }
+
 }

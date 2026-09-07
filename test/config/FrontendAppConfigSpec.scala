@@ -46,6 +46,12 @@ class FrontendAppConfigSpec extends SpecBase {
         }
       }
     }
+
+    ".logoutUrl" must {
+      "include useServiceNavigation" in {
+        config.logoutUrl must include("useServiceNavigation")
+      }
+    }
   }
 
 }

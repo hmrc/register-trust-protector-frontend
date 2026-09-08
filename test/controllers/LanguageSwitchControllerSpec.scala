@@ -23,7 +23,6 @@ import play.api.inject.bind
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class LanguageSwitchControllerSpec extends SpecBase {
@@ -35,11 +34,10 @@ class LanguageSwitchControllerSpec extends SpecBase {
   private val fakeUrl: String = "fakeUrl"
 
   private lazy val config: Configuration          = injector.instanceOf[Configuration]
-  private lazy val contactConfig                  = injector.instanceOf[ContactFrontendConfig]
   private lazy val servicesConfig: ServicesConfig = injector.instanceOf[ServicesConfig]
 
   def frontendAppConfig(languageToggleEnabled: Boolean = true): FrontendAppConfig =
-    new FrontendAppConfig(config, contactConfig, servicesConfig) {
+    new FrontendAppConfig(config, servicesConfig) {
       override lazy val languageTranslationEnabled: Boolean = languageToggleEnabled
     }
 

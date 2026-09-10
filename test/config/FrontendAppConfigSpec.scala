@@ -48,8 +48,9 @@ class FrontendAppConfigSpec extends SpecBase {
     }
 
     ".logoutUrl" must {
-      "include useServiceNavigation" in {
-        config.logoutUrl must include("useServiceNavigation")
+      "return the correct logout URL" in {
+        config.logoutUrl mustBe
+          "http://localhost:9514/feedback/trusts?useServiceNavigation"
       }
     }
   }

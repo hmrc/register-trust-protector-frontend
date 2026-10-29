@@ -49,7 +49,14 @@ class FrontendAppConfigSpec extends SpecBase {
 
     ".logoutUrl" must {
       "return the correct logout URL" in {
-        config.logoutUrl mustBe
+        config.logoutWithBasGatewayUrl mustBe
+          "http://localhost:9553/gg/sign-out"
+      }
+    }
+
+    ".feedbackUrl" must {
+      "return the correct logout URL" in {
+        config.feedbackFrontendUrl mustBe
           "http://localhost:9514/feedback/trusts?useServiceNavigation"
       }
     }

@@ -37,7 +37,7 @@ object AddAProtector extends Enumerable.Implicits {
     RadioOption("addAProtector", value.toString)
   }
 
-  implicit val enumerable: Enumerable[AddAProtector] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+  given enumerable: Enumerable[AddAProtector] =
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }

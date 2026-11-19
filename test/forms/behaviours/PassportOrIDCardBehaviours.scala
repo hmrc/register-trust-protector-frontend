@@ -16,13 +16,13 @@
 
 package forms.behaviours
 
-import java.time.LocalDate
-
 import forms.{FormSpec, Validation}
 import generators.Generators
 import models.PassportOrIdCardDetails
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
+
+import java.time.LocalDate
 
 trait PassportOrIDCardBehaviours
     extends FormSpec with ScalaCheckPropertyChecks with Generators with FieldBehaviours with OptionalFieldBehaviours {
@@ -46,7 +46,7 @@ trait PassportOrIDCardBehaviours
       }
     }
 
-  def passportOrIdCardNumberField(form: Form[_], fieldName: String, invalidError: FormError): Unit =
+  def passportOrIdCardNumberField(form: Form[?], fieldName: String, invalidError: FormError): Unit =
 
     s"not bind strings which do not match valid passport or id card number format " in {
       val generator = stringsWithMaxLength(30)

@@ -18,15 +18,16 @@ package forms
 
 import config.FrontendAppConfig
 import forms.mappings.Mappings
-import javax.inject.Inject
 import models.PassportOrIdCardDetails
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
+
+import javax.inject.Inject
 
 class PassportOrIdCardFormProvider @Inject() (appConfig: FrontendAppConfig) extends Mappings {
 
-  val maxLengthCountyField = 100
-  val maxLengthNumberField = 30
+  private val maxLengthCountyField = 100
+  private val maxLengthNumberField = 30
 
   def apply(prefix: String): Form[PassportOrIdCardDetails] = Form(
     mapping(
@@ -68,7 +69,15 @@ class PassportOrIdCardFormProvider @Inject() (appConfig: FrontendAppConfig) exte
           )
         )
       )
-    )(PassportOrIdCardDetails.apply)(PassportOrIdCardDetails.unapply)
+    )(PassportOrIdCardDetails.apply) { poiCardDetails =>
+      Some(
+        (
+          poiCardDetails.country,
+          poiCardDetails.cardNumber,
+          poiCardDetails.expiryDate
+        )
+      )
+    }
   )
 
 }

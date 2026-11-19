@@ -16,14 +16,14 @@
 
 package base
 
-import controllers.actions.register._
+import controllers.actions.register.*
 import controllers.actions.{FakeDraftIdRetrievalActionProvider, FakeIdentifyForRegistration}
-import models.{Status, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
+import org.scalatestplus.play.guice.*
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -51,7 +51,7 @@ trait SpecBase
 
   lazy val fakeNavigator: FakeNavigator = new FakeNavigator()
 
-  val defaultAppConfigurations = Seq(
+  val defaultAppConfigurations: Seq[(String, Any)] = Seq(
     "auditing.enabled"      -> false,
     "metrics.enabled"       -> false,
     "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
@@ -59,10 +59,7 @@ trait SpecBase
 
   private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
     new FakeDraftIdRetrievalActionProvider(
-      draftId,
-      Status.InProgress,
-      userAnswers,
-      registrationsRepository
+      userAnswers
     )
 
   protected def applicationBuilder(
@@ -82,6 +79,6 @@ trait SpecBase
         bind[RegistrationsRepository].toInstance(registrationsRepository),
         bind[AffinityGroup].toInstance(Organisation)
       )
-      .configure(defaultAppConfigurations: _*)
+      .configure(defaultAppConfigurations*)
 
 }

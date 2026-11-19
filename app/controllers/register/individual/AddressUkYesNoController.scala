@@ -17,10 +17,9 @@
 package controllers.register.individual
 
 import config.annotations.IndividualProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.individual.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.AddressUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.AddressUkYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressUkYesNoController @Inject() (
@@ -40,7 +40,7 @@ class AddressUkYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddressUkYesNoView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("individualProtector.addressUkYesNo")

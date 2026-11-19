@@ -17,11 +17,11 @@
 package utils.print
 
 import base.SpecBase
-import controllers.register.individual.mld5.routes._
-import controllers.register.individual.routes._
+import controllers.register.individual.mld5.routes.*
+import controllers.register.individual.routes.*
 import models.{FullName, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers, YesNoDontKnow}
-import pages.register.individual._
-import pages.register.individual.mld5._
+import pages.register.individual.*
+import pages.register.individual.mld5.*
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 

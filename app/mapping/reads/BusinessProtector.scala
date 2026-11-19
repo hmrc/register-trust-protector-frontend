@@ -36,5 +36,5 @@ final case class BusinessProtector(
 }
 
 object BusinessProtector {
-  implicit val formats: Format[BusinessProtector] = Json.format[BusinessProtector]
+  given formats: Format[BusinessProtector] = Json.format[BusinessProtector]
 }

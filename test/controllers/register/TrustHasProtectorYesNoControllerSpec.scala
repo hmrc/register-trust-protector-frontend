@@ -19,16 +19,16 @@ package controllers.register
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.TaskStatus.{Completed, InProgress}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpResponse
 import views.html.register.TrustHasProtectorYesNoView
@@ -48,7 +48,7 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
   override def beforeEach(): Unit = {
     reset(mockTrustsStoreService)
 
-    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(using any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
@@ -67,7 +67,7 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, draftId)(request, messages).toString
+        view(form, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -87,7 +87,7 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), draftId)(request, messages).toString
+        view(form.fill(true), draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -109,7 +109,7 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
 
         redirectLocation(result).value mustEqual onwardRoute.url
 
-        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
         application.stop()
       }
@@ -129,7 +129,7 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
 
         redirectLocation(result).value mustEqual onwardRoute.url
 
-        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
+        verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(Completed))(using any(), any())
 
         application.stop()
       }
@@ -150,7 +150,7 @@ class TrustHasProtectorYesNoControllerSpec extends SpecBase with MockitoSugar wi
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, draftId)(request, messages).toString
+        view(boundForm, draftId)(using request, messages).toString
 
       application.stop()
     }

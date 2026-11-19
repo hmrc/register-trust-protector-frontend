@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.register.routes._
+@import controllers.register.routes.*
 @import models.register.pages.AddAProtector
 @import viewmodels.AddRow
 @import views.html.components.{ErrorSummary, Heading, InputRadio, AddToList, SubmitButton}
@@ -29,13 +29,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_],
+@(form: Form[?],
     draftId: String,
     inProgress: Seq[AddRow],
     complete: Seq[AddRow],
     heading: String,
     maxedOut: List[String]
-)(implicit request: RequestHeader, messages: Messages)
+)(using request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}$heading",
@@ -48,9 +48,9 @@
 
         @headingI(heading)
 
-        @addToList(inProgress, "inprogress", "protector")
+        @addToList(inProgress, "inprogress")
 
-        @addToList(complete, "complete", "protector")
+        @addToList(complete, "complete")
 
         @if(maxedOut.size == 2) {
             <div class="govuk-inset-text">

@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.business.UtrYesNoView
 
 class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
@@ -54,7 +54,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name, index, draftId)(request, messages).toString
+        view(form, name, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -74,7 +74,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name, index, draftId)(request, messages).toString
+        view(form.fill(true), name, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -116,7 +116,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name, index, draftId)(request, messages).toString
+        view(boundForm, name, index, draftId)(using request, messages).toString
 
       application.stop()
     }

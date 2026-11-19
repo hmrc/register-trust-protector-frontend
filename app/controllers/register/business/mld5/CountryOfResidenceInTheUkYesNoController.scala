@@ -17,19 +17,19 @@
 package controllers.register.business.mld5
 
 import config.annotations.BusinessProtector
+import controllers.actions.*
 import controllers.actions.register.business.NameRequiredAction
-import controllers.actions._
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.mld5.CountryOfResidenceInTheUkYesNoPage
 import play.api.data.Form
-import play.api.i18n._
-import play.api.mvc._
+import play.api.i18n.*
+import play.api.mvc.*
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.business.mld5.CountryOfResidenceInTheUkYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfResidenceInTheUkYesNoController @Inject() (
@@ -40,7 +40,7 @@ class CountryOfResidenceInTheUkYesNoController @Inject() (
   view: CountryOfResidenceInTheUkYesNoView,
   repository: RegistrationsRepository,
   nameAction: NameRequiredAction
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("businessProtector.5mld.countryOfResidenceInTheUkYesNo")

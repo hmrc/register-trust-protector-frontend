@@ -23,7 +23,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.register.IndividualOrBusinessPage
 import play.api.data.Form
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.IndividualOrBusinessView
 
 class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
@@ -47,7 +47,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, draftId)(request, messages).toString
+        view(form, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -67,7 +67,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(individualOrBusinessAnswer), draftId)(request, messages).toString
+        view(form.fill(individualOrBusinessAnswer), draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -104,7 +104,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual view(boundForm, draftId)(request, messages).toString
+      contentAsString(result) mustEqual view(boundForm, draftId)(using request, messages).toString
 
       application.stop()
     }

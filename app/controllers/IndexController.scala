@@ -18,7 +18,7 @@ package controllers
 
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
-import controllers.register.{routes => rts}
+import controllers.register.routes as rts
 import models.TaskStatus.InProgress
 import models.UserAnswers
 import play.api.i18n.I18nSupport
@@ -37,7 +37,7 @@ class IndexController @Inject() (
   identify: RegistrationIdentifierAction,
   trustsStoreService: TrustsStoreService,
   submissionDraftConnector: SubmissionDraftConnector
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>

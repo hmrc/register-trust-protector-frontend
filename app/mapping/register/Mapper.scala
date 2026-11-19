@@ -27,7 +27,7 @@ trait Mapper[A, B <: Protector] {
     override def path: JsPath = jsPath
   }
 
-  def build(userAnswers: UserAnswers)(implicit rds: Reads[B]): Option[List[A]] =
+  def build(userAnswers: UserAnswers)(using rds: Reads[B]): Option[List[A]] =
     userAnswers.get(Protectors).getOrElse(Nil) match {
       case Nil  => None
       case list => Some(list.map(protectorType))

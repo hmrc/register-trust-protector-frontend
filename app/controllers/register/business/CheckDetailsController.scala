@@ -17,7 +17,7 @@
 package controllers.register.business
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.business.NameRequiredAction
 import models.Status.Completed
 import navigation.Navigator
@@ -44,7 +44,7 @@ class CheckDetailsController @Inject() (
   val appConfig: FrontendAppConfig,
   printHelper: BusinessProtectorPrintHelper,
   nameAction: NameRequiredAction
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] =

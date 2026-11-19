@@ -17,11 +17,11 @@
 package utils.print
 
 import com.google.inject.Inject
-import controllers.register.individual.mld5.routes._
-import controllers.register.individual.routes._
+import controllers.register.individual.mld5.routes.*
+import controllers.register.individual.routes.*
 import models.UserAnswers
-import pages.register.individual._
-import pages.register.individual.mld5._
+import pages.register.individual.*
+import pages.register.individual.mld5.*
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
@@ -29,7 +29,7 @@ class IndividualProtectorPrintHelper @Inject() (answerRowConverter: AnswerRowCon
 
   override val protectorType: String = "individualProtector"
 
-  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit
+  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(using
     messages: Messages
   ): Seq[AnswerRow] = {
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)

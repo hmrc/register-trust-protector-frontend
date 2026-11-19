@@ -19,13 +19,13 @@ package utils
 import base.SpecBase
 import generators.ModelGenerators
 import models.FullName
-import models.Status._
+import models.Status.*
 import models.register.pages.AddAProtector
 import models.register.pages.AddAProtector.NoComplete
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
-import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage, business => bus, individual => ind}
+import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage, business as bus, individual as ind}
 
 class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
 

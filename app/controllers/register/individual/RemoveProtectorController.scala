@@ -16,11 +16,10 @@
 
 package controllers.register.individual
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.ProtectorRequiredActionImpl
 import controllers.register.RemoveIndexController
 import forms.RemoveIndexFormProvider
-import javax.inject.Inject
 import pages.QuestionPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Call, MessagesControllerComponents}
@@ -29,6 +28,7 @@ import sections.IndividualProtector
 import viewmodels.addAnother.ProtectorViewModel
 import views.html.RemoveIndexView
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class RemoveProtectorController @Inject() (
@@ -38,9 +38,10 @@ class RemoveProtectorController @Inject() (
   val protectorAction: ProtectorRequiredActionImpl,
   val formProvider: RemoveIndexFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  val view: RemoveIndexView
-)(implicit val ec: ExecutionContext)
-    extends RemoveIndexController {
+  val view: RemoveIndexView,
+  injectedEc: ExecutionContext
+) extends RemoveIndexController {
+  override val ec: ExecutionContext                                  = injectedEc
   def protectorAtIndex(index: Int): QuestionPage[ProtectorViewModel] = IndividualProtector(index)
   def submitCall(index: Int, draftId: String): Call                  = routes.RemoveProtectorController.onSubmit(index, draftId)
 }

@@ -18,7 +18,7 @@ package controllers.register
 
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import models.TaskStatus._
+import models.TaskStatus.*
 import navigation.Navigator
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.data.Form
@@ -41,7 +41,7 @@ class TrustHasProtectorYesNoController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TrustHasProtectorYesNoView,
   trustsStoreService: TrustsStoreService
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustHasProtectorYesNo")

@@ -34,8 +34,8 @@ class UtrViewSpec extends StringViewBehaviours {
 
     val view = viewFor[UtrView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name, index, draftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, name, index, draftId)(using fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name, "hint", "p1", "link")
 
@@ -45,8 +45,7 @@ class UtrViewSpec extends StringViewBehaviours {
       form,
       applyView,
       messageKeyPrefix,
-      Some(name),
-      controllers.register.business.routes.UtrController.onSubmit(index, fakeDraftId).url
+      Some(name)
     )
 
     behave like pageWithBackLink(applyView(form))

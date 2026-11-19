@@ -16,14 +16,14 @@
 
 package navigation
 
-import controllers.register.business.mld5.routes._
-import controllers.register.business.routes._
+import controllers.register.business.mld5.routes.*
+import controllers.register.business.routes.*
 import models.ReadableUserAnswers
 import pages.Page
+import pages.register.business.*
 import pages.register.business.mld5.{
   CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
 }
-import pages.register.business._
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class BusinessProtectorNavigator @Inject() () extends Navigator {
         } else {
           CountryOfResidenceYesNoController.onPageLoad(index, draftId)
         }
-    case UtrPage(index)                => ua => CountryOfResidenceYesNoController.onPageLoad(index, draftId)
+    case UtrPage(index)                => _ => CountryOfResidenceYesNoController.onPageLoad(index, draftId)
     case UkAddressPage(index)          => _ => CheckDetailsController.onPageLoad(index, draftId)
     case NonUkAddressPage(index)       => _ => CheckDetailsController.onPageLoad(index, draftId)
     case CountryOfResidencePage(index) => ua => addressOrCheckAnswersRoute(draftId, index, ua)

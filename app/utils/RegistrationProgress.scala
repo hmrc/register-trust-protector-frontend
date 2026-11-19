@@ -16,14 +16,14 @@
 
 package utils
 
-import models.Status._
+import models.Status.*
 import models.register.pages.AddAProtector
 import models.{ReadableUserAnswers, Status}
 import pages.QuestionPage
 import pages.register.{AddAProtectorPage, TrustHasProtectorYesNoPage}
 import play.api.libs.json.Reads
 import sections.{BusinessProtectors, IndividualProtectors}
-import viewmodels.addAnother._
+import viewmodels.addAnother.*
 
 class RegistrationProgress {
 
@@ -49,7 +49,7 @@ class RegistrationProgress {
     def apply(userAnswers: ReadableUserAnswers): Boolean
   }
 
-  sealed class ListIsComplete[T <: ProtectorViewModel](section: QuestionPage[List[T]])(implicit reads: Reads[T])
+  sealed class ListIsComplete[T <: ProtectorViewModel](section: QuestionPage[List[T]])(using reads: Reads[T])
       extends IsComplete {
 
     override def apply(userAnswers: ReadableUserAnswers): Boolean =

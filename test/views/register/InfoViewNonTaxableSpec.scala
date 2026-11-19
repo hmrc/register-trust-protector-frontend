@@ -25,12 +25,11 @@ class InfoViewNonTaxableSpec extends ViewBehaviours {
 
     val view = viewFor[InfoViewNonTaxable](Some(emptyUserAnswers))
 
-    val applyView = view.apply(fakeDraftId)(fakeRequest, messages)
+    val applyView = view.apply(fakeDraftId)(using fakeRequest, messages)
 
     behave like normalPageTitleWithSectionSubheading(
       applyView,
       "protectorsInfo.5mld.nonTaxable",
-      "caption",
       "subheading1",
       "paragraph1",
       "individual.bulletpoint1",

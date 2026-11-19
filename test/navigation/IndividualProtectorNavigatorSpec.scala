@@ -17,15 +17,15 @@
 package navigation
 
 import base.SpecBase
-import controllers.register.individual.mld5.{routes => mld5}
-import controllers.register.individual.{routes => irts}
-import controllers.register.{routes => rts}
+import controllers.register.individual.mld5.routes as mld5
+import controllers.register.individual.routes as irts
+import controllers.register.routes as rts
 import generators.Generators
-import models._
+import models.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.individual._
-import pages.register.individual.mld5._
+import pages.register.individual.*
+import pages.register.individual.mld5.*
 
 class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

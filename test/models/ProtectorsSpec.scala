@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import models.Status._
+import models.Status.*
 import models.register.pages.IndividualOrBusinessToAdd
 import viewmodels.addAnother.BusinessProtectorViewModel
 

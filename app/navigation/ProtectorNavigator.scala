@@ -17,14 +17,14 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.register.business.{routes => brts}
-import controllers.register.individual.{routes => irts}
-import controllers.register.{routes => rts}
+import controllers.register.business.routes as brts
+import controllers.register.individual.routes as irts
+import controllers.register.routes as rts
 import models.register.pages.IndividualOrBusinessToAdd.{Business, Individual}
 import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
 import models.{Protectors, ReadableUserAnswers}
 import pages.Page
-import pages.register._
+import pages.register.*
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.Constants.MAX

@@ -17,12 +17,10 @@
 package controllers.register.business
 
 import config.annotations.BusinessProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.business.NameRequiredAction
 import forms.InternationalAddressFormProvider
 import models.InternationalAddress
-
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.NonUkAddressPage
 import play.api.data.Form
@@ -33,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.register.business.NonUkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NonUkAddressController @Inject() (
@@ -45,7 +44,7 @@ class NonUkAddressController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: NonUkAddressView,
   val countryOptions: CountryOptionsNonUK
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[InternationalAddress] = formProvider()

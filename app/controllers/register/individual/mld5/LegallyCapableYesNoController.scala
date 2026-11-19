@@ -17,15 +17,15 @@
 package controllers.register.individual.mld5
 
 import config.annotations.IndividualProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.individual.NameRequiredAction
 import forms.YesNoDontKnowFormProvider
 import models.YesNoDontKnow
 import navigation.Navigator
 import pages.register.individual.mld5.LegallyCapableYesNoPage
 import play.api.data.Form
-import play.api.i18n._
-import play.api.mvc._
+import play.api.i18n.*
+import play.api.mvc.*
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.mld5.LegallyCapableYesNoView
@@ -41,7 +41,7 @@ class LegallyCapableYesNoController @Inject() (
   nameAction: NameRequiredAction,
   formProvider: YesNoDontKnowFormProvider,
   view: LegallyCapableYesNoView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[YesNoDontKnow] = formProvider.withPrefix("individualProtector.5mld.legallyCapableYesNo")

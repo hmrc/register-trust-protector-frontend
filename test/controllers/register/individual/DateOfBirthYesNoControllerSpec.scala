@@ -24,7 +24,7 @@ import navigation.{FakeNavigator, Navigator}
 import pages.register.individual.{DateOfBirthYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.individual.DateOfBirthYesNoView
 
 class DateOfBirthYesNoControllerSpec extends SpecBase {
@@ -53,7 +53,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.toString, index, draftId)(request, messages).toString
+        view(form, name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -79,7 +79,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.toString, index, draftId)(request, messages).toString
+        view(form.fill(true), name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -126,7 +126,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.toString, index, draftId)(request, messages).toString
+        view(boundForm, name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }

@@ -16,11 +16,11 @@
 
 package pages.register.individual
 
-import java.time.LocalDate
-
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.IndividualProtectors
+
+import java.time.LocalDate
 
 final case class DateOfBirthPage(index: Int) extends QuestionPage[LocalDate] {
 

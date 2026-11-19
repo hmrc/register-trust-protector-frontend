@@ -24,11 +24,11 @@ trait PrintHelper {
 
   val protectorType: String
 
-  def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit
+  def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(using
     messages: Messages
   ): Seq[AnswerRow]
 
-  def printSection(userAnswers: UserAnswers, name: Option[String], index: Int, draftId: String)(implicit
+  def printSection(userAnswers: UserAnswers, name: Option[String], index: Int, draftId: String)(using
     messages: Messages
   ): AnswerSection =
     AnswerSection(
@@ -37,7 +37,7 @@ trait PrintHelper {
       headingArgs = Seq(index + 1)
     )
 
-  def checkDetailsSection(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit
+  def checkDetailsSection(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(using
     messages: Messages
   ): AnswerSection =
     AnswerSection(

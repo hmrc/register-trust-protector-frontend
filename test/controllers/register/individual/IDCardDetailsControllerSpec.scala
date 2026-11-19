@@ -16,8 +16,6 @@
 
 package controllers.register.individual
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.IndividualProtector
 import forms.PassportOrIdCardFormProvider
@@ -26,10 +24,12 @@ import navigation.{FakeNavigator, Navigator}
 import pages.register.individual.{IDCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.IDCardDetailsView
+
+import java.time.LocalDate
 
 class IDCardDetailsControllerSpec extends SpecBase {
 
@@ -62,7 +62,7 @@ class IDCardDetailsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, name.toString, index, draftId)(request, messages).toString
+        view(form, countryOptions, name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -88,7 +88,7 @@ class IDCardDetailsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(cardDetails), countryOptions, name.toString, index, draftId)(request, messages).toString
+        view(form.fill(cardDetails), countryOptions, name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -153,7 +153,7 @@ class IDCardDetailsControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, name.toString, index, draftId)(request, messages).toString
+        view(boundForm, countryOptions, name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }

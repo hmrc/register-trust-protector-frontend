@@ -17,7 +17,7 @@
 package viewmodels.addAnother
 
 import models.Status
-import play.api.libs.json.{Reads, _}
+import play.api.libs.json.*
 
 case class BusinessProtectorViewModel(name: Option[String], status: Status) extends ProtectorViewModel {
 
@@ -26,11 +26,11 @@ case class BusinessProtectorViewModel(name: Option[String], status: Status) exte
 
 object BusinessProtectorViewModel {
 
-  import play.api.libs.functional.syntax._
+  import play.api.libs.functional.syntax.*
 
-  implicit val reads: Reads[BusinessProtectorViewModel] = (
+  given reads: Reads[BusinessProtectorViewModel] = (
     (__ \ "name").readNullable[String] and
       (__ \ "status").readWithDefault[Status](Status.InProgress)
-  )(BusinessProtectorViewModel.apply _)
+  )(BusinessProtectorViewModel.apply)
 
 }

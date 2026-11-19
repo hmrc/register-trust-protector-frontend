@@ -16,13 +16,13 @@
 
 package controllers.register
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.{ProtectorRequiredActionImpl, ProtectorRequiredRequest}
 import forms.RemoveIndexFormProvider
 import pages.QuestionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc.*
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.addAnother.ProtectorViewModel
@@ -37,7 +37,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
   val formProvider: RemoveIndexFormProvider
   val controllerComponents: MessagesControllerComponents
   val view: RemoveIndexView
-  implicit val ec: ExecutionContext
+  given ec: ExecutionContext
 
   private val prefix = "removeProtectorYesNo"
 
@@ -55,7 +55,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
     val form: Form[Boolean] = formProvider(prefix)
 
-    Ok(view(form, draftId, index, name(request.protector), submitCall(index, draftId)))
+    Ok(view(form, name(request.protector), submitCall(index, draftId)))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
@@ -64,9 +64,9 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(
-            BadRequest(view(formWithErrors, draftId, index, name(request.protector), submitCall(index, draftId)))
+            BadRequest(view(formWithErrors, name(request.protector), submitCall(index, draftId)))
           ),
         remove =>
           if (remove) {
@@ -80,7 +80,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
       )
   }
 
-  private def name(protector: ProtectorViewModel)(implicit request: ProtectorRequiredRequest[AnyContent]): String =
+  private def name(protector: ProtectorViewModel)(using request: ProtectorRequiredRequest[AnyContent]): String =
     protector.displayName match {
       case Some(name) => name
       case None       => Messages(s"$prefix.default")

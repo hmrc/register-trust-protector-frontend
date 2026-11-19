@@ -17,24 +17,22 @@
 package repositories
 
 import mapping.register.ProtectorsMapper
-import models._
+import models.*
 import pages.register.TrustHasProtectorYesNoPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
-import utils.RegistrationProgress
 import utils.answers.{BusinessProtectorAnswersHelper, IndividualProtectorAnswersHelper}
 import viewmodels.{AnswerRow, AnswerSection}
 
 import javax.inject.Inject
 
 class SubmissionSetFactory @Inject() (
-  registrationProgress: RegistrationProgress,
   protectorsMapper: ProtectorsMapper,
   individualProtectorAnswersHelper: IndividualProtectorAnswersHelper,
   businessProtectorAnswerHelper: BusinessProtectorAnswersHelper
 ) {
 
-  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet =
+  def createFrom(userAnswers: UserAnswers)(using messages: Messages): RegistrationSubmission.DataSet =
     RegistrationSubmission.DataSet(
       data = Json.toJson(userAnswers),
       registrationPieces = mappedData(userAnswers),
@@ -52,7 +50,7 @@ class SubmissionSetFactory @Inject() (
 
   def answerSections(
     userAnswers: UserAnswers
-  )(implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
+  )(using messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
     val trustHasProtectorYesNo = userAnswers.get(TrustHasProtectorYesNoPage).contains(true)
 

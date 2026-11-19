@@ -32,8 +32,8 @@ class NameViewSpec extends StringViewBehaviours {
 
   "Name view" must {
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, draftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, index, draftId)(using fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -43,8 +43,7 @@ class NameViewSpec extends StringViewBehaviours {
       form,
       applyView,
       messageKeyPrefix,
-      None,
-      controllers.register.business.routes.NameController.onSubmit(index, fakeDraftId).url
+      None
     )
 
     behave like pageWithASubmitButton(applyView(form))

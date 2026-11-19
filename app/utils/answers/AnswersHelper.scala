@@ -28,7 +28,7 @@ abstract class AnswersHelper[T <: ProtectorViewModel](printHelper: PrintHelper) 
 
   val protectorType: QuestionPage[List[T]]
 
-  def protectors(userAnswers: UserAnswers)(implicit messages: Messages, rds: Reads[T]): Option[Seq[AnswerSection]] =
+  def protectors(userAnswers: UserAnswers)(using messages: Messages, rds: Reads[T]): Option[Seq[AnswerSection]] =
     for {
       protectors <- userAnswers.get(protectorType)
       indexed     = protectors.zipWithIndex

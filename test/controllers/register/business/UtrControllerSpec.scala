@@ -24,7 +24,7 @@ import pages.register.business.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.business.UtrView
 
 class UtrControllerSpec extends SpecBase {
@@ -55,7 +55,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name, index, fakeDraftId)(request, messages).toString
+        view(form, name, index, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -81,7 +81,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(fakeUtr), name, index, fakeDraftId)(request, messages).toString
+        view(form.fill(fakeUtr), name, index, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -128,7 +128,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name, index, fakeDraftId)(request, messages).toString
+        view(boundForm, name, index, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }

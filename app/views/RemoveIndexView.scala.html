@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.register.routes._
+@import controllers.register.routes.*
 @import models.Mode
 @import play.api.mvc.Call
 @import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int, name: String, action: Call)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[?], name: String, action: Call)(using request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("removeProtectorYesNo.title")}",

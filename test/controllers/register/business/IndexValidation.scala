@@ -26,7 +26,7 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.libs.json.Writes
 import play.api.mvc.Request
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.ErrorTemplate
 
 trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with MockitoSugar with Generators {
@@ -35,10 +35,10 @@ trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with Mockit
     generator: Gen[A],
     createPage: Int => QuestionPage[A],
     requestForIndex: Int => Request[B]
-  )(implicit writes: Writes[A], writeable: Writeable[B]): Unit =
+  )(using writes: Writes[A], writeable: Writeable[B]): Unit =
 
     "return not found if a given index is out of bounds" in {
-      implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
+      given generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
         minSuccessful = 2
       )
 
@@ -62,7 +62,7 @@ trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with Mockit
     answers: List[(A, Int)],
     application: Application,
     requestForIndex: Int => Request[B]
-  )(implicit writeable: Writeable[B]) = {
+  )(using writeable: Writeable[B]) = {
     val gen = for {
       index <- Gen.oneOf(Gen.chooseNum(answers.size + 1, answers.size + 100), Gen.chooseNum(-100, -1))
     } yield index
@@ -74,9 +74,8 @@ trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with Mockit
 
       val applyView = view.apply(
         messages("global.error.pageNotFound404.title"),
-        messages("global.error.pageNotFound404.heading"),
         messages("global.error.pageNotFound404.message")
-      )(fakeRequest, messages)
+      )(using fakeRequest, messages)
       status(result) mustEqual NOT_FOUND
       contentAsString(result) mustEqual applyView.toString
     }

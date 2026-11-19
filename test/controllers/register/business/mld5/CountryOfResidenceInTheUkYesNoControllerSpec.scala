@@ -26,7 +26,7 @@ import pages.register.business.mld5.CountryOfResidenceInTheUkYesNoPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.business.mld5.CountryOfResidenceInTheUkYesNoView
 
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
@@ -59,7 +59,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, draftId, index, name)(request, messages).toString
+        view(form, draftId, index, name)(using request, messages).toString
 
       application.stop()
     }
@@ -85,7 +85,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), draftId, index, name)(request, messages).toString
+        view(form.fill(true), draftId, index, name)(using request, messages).toString
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, draftId, index, name)(request, messages).toString
+        view(boundForm, draftId, index, name)(using request, messages).toString
 
       application.stop()
     }

@@ -16,13 +16,10 @@
 
 package controllers.register.individual
 
-import java.time.LocalDate
-
 import config.annotations.IndividualProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.individual.NameRequiredAction
 import forms.DateOfBirthFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.DateOfBirthPage
 import play.api.data.Form
@@ -32,6 +29,8 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.DateOfBirthView
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfBirthController @Inject() (
@@ -43,7 +42,7 @@ class DateOfBirthController @Inject() (
   formProvider: DateOfBirthFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: DateOfBirthView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   def form: Form[LocalDate] = formProvider.withPrefix("individualProtector.dateOfBirth")
@@ -63,7 +62,7 @@ class DateOfBirthController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
           value =>
             for {

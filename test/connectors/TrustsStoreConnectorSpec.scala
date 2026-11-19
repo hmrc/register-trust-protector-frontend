@@ -17,10 +17,10 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.TaskStatus.Completed
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,11 +28,11 @@ import utils.WireMockHelper
 
 class TrustsStoreConnectorSpec extends SpecBase with Matchers with OptionValues with WireMockHelper {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
-      defaultAppConfigurations ++ Seq("microservice.services.trusts-store.port" -> server.port()): _*
+      defaultAppConfigurations ++ Seq("microservice.services.trusts-store.port" -> server.port())*
     )
     .build()
 

@@ -17,11 +17,11 @@
 package navigation
 
 import base.SpecBase
-import controllers.register.business.mld5.{routes => mld5Routes}
-import controllers.register.business.{routes => brts}
+import controllers.register.business.mld5.routes as mld5Routes
+import controllers.register.business.routes as brts
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.register.business._
+import pages.register.business.*
 import pages.register.business.mld5.{
   CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
 }

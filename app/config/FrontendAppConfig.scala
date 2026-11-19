@@ -89,7 +89,7 @@ class FrontendAppConfig @Inject() (
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  def helplineUrl(implicit messages: Messages): String = {
+  def helplineUrl(using messages: Messages): String = {
     val path = messages.lang.code match {
       case WELSH => "urls.welshHelpline"
       case _     => "urls.trustsHelpline"

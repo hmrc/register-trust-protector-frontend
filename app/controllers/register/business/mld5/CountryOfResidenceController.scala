@@ -17,10 +17,9 @@
 package controllers.register.business.mld5
 
 import config.annotations.BusinessProtector
-import controllers.actions.register.business.NameRequiredAction
 import controllers.actions.StandardActionSets
+import controllers.actions.register.business.NameRequiredAction
 import forms.CountryFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.mld5.CountryOfResidencePage
 import play.api.data.Form
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.register.business.mld5.CountryOfResidenceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfResidenceController @Inject() (
@@ -43,7 +43,7 @@ class CountryOfResidenceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CountryOfResidenceView,
   val countryOptions: CountryOptionsNonUK
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withPrefix("businessProtector.5mld.countryOfResidence")
@@ -63,7 +63,7 @@ class CountryOfResidenceController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(
               BadRequest(view(formWithErrors, countryOptions.options(), draftId, index, request.protectorName))
             ),

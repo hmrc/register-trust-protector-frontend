@@ -17,18 +17,18 @@
 package controllers.actions.register.individual
 
 import controllers.actions.ProtectorNameRequest
-import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import pages.register.individual.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameRequiredActionAction(index: Int)(implicit
-  val executionContext: ExecutionContext,
-  val messagesApi: MessagesApi
-) extends ActionTransformer[RegistrationDataRequest, ProtectorNameRequest] with I18nSupport {
+class NameRequiredActionAction(index: Int)(using ec: ExecutionContext, val messagesApi: MessagesApi)
+    extends ActionTransformer[RegistrationDataRequest, ProtectorNameRequest] with I18nSupport {
+
+  override protected def executionContext: ExecutionContext = ec
 
   override protected def transform[A](request: RegistrationDataRequest[A]): Future[ProtectorNameRequest[A]] =
     Future.successful(ProtectorNameRequest[A](request, getName(request)))
@@ -36,11 +36,11 @@ class NameRequiredActionAction(index: Int)(implicit
   private def getName[A](request: RegistrationDataRequest[A]): String =
     request.userAnswers.get(NamePage(index)) match {
       case Some(name) => name.toString
-      case _          => request.messages(messagesApi)("protector.name.default")
+      case _          => request.messages(using messagesApi)("protector.name.default")
     }
 
 }
 
-class NameRequiredAction @Inject() ()(implicit val executionContext: ExecutionContext, val messagesApi: MessagesApi) {
+class NameRequiredAction @Inject() ()(using executionContext: ExecutionContext, val messagesApi: MessagesApi) {
   def apply(index: Int): NameRequiredActionAction = new NameRequiredActionAction(index)
 }

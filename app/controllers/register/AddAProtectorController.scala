@@ -22,7 +22,7 @@ import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import models.Status.Completed
 import models.TaskStatus.TaskStatus
 import models.register.pages.AddAProtector
-import models.register.pages.AddAProtector._
+import models.register.pages.AddAProtector.*
 import models.{TaskStatus, UserAnswers}
 import navigation.Navigator
 import pages.register.{AddAProtectorPage, AddAProtectorYesNoPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage}
@@ -55,7 +55,7 @@ class AddAProtectorController @Inject() (
   config: FrontendAppConfig,
   trustsStoreService: TrustsStoreService,
   registrationProgress: RegistrationProgress
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   private val addAnotherForm = addAnotherFormProvider()
@@ -66,7 +66,7 @@ class AddAProtectorController @Inject() (
       RequiredAnswer(TrustHasProtectorYesNoPage, routes.TrustHasProtectorYesNoController.onPageLoad(draftId))
     )
 
-  private def heading(count: Int)(implicit mp: MessagesProvider): String =
+  private def heading(count: Int)(using mp: MessagesProvider): String =
     count match {
       case x if x <= 1 => Messages("addAProtector.heading")
       case _           => Messages("addAProtector.count.heading", count)
@@ -103,7 +103,7 @@ class AddAProtectorController @Inject() (
         yesNoForm
           .bindFromRequest()
           .fold(
-            (formWithErrors: Form[_]) =>
+            (formWithErrors: Form[?]) =>
               Future.successful(
                 BadRequest(yesNoView(formWithErrors, draftId))
               ),
@@ -122,7 +122,7 @@ class AddAProtectorController @Inject() (
         addAnotherForm
           .bindFromRequest()
           .fold(
-            (formWithErrors: Form[_]) => {
+            (formWithErrors: Form[?]) => {
 
               val rows = new AddAProtectorViewHelper(request.userAnswers, draftId).rows
 
@@ -160,7 +160,7 @@ class AddAProtectorController @Inject() (
         } yield Redirect(Call(GET, config.registrationProgressUrl(draftId)))
     }
 
-  private def setTaskStatus(userAnswers: UserAnswers, draftId: String, selection: AddAProtector)(implicit
+  private def setTaskStatus(userAnswers: UserAnswers, draftId: String, selection: AddAProtector)(using
     hc: HeaderCarrier
   ): Future[HttpResponse] = {
     val status = (selection, registrationProgress.protectorsStatus(userAnswers)) match {
@@ -171,7 +171,7 @@ class AddAProtectorController @Inject() (
     setTaskStatus(draftId, status)
   }
 
-  private def setTaskStatus(draftId: String, taskStatus: TaskStatus)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  private def setTaskStatus(draftId: String, taskStatus: TaskStatus)(using hc: HeaderCarrier): Future[HttpResponse] =
     trustsStoreService.updateTaskStatus(draftId, taskStatus)
 
 }

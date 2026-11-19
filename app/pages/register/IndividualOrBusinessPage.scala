@@ -18,7 +18,7 @@ package pages.register
 
 import models.UserAnswers
 import models.register.pages.IndividualOrBusinessToAdd
-import models.register.pages.IndividualOrBusinessToAdd._
+import models.register.pages.IndividualOrBusinessToAdd.*
 import pages.QuestionPage
 import play.api.libs.json.{JsPath, Reads}
 import sections.{BusinessProtectors, IndividualProtectors, Protectors}
@@ -36,7 +36,7 @@ case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusinessTo
 
     def cleanupLastIfInProgress[T <: ProtectorViewModel](
       page: QuestionPage[List[T]]
-    )(implicit rds: Reads[T]): Try[UserAnswers] = {
+    )(using rds: Reads[T]): Try[UserAnswers] = {
       val protectors = userAnswers.get(page).getOrElse(Nil)
       protectors match {
         case x if x.nonEmpty && !x.last.isComplete => userAnswers.deleteAtPath(page.path \ (protectors.size - 1))

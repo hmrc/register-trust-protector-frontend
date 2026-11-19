@@ -16,13 +16,13 @@
 
 package navigation
 
-import controllers.register.individual.mld5.{routes => mld5}
-import controllers.register.individual.{routes => irts}
-import controllers.register.{routes => rts}
+import controllers.register.individual.mld5.routes as mld5
+import controllers.register.individual.routes as irts
+import controllers.register.routes as rts
 import models.ReadableUserAnswers
 import pages.Page
-import pages.register.individual._
-import pages.register.individual.mld5._
+import pages.register.individual.*
+import pages.register.individual.mld5.*
 import play.api.mvc.Call
 
 import javax.inject.Inject

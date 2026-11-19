@@ -18,8 +18,8 @@ package mapping.reads
 
 import mapping.register.IdentificationMapper.buildPassport
 import models.{FullName, IdentificationType, InternationalAddress, PassportOrIdCardDetails, UkAddress, YesNoDontKnow}
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 import java.time.LocalDate
 
@@ -47,7 +47,7 @@ final case class IndividualProtector(
 
 object IndividualProtector {
 
-  implicit val reads: Reads[IndividualProtector] = (
+  given reads: Reads[IndividualProtector] = (
     (__ \ "name").read[FullName] and
       (__ \ "dateOfBirth").readNullable[LocalDate] and
       (__ \ "nationalInsuranceNumber").readNullable[String] and
@@ -58,14 +58,14 @@ object IndividualProtector {
       (__ \ "countryOfResidence").readNullable[String] and
       (__ \ "nationality").readNullable[String] and
       readMentalCapacity
-  )(IndividualProtector.apply _)
+  )(IndividualProtector.apply)
 
-  implicit val writes: Writes[IndividualProtector] = Json.writes[IndividualProtector]
+  given writes: Writes[IndividualProtector] = Json.writes[IndividualProtector]
 
-  def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
+  private def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
     (__ \ Symbol("legallyCapable"))
       .readNullable[Boolean]
-      .flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+      .flatMap[Option[YesNoDontKnow]] { (x: Option[Boolean]) =>
         Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
       }
       .orElse {

@@ -17,10 +17,10 @@
 package utils.print
 
 import com.google.inject.Inject
-import controllers.register.business.mld5.{routes => mld5brts}
-import controllers.register.business.{routes => brts}
+import controllers.register.business.mld5.routes as mld5brts
+import controllers.register.business.routes as brts
 import models.UserAnswers
-import pages.register.business._
+import pages.register.business.*
 import pages.register.business.mld5.{
   CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
 }
@@ -31,7 +31,7 @@ class BusinessProtectorPrintHelper @Inject() (answerRowConverter: AnswerRowConve
 
   override val protectorType: String = "businessProtector"
 
-  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(implicit
+  override def answers(userAnswers: UserAnswers, name: String, index: Int, draftId: String)(using
     messages: Messages
   ): Seq[AnswerRow] = {
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)

@@ -19,7 +19,7 @@ package views.html
 import play.twirl.api.Html
 import views.ViewSpecBase
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 class MainTemplateSpec extends ViewSpecBase {
 
@@ -31,13 +31,13 @@ class MainTemplateSpec extends ViewSpecBase {
   "MainTemplate" must {
 
     "render the service navigation component" in {
-      val doc = asDocument(view(title)(mainContent)(fakeRequest, messages))
+      val doc = asDocument(view(title)(mainContent)(using fakeRequest, messages))
 
       assertRenderedByCssSelector(doc, ".govuk-service-navigation")
     }
 
     "request the service navigation component on every generated link to a shared PlatUI page" in {
-      val doc = asDocument(view(title)(mainContent)(fakeRequest, messages))
+      val doc = asDocument(view(title)(mainContent)(using fakeRequest, messages))
 
       val sharedPagePaths = Seq(
         "/accessibility-statement/",

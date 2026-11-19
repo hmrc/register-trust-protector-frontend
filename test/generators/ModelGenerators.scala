@@ -16,19 +16,19 @@
 
 package generators
 
-import models._
+import models.*
 import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryYesNoDontKnow: Arbitrary[YesNoDontKnow] =
+  given arbitraryYesNoDontKnow: Arbitrary[YesNoDontKnow] =
     Arbitrary {
       Gen.oneOf(YesNoDontKnow.values)
     }
 
-  implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
+  given arbitraryUkAddress: Arbitrary[UkAddress] =
     Arbitrary {
       for {
         line1    <- arbitrary[String]
@@ -39,24 +39,24 @@ trait ModelGenerators {
       } yield UkAddress(line1, line2, Some(line3), Some(line4), postcode)
     }
 
-  implicit lazy val arbitraryInternationalAddress: Arbitrary[InternationalAddress] =
+  given arbitraryInternationalAddress: Arbitrary[InternationalAddress] =
     Arbitrary {
       for {
         str <- arbitrary[String]
       } yield InternationalAddress(str, str, Some(str), str)
     }
 
-  implicit lazy val arbitraryAddAProtector: Arbitrary[AddAProtector] =
+  given arbitraryAddAProtector: Arbitrary[AddAProtector] =
     Arbitrary {
       Gen.oneOf(AddAProtector.values)
     }
 
-  implicit lazy val arbitraryIndividualOrBusiness: Arbitrary[IndividualOrBusinessToAdd] =
+  given arbitraryIndividualOrBusiness: Arbitrary[IndividualOrBusinessToAdd] =
     Arbitrary {
       Gen.oneOf(IndividualOrBusinessToAdd.values)
     }
 
-  implicit lazy val arbitraryStatus: Arbitrary[Status] =
+  given arbitraryStatus: Arbitrary[Status] =
     Arbitrary {
       Gen.oneOf(Status.values.toList)
     }

@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.{InsetText as GovukInsetTextModel}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-@this(govukInsetText : GovukInsetText)
+@this(govukInsetText: GovukInsetText)
 
-@(messageKey: String, id: String)(implicit messages: Messages)
+@(messageKey: String, id: String)(using messages: Messages)
 
-@govukInsetText(InsetText(
+@govukInsetText(GovukInsetTextModel(
  id = Some(s"inset-text--$id"),
  content = Text(messages(messageKey))
 ))

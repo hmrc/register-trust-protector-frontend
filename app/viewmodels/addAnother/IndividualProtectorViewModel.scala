@@ -26,11 +26,11 @@ case class IndividualProtectorViewModel(name: Option[FullName], status: Status) 
 
 object IndividualProtectorViewModel {
 
-  import play.api.libs.functional.syntax._
+  import play.api.libs.functional.syntax.*
 
-  implicit val reads: Reads[IndividualProtectorViewModel] = (
+  given reads: Reads[IndividualProtectorViewModel] = (
     (__ \ "name").readNullable[FullName] and
       (__ \ "status").readWithDefault[Status](Status.InProgress)
-  )(IndividualProtectorViewModel.apply _)
+  )(IndividualProtectorViewModel.apply)
 
 }

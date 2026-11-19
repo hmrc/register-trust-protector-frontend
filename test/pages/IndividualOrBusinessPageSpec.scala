@@ -16,14 +16,14 @@
 
 package pages
 
-import models.Status._
+import models.Status.*
 import models.register.pages.IndividualOrBusinessToAdd
-import models.register.pages.IndividualOrBusinessToAdd._
+import models.register.pages.IndividualOrBusinessToAdd.*
 import models.{FullName, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
-import pages.register.{IndividualOrBusinessPage, business => bus, individual => ind}
+import pages.register.{IndividualOrBusinessPage, business as bus, individual as ind}
 import sections.{BusinessProtectors, IndividualProtectors}
 
 class IndividualOrBusinessPageSpec extends PageBehaviours {

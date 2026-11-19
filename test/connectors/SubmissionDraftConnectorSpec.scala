@@ -17,10 +17,10 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.{RegistrationSubmission, SubmissionDraftResponse}
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,11 +34,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class SubmissionDraftConnectorSpec extends SpecBase with Matchers with OptionValues with WireMockHelper {
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
-      defaultAppConfigurations ++ Seq("microservice.services.trusts.port" -> server.port()): _*
+      defaultAppConfigurations ++ Seq("microservice.services.trusts.port" -> server.port())*
     )
     .build()
 

@@ -18,10 +18,10 @@ package utils.print
 
 import base.SpecBase
 import models.{InternationalAddress, UkAddress}
+import pages.register.business.*
 import pages.register.business.mld5.{
   CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
 }
-import pages.register.business._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 

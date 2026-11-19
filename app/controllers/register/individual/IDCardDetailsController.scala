@@ -17,10 +17,9 @@
 package controllers.register.individual
 
 import config.annotations.IndividualProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.individual.NameRequiredAction
 import forms.PassportOrIdCardFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.IDCardDetailsPage
 import play.api.data.Form
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.IDCardDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IDCardDetailsController @Inject() (
@@ -43,7 +43,7 @@ class IDCardDetailsController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: IDCardDetailsView,
   val countryOptions: CountryOptions
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider("individualProtector.idCardDetails")
@@ -63,7 +63,7 @@ class IDCardDetailsController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(
               BadRequest(view(formWithErrors, countryOptions.options(), request.protectorName, index, draftId))
             ),

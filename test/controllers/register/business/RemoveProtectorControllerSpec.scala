@@ -18,7 +18,7 @@ package controllers.register.business
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.Status._
+import models.Status.*
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -27,7 +27,7 @@ import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.NamePage
 import play.api.data.Form
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{route, _}
+import play.api.test.Helpers.{route, *}
 import sections.BusinessProtector
 import views.html.RemoveIndexView
 
@@ -69,11 +69,9 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
         contentAsString(result) mustEqual
           view(
             form(prefix),
-            fakeDraftId,
-            index,
             defaultProtectorName,
             routes.RemoveProtectorController.onSubmit(index, draftId)
-          )(request, messages).toString
+          )(using request, messages).toString
 
         application.stop()
       }
@@ -99,7 +97,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(prefix), fakeDraftId, index, testName, routes.RemoveProtectorController.onSubmit(index, draftId))(
+          view(form(prefix), testName, routes.RemoveProtectorController.onSubmit(index, draftId))(using
             request,
             messages
           ).toString
@@ -123,8 +121,8 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       "YES is submitted and trustee is removed" in {
 
         reset(registrationsRepository)
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+        when(registrationsRepository.set(any())(using any(), any())).thenReturn(Future.successful(true))
+        when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(None))
 
         val application =
           applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -139,7 +137,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
         redirectLocation(result).value mustEqual addToPageRoute
 
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(registrationsRepository, times(1)).set(uaCaptor.capture)(any(), any())
+        verify(registrationsRepository, times(1)).set(uaCaptor.capture)(using any(), any())
         uaCaptor.getValue.get(BusinessProtector(index)) mustNot be(defined)
 
         application.stop()
@@ -148,8 +146,8 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       "NO is submitted and trustee is not removed" in {
 
         reset(registrationsRepository)
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+        when(registrationsRepository.set(any())(using any(), any())).thenReturn(Future.successful(true))
+        when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(None))
 
         val application =
           applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -164,7 +162,7 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
         redirectLocation(result).value mustEqual addToPageRoute
 
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(registrationsRepository, times(0)).set(uaCaptor.capture)(any(), any())
+        verify(registrationsRepository, times(0)).set(uaCaptor.capture)(using any(), any())
 
         application.stop()
       }
@@ -194,11 +192,9 @@ class RemoveProtectorControllerSpec extends SpecBase with IndexValidation {
       contentAsString(result) mustEqual
         view(
           boundForm,
-          fakeDraftId,
-          index,
           defaultProtectorName,
           routes.RemoveProtectorController.onSubmit(index, draftId)
-        )(request, messages).toString
+        )(using request, messages).toString
 
       application.stop()
     }

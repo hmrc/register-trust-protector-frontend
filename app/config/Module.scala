@@ -18,7 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import config.annotations.{BusinessProtector, IndividualProtector}
-import controllers.actions.register._
+import controllers.actions.register.*
 import navigation.{BusinessProtectorNavigator, IndividualProtectorNavigator, Navigator, ProtectorNavigator}
 import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
 

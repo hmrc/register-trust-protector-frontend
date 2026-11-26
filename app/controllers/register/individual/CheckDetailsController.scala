@@ -18,7 +18,7 @@ package controllers.register.individual
 
 import config.FrontendAppConfig
 import config.annotations.IndividualProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.individual.NameRequiredAction
 import models.Status.Completed
 import navigation.Navigator
@@ -45,7 +45,7 @@ class CheckDetailsController @Inject() (
   val appConfig: FrontendAppConfig,
   printHelper: IndividualProtectorPrintHelper,
   nameAction: NameRequiredAction
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] =

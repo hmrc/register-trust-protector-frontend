@@ -21,7 +21,7 @@ import generators.Generators
 import models.{AddressType, IdentificationOrgType, InternationalAddress, ProtectorCompany, UkAddress}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import pages.register.business._
+import pages.register.business.*
 import pages.register.business.mld5.{
   CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage
 }

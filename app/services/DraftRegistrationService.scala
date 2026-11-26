@@ -28,10 +28,10 @@ import scala.concurrent.ExecutionContext
 class DraftRegistrationService @Inject() (
   config: FrontendAppConfig,
   submissionDraftConnector: SubmissionDraftConnector
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends Logging {
 
-  def retrieveSettlorNinos(draftId: String)(implicit hc: HeaderCarrier) =
+  def retrieveSettlorNinos(draftId: String)(using hc: HeaderCarrier) =
     submissionDraftConnector.getDraftSection(draftId, config.repositoryKeySettlors).map { response =>
       response.data
         .\("data")

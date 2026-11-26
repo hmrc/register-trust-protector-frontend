@@ -25,8 +25,8 @@ import models.{
 }
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import pages.register.individual._
-import pages.register.individual.mld5._
+import pages.register.individual.*
+import pages.register.individual.mld5.*
 import play.api.libs.json.Json
 
 import java.time.LocalDate

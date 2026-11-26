@@ -20,7 +20,6 @@ import config.annotations.BusinessProtector
 import controllers.actions.StandardActionSets
 import controllers.actions.register.business.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.AddressYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.business.AddressYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressYesNoController @Inject() (
@@ -40,7 +40,7 @@ class AddressYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddressYesNoView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("businessProtector.addressYesNo")

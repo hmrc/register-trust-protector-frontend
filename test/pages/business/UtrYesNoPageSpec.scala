@@ -19,7 +19,7 @@ package pages.business
 import models.{InternationalAddress, UkAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.register.business._
+import pages.register.business.*
 
 class UtrYesNoPageSpec extends PageBehaviours {
 
@@ -59,7 +59,7 @@ class UtrYesNoPageSpec extends PageBehaviours {
 
     "remove relevant Data when UtrYesNoPage is set to false" in {
       val index = 0
-      forAll(arbitrary[UserAnswers], arbitrary[String]) { (initial, str) =>
+      forAll(arbitrary[UserAnswers], arbitrary[String]) { (initial, _) =>
         val answers: UserAnswers = initial
           .set(UtrYesNoPage(index), true)
           .success

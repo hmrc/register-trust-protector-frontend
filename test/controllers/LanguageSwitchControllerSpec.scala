@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.inject.bind
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class LanguageSwitchControllerSpec extends SpecBase {

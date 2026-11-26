@@ -17,13 +17,13 @@
 package utils
 
 import base.SpecBase
-import controllers.register.business.{routes => brts}
-import controllers.register.individual.{routes => irts}
+import controllers.register.business.routes as brts
+import controllers.register.individual.routes as irts
 import models.Status.{Completed, InProgress}
 import models.{FullName, UkAddress, UserAnswers}
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
-import pages.register.business._
-import pages.register.{individual => ind}
+import pages.register.business.*
+import pages.register.individual as ind
 import viewmodels.{AddRow, AddToRows}
 
 class AddAProtectorViewHelperSpec extends SpecBase {

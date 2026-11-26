@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.Implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
+@import uk.gov.hmrc.govukfrontend.views.Implicits.*
 
 @this(govukTextarea : GovukTextarea)
 
@@ -27,7 +27,7 @@
         labelClass: Option[String] = None,
         hint: Option[String] = None,
         rows: Int = 5
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 @govukTextarea(Textarea(
     id = field.id,
@@ -40,7 +40,7 @@
     hint = hint.map(hint => Hint(content = Text(hint))),
     rows = rows,
     errorMessage = field.error match {
-        case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*))))
+        case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args*))))
         case None => None
     },
     value = field.value,

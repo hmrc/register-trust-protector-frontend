@@ -21,8 +21,6 @@ import controllers.actions.StandardActionSets
 import controllers.actions.register.individual.NameRequiredAction
 import forms.UkAddressFormProvider
 import models.UkAddress
-
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.UkAddressPage
 import play.api.data.Form
@@ -32,6 +30,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.UkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkAddressController @Inject() (
@@ -43,7 +42,7 @@ class UkAddressController @Inject() (
   formProvider: UkAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: UkAddressView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[UkAddress] = formProvider()

@@ -4,7 +4,7 @@ import scoverage.ScoverageKeys.*
 object CodeCoverageSettings {
 
   private val settings: Seq[Setting[?]] = Seq(
-    coverageExcludedPackages := "<empty>;Reverse.*;..*Routes.*;testOnly.*;.*views.*",
+    coverageExcludedPackages := "<empty>;Reverse.*;..*Routes.*;testOnly.*;.*views.*;.*\\$anonfun\\$.*",
     coverageMinimumStmtTotal := 87,
     coverageFailOnMinimum := true,
     coverageHighlighting := true

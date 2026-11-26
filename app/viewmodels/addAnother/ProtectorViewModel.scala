@@ -18,30 +18,26 @@ package viewmodels.addAnother
 
 import models.Status
 import play.api.libs.json.Reads
-import scala.language.implicitConversions
 
 trait ProtectorViewModel {
+
   val status: Status
+
   def displayName: Option[String]
 
-  def isComplete: Boolean = displayName.nonEmpty && (status == Status.Completed)
+  def isComplete: Boolean =
+    displayName.nonEmpty && (status == Status.Completed)
+
 }
 
 object ProtectorViewModel {
 
-  implicit val reads: Reads[ProtectorViewModel] = {
-
-    implicit class ReadsWithContravariantOr[A](a: Reads[A]) {
-
-      def or[B >: A](b: Reads[B]): Reads[B] =
-        a.map[B](identity).orElse(b)
-    }
-
-    implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
-      a.map(identity)
-
-    IndividualProtectorViewModel.reads or
-      BusinessProtectorViewModel.reads
-  }
+  given reads: Reads[ProtectorViewModel] =
+    IndividualProtectorViewModel.reads
+      .map[ProtectorViewModel](identity)
+      .orElse(
+        BusinessProtectorViewModel.reads
+          .map[ProtectorViewModel](identity)
+      )
 
 }

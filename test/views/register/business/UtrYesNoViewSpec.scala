@@ -34,8 +34,8 @@ class UtrYesNoViewSpec extends YesNoViewBehaviours {
 
     val view = viewFor[UtrYesNoView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name, index, draftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, name, index, draftId)(using fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

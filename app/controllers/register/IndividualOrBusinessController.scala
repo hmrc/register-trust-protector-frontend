@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import controllers.actions._
+import controllers.actions.*
 import forms.IndividualOrBusinessFormProvider
 import models.register.pages.IndividualOrBusinessToAdd
 import navigation.Navigator
@@ -39,7 +39,7 @@ class IndividualOrBusinessController @Inject() (
   view: IndividualOrBusinessView,
   formProvider: IndividualOrBusinessFormProvider,
   repository: RegistrationsRepository
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[IndividualOrBusinessToAdd] = formProvider()

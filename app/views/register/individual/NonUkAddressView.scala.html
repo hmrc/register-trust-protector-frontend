@@ -14,20 +14,19 @@
  * limitations under the License.
  *@
 
-@import controllers.register.individual.routes._
+@import controllers.register.individual.routes.*
 @import utils.InputOption
-@import views.html.components.{ErrorSummary, Heading, InternationalAddress, SubmitButton}
+@import views.html.components.{ErrorSummary, InternationalAddress, SubmitButton}
 
 @this(
         main_template: MainTemplate,
         errorSummary: ErrorSummary,
-        heading: Heading,
         internationalAddress: InternationalAddress,
         submitButton: SubmitButton,
         formHelper: FormWithCSRF
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption], name: String, index : Int, draftId: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[?], countryOptions: Seq[InputOption], name: String, index : Int, draftId: String)(using request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("site.address.international.title")}",

@@ -40,10 +40,10 @@ class UtrController @Inject() (
   repository: RegistrationsRepository,
   view: UtrView,
   @BusinessProtector navigator: Navigator
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  private def form(index: Int)(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
+  private def form(index: Int)(using request: ProtectorNameRequest[AnyContent]): Form[String] =
     formProvider.withConfig("businessProtector.utr", request.userAnswers, index)
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] =
@@ -61,7 +61,7 @@ class UtrController @Inject() (
       form(index)
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
           value =>
             for {

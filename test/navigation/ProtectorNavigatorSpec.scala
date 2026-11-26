@@ -18,9 +18,9 @@ package navigation
 
 import base.SpecBase
 import config.FrontendAppConfig
-import controllers.register.business.{routes => brts}
-import controllers.register.individual.{routes => irts}
-import controllers.register.{routes => rts}
+import controllers.register.business.routes as brts
+import controllers.register.individual.routes as irts
+import controllers.register.routes as rts
 import generators.Generators
 import models.Status.Completed
 import models.register.pages.{AddAProtector, IndividualOrBusinessToAdd}
@@ -29,7 +29,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.entitystatus.{BusinessProtectorStatus, IndividualProtectorStatus}
-import pages.register.{business => bus, individual => ind, _}
+import pages.register.{business as bus, individual as ind, *}
 import play.api.mvc.Call
 
 class ProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

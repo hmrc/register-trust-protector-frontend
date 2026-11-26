@@ -16,20 +16,22 @@
 
 package controllers.actions.register
 
-import play.api.mvc.Results.Redirect
 import controllers.actions.register
-import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import pages.QuestionPage
 import play.api.Logging
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import viewmodels.addAnother.ProtectorViewModel
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: String)(implicit
-  val executionContext: ExecutionContext
+class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: String)(using
+  ec: ExecutionContext
 ) extends ActionRefiner[RegistrationDataRequest, ProtectorRequiredRequest] with Logging {
+
+  override protected def executionContext: ExecutionContext = ec
 
   override protected def refine[A](
     request: RegistrationDataRequest[A]
@@ -46,9 +48,9 @@ class ProtectorRequiredAction(page: QuestionPage[ProtectorViewModel], draftId: S
 
 }
 
-class ProtectorRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) {
+class ProtectorRequiredActionImpl @Inject() (executionContext: ExecutionContext) {
 
   def apply(page: QuestionPage[ProtectorViewModel], draftId: String): ProtectorRequiredAction =
-    new ProtectorRequiredAction(page, draftId)
+    new ProtectorRequiredAction(page, draftId)(using executionContext)
 
 }

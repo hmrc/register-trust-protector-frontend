@@ -17,12 +17,12 @@
 package controllers.register
 
 import base.SpecBase
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq as eqTo, *}
 import org.mockito.Mockito.verify
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import java.net.URLEncoder
@@ -52,7 +52,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
     value must include("useServiceNavigation")
 
-    verify(mockAuditConnector).sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any(), any())
+    verify(mockAuditConnector).sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(using any(), any())
 
     application.stop()
 

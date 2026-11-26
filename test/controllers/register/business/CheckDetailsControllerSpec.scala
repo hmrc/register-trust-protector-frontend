@@ -22,8 +22,8 @@ import models.Status.Completed
 import models.UserAnswers
 import models.register.pages.IndividualOrBusinessToAdd.Business
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,7 +32,7 @@ import pages.register.IndividualOrBusinessPage
 import pages.register.business.NamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.print.BusinessProtectorPrintHelper
 import views.html.register.business.CheckDetailsView
 
@@ -68,7 +68,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(Seq(answerSection), index, fakeDraftId)(request, messages).toString
+        view(Seq(answerSection), index, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -88,7 +88,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+      verify(registrationsRepository).set(uaCaptor.capture)(using any(), any())
       uaCaptor.getValue.get(BusinessProtectorStatus(index)).get mustBe Completed
 
       application.stop()

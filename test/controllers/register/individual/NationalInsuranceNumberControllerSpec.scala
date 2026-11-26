@@ -26,7 +26,7 @@ import org.mockito.Mockito.when
 import pages.register.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.DraftRegistrationService
 import views.html.register.individual.NationalInsuranceNumberView
 
@@ -58,7 +58,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
 
       val mockDraftRegistrationService = mock[DraftRegistrationService]
 
-      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(using any())).thenReturn(Future.successful(""))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService))
@@ -73,7 +73,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.toString, index, draftId)(request, messages).toString
+        view(form, name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -90,7 +90,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
 
       val mockDraftRegistrationService = mock[DraftRegistrationService]
 
-      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(using any())).thenReturn(Future.successful(""))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService))
@@ -105,7 +105,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), name.toString, index, draftId)(request, messages).toString
+        view(form.fill("answer"), name.toString, index, draftId)(using request, messages).toString
 
       application.stop()
     }
@@ -116,7 +116,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
 
       val mockDraftRegistrationService = mock[DraftRegistrationService]
 
-      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+      when(mockDraftRegistrationService.retrieveSettlorNinos(any())(using any())).thenReturn(Future.successful(""))
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers))
@@ -145,7 +145,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
 
         val mockDraftRegistrationService = mock[DraftRegistrationService]
 
-        when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+        when(mockDraftRegistrationService.retrieveSettlorNinos(any())(using any())).thenReturn(Future.successful(""))
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService))
@@ -164,7 +164,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, name.toString, index, draftId)(request, messages).toString
+          view(boundForm, name.toString, index, draftId)(using request, messages).toString
 
         application.stop()
       }
@@ -183,7 +183,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
 
         val mockDraftRegistrationService = mock[DraftRegistrationService]
 
-        when(mockDraftRegistrationService.retrieveSettlorNinos(any())(any())).thenReturn(Future.successful(""))
+        when(mockDraftRegistrationService.retrieveSettlorNinos(any())(using any())).thenReturn(Future.successful(""))
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[DraftRegistrationService].toInstance(mockDraftRegistrationService))
@@ -204,7 +204,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, name.toString, index, draftId)(request, messages).toString
+          view(boundForm, name.toString, index, draftId)(using request, messages).toString
 
         application.stop()
       }

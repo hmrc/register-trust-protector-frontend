@@ -25,12 +25,11 @@ class InfoViewSpec extends ViewBehaviours {
 
     val view = viewFor[InfoView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(fakeDraftId)(fakeRequest, messages)
+    val applyView = view.apply(fakeDraftId)(using fakeRequest, messages)
 
     behave like normalPageTitleWithSectionSubheading(
       applyView,
       "protectorsInfo.5mld.taxable",
-      "caption",
       "subheading1",
       "paragraph1",
       "individual.bulletpoint1",

@@ -19,7 +19,6 @@ package controllers.register.individual
 import config.annotations.IndividualProtector
 import controllers.actions.StandardActionSets
 import forms.NameFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.NamePage
 import play.api.data.Form
@@ -29,6 +28,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject() (
@@ -39,7 +39,7 @@ class NameController @Inject() (
   formProvider: NameFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NameView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider.withPrefix("individualProtector.name")
@@ -59,7 +59,7 @@ class NameController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+          (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))

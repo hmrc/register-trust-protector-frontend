@@ -19,7 +19,6 @@ package controllers.register.business
 import config.annotations.BusinessProtector
 import controllers.actions.StandardActionSets
 import forms.StringFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.business.NamePage
 import play.api.data.Form
@@ -29,6 +28,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.business.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject() (
@@ -38,7 +38,7 @@ class NameController @Inject() (
   repository: RegistrationsRepository,
   view: NameView,
   @BusinessProtector navigator: Navigator
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   val form: Form[String] = formProvider.withPrefix("businessProtector.name", 105)
@@ -58,7 +58,7 @@ class NameController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+          (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))

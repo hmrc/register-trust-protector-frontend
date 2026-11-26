@@ -16,15 +16,15 @@
 
 package utils
 
+import controllers.register.business.routes as businessRts
+import controllers.register.individual.routes as individualRts
 import models.UserAnswers
 import play.api.i18n.Messages
-import viewmodels.{AddRow, AddToRows}
-import viewmodels.addAnother.{BusinessProtectorViewModel, IndividualProtectorViewModel}
-import controllers.register.business.{routes => businessRts}
-import controllers.register.individual.{routes => individualRts}
 import sections.{BusinessProtectors, IndividualProtectors}
+import viewmodels.addAnother.{BusinessProtectorViewModel, IndividualProtectorViewModel}
+import viewmodels.{AddRow, AddToRows}
 
-class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId: String)(implicit messages: Messages) {
+class AddAProtectorViewHelper(userAnswers: UserAnswers, draftId: String)(using messages: Messages) {
 
   private case class InProgressComplete(inProgress: List[AddRow], complete: List[AddRow])
 

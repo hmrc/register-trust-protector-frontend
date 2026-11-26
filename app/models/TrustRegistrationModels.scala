@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import java.time.LocalDate
 
@@ -27,7 +27,7 @@ import java.time.LocalDate
 case class ProtectorsType(protector: Option[List[Protector]], protectorCompany: Option[List[ProtectorCompany]])
 
 object ProtectorsType {
-  implicit val protectorsTypeFormat: Format[ProtectorsType] = Json.format[ProtectorsType]
+  given protectorsTypeFormat: Format[ProtectorsType] = Json.format[ProtectorsType]
 }
 
 case class Protector(
@@ -40,7 +40,7 @@ case class Protector(
 )
 
 object Protector {
-  implicit val protectorFormat: Format[Protector] = Json.format[Protector]
+  given protectorFormat: Format[Protector] = Json.format[Protector]
 }
 
 case class ProtectorCompany(
@@ -50,25 +50,25 @@ case class ProtectorCompany(
 )
 
 object ProtectorCompany {
-  implicit val protectorCompanyFormat: Format[ProtectorCompany] = Json.format[ProtectorCompany]
+  given protectorCompanyFormat: Format[ProtectorCompany] = Json.format[ProtectorCompany]
 }
 
 case class IdentificationType(nino: Option[String], passport: Option[PassportType], address: Option[AddressType])
 
 object IdentificationType {
-  implicit val identificationTypeFormat: Format[IdentificationType] = Json.format[IdentificationType]
+  given identificationTypeFormat: Format[IdentificationType] = Json.format[IdentificationType]
 }
 
 case class IdentificationOrgType(utr: Option[String], address: Option[AddressType])
 
 object IdentificationOrgType {
-  implicit val identificationOrgTypeFormat: Format[IdentificationOrgType] = Json.format[IdentificationOrgType]
+  given identificationOrgTypeFormat: Format[IdentificationOrgType] = Json.format[IdentificationOrgType]
 }
 
 case class PassportType(number: String, expirationDate: LocalDate, countryOfIssue: String)
 
 object PassportType {
-  implicit val passportTypeFormat: Format[PassportType] = Json.format[PassportType]
+  given passportTypeFormat: Format[PassportType] = Json.format[PassportType]
 }
 
 case class AddressType(
@@ -81,5 +81,5 @@ case class AddressType(
 )
 
 object AddressType {
-  implicit val addressTypeFormat: Format[AddressType] = Json.format[AddressType]
+  given addressTypeFormat: Format[AddressType] = Json.format[AddressType]
 }

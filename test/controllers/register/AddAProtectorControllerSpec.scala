@@ -24,7 +24,7 @@ import models.register.pages.AddAProtector
 import models.register.pages.IndividualOrBusinessToAdd.Individual
 import models.{FullName, Status, TaskStatus, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
@@ -32,12 +32,12 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.entitystatus.BusinessProtectorStatus
 import pages.register.business.{NamePage, UtrPage, UtrYesNoPage}
 import pages.register.{
-  AddAProtectorPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage, business => bus, individual => ind
+  AddAProtectorPage, IndividualOrBusinessPage, TrustHasProtectorYesNoPage, business as bus, individual as ind
 }
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, _}
+import play.api.test.Helpers.{status, *}
 import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpResponse
 import utils.RegistrationProgress
@@ -135,7 +135,7 @@ class AddAProtectorControllerSpec
   override def beforeEach(): Unit = {
     reset(mockTrustsStoreService, mockRegistrationProgress)
 
-    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(using any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
@@ -197,10 +197,10 @@ class AddAProtectorControllerSpec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId)(request, messages).toString
+          view(form, fakeDraftId)(using request, messages).toString
 
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+        verify(registrationsRepository).set(uaCaptor.capture)(using any(), any())
         uaCaptor.getValue.get(IndividualOrBusinessPage) mustNot be(defined)
 
         application.stop()
@@ -225,7 +225,10 @@ class AddAProtectorControllerSpec
 
           redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(using
+            any(),
+            any()
+          )
 
           application.stop()
         }
@@ -247,7 +250,7 @@ class AddAProtectorControllerSpec
 
           redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(using any(), any())
 
           application.stop()
         }
@@ -271,7 +274,7 @@ class AddAProtectorControllerSpec
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId)(request, messages).toString
+          view(boundForm, fakeDraftId)(using request, messages).toString
 
         application.stop()
       }
@@ -293,7 +296,7 @@ class AddAProtectorControllerSpec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(using
             request,
             messages
           ).toString
@@ -322,7 +325,7 @@ class AddAProtectorControllerSpec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(
+          view(form, fakeDraftId, Nil, protectorsComplete, "You have added 3 protectors", Nil)(using
             request,
             messages
           ).toString
@@ -352,7 +355,10 @@ class AddAProtectorControllerSpec
 
           redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(using
+            any(),
+            any()
+          )
           verify(mockRegistrationProgress).protectorsStatus(
             eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
           )
@@ -380,7 +386,10 @@ class AddAProtectorControllerSpec
 
           redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(using
+            any(),
+            any()
+          )
           verify(mockRegistrationProgress).protectorsStatus(
             eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
           )
@@ -410,7 +419,10 @@ class AddAProtectorControllerSpec
 
             redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-            verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+            verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(using
+              any(),
+              any()
+            )
             verify(mockRegistrationProgress).protectorsStatus(
               eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
             )
@@ -438,7 +450,10 @@ class AddAProtectorControllerSpec
 
               redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-              verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+              verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(using
+                any(),
+                any()
+              )
               verify(mockRegistrationProgress).protectorsStatus(
                 eqTo(userAnswersWithProtectorsComplete.set(AddAProtectorPage, selection).success.value)
               )
@@ -466,7 +481,7 @@ class AddAProtectorControllerSpec
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", Nil)(request, messages).toString
+          view(boundForm, fakeDraftId, Nil, Nil, "Add a protector", Nil)(using request, messages).toString
 
         application.stop()
       }
@@ -571,7 +586,7 @@ class AddAProtectorControllerSpec
             result
           ).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
-          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(any(), any())
+          verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.Completed))(using any(), any())
           verify(mockRegistrationProgress).protectorsStatus(
             eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value)
           )
@@ -602,7 +617,10 @@ class AddAProtectorControllerSpec
               result
             ).value mustEqual "http://localhost:9781/trusts-registration/draftId/registration-progress"
 
-            verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(any(), any())
+            verify(mockTrustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(TaskStatus.InProgress))(using
+              any(),
+              any()
+            )
             verify(mockRegistrationProgress).protectorsStatus(
               eqTo(userAnswers.set(AddAProtectorPage, AddAProtector.NoComplete).success.value)
             )

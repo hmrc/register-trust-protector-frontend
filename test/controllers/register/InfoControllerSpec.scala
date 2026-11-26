@@ -19,7 +19,7 @@ package controllers.register
 import base.SpecBase
 import models.UserAnswers
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.{InfoView, InfoViewNonTaxable}
 
 class InfoControllerSpec extends SpecBase {
@@ -43,7 +43,7 @@ class InfoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(fakeDraftId)(request, messages).toString
+          view(fakeDraftId)(using request, messages).toString
 
         application.stop()
       }
@@ -63,7 +63,7 @@ class InfoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(fakeDraftId)(request, messages).toString
+          view(fakeDraftId)(using request, messages).toString
 
         application.stop()
       }

@@ -34,18 +34,21 @@ class AddAProtectorViewSpec extends OptionsViewBehaviours with TabularDataViewBe
 
   val view: AddAProtectorView = viewFor[AddAProtectorView](Some(emptyUserAnswers))
 
-  def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, fakeDraftId, Nil, Nil, "Add a protector", Nil)(fakeRequest, messages)
+  def applyView(form: Form[?]): HtmlFormat.Appendable =
+    view.apply(form, fakeDraftId, Nil, Nil, "Add a protector", Nil)(using fakeRequest, messages)
 
   def applyView(
-    form: Form[_],
+    form: Form[?],
     inProgressProtectors: Seq[AddRow],
     completeProtectors: Seq[AddRow],
     count: Int,
     maxedOut: List[String]
   ): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count protectors" else "You have added 1 protector"
-    view.apply(form, fakeDraftId, inProgressProtectors, completeProtectors, title, maxedOut)(fakeRequest, messages)
+    view.apply(form, fakeDraftId, inProgressProtectors, completeProtectors, title, maxedOut)(using
+      fakeRequest,
+      messages
+    )
   }
 
   "AddAProtectorView" when {

@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.Writes
+import play.api.libs.json.{JsString, Writes}
 
 object TaskStatus extends Enumeration {
 
@@ -25,6 +25,7 @@ object TaskStatus extends Enumeration {
   val Completed: Value  = Value("completed")
   val InProgress: Value = Value("in-progress")
 
-  implicit val writes: Writes[Value] = Writes.enumNameWrites
+  given writes: Writes[Value] =
+    Writes(value => JsString(value.toString))
 
 }

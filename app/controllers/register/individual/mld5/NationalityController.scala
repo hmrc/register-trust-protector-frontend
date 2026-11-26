@@ -43,7 +43,7 @@ class NationalityController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   val countryOptions: CountryOptionsNonUK,
   view: NationalityView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withPrefix("individualProtector.5mld.nationality")
@@ -63,7 +63,7 @@ class NationalityController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(
               BadRequest(view(formWithErrors, countryOptions.options(), draftId, index, request.protectorName))
             ),

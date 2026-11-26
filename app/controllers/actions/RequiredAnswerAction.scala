@@ -16,13 +16,13 @@
 
 package controllers.actions
 
-import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Call, Result}
 import queries.Gettable
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 final case class RequiredAnswer[T](
@@ -30,10 +30,12 @@ final case class RequiredAnswer[T](
   redirect: Call = controllers.routes.SessionExpiredController.onPageLoad
 )
 
-class RequiredAnswerAction[T] @Inject() (required: RequiredAnswer[T])(implicit
-  val executionContext: ExecutionContext,
+class RequiredAnswerAction[T] @Inject() (required: RequiredAnswer[T])(using
+  ec: ExecutionContext,
   val reads: Reads[T]
 ) extends ActionRefiner[RegistrationDataRequest, RegistrationDataRequest] {
+
+  override protected def executionContext: ExecutionContext = ec
 
   override protected def refine[A](
     request: RegistrationDataRequest[A]
@@ -48,9 +50,9 @@ class RequiredAnswerAction[T] @Inject() (required: RequiredAnswer[T])(implicit
 
 }
 
-class RequiredAnswerActionProvider @Inject() (implicit ec: ExecutionContext) {
+class RequiredAnswerActionProvider @Inject() ()(using ec: ExecutionContext) {
 
-  def apply[T](required: RequiredAnswer[T])(implicit reads: Reads[T]) =
+  def apply[T](required: RequiredAnswer[T])(using reads: Reads[T]) =
     new RequiredAnswerAction(required)
 
 }

@@ -17,10 +17,9 @@
 package controllers.register.individual
 
 import config.annotations.IndividualProtector
-import controllers.actions._
+import controllers.actions.*
 import controllers.actions.register.individual.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.individual.PassportDetailsYesNoPage
 import play.api.data.Form
@@ -30,6 +29,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.individual.PassportDetailsYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PassportDetailsYesNoController @Inject() (
@@ -41,7 +41,7 @@ class PassportDetailsYesNoController @Inject() (
   yesNoFormProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: PassportDetailsYesNoView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private val form = yesNoFormProvider.withPrefix("individualProtector.passportDetailsYesNo")
@@ -61,7 +61,7 @@ class PassportDetailsYesNoController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(BadRequest(view(formWithErrors, request.protectorName, index, draftId))),
           value =>
             for {
